@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const registerDocenteSchema = z.object({
     identificacion: z
-    .string({
+    .number({
         require_error: "Identificacion is required"
     })
     .min(7, {

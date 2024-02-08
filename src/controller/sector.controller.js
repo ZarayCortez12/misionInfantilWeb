@@ -1,8 +1,12 @@
 import Sector from '../models/sector.model.js'
 
 export const getSectores = async (req, res) => {
-   const sectores = await Sector.find()
-   res.json(sectores)
+   try {
+    const sectores = await Sector.find()
+    res.json(sectores)
+   } catch (error) {
+    return res.status(404).json({ message: "Sector no Encontrado"})
+   }
 }
 
 export const createSector = async (req, res) => {
@@ -24,21 +28,34 @@ export const createSector = async (req, res) => {
 }
 
 export const getSector = async (req, res) => {
-    const sector  =  await Sector.findById(req.params.id)
-    if (!sector) return res.status(404).json({ message: "Sector not found"});
-    res.json(sector)
+    
+    try {
+        const sector  =  await Sector.findById(req.params.id)
+        if (!sector) return res.status(404).json({ message: "Sector not found"});
+        res.json(sector)
+    } catch (error) {
+        return res.status(404).json({ message: "Sector no Encontrado"})
+    }
 }
 
 export const deleteSector = async (req, res) => {
-    const sector  =  await Sector.findByIdAndDelete(req.params.id)
-    if (!sector) return res.status(404).json({ message: "Sector not found"});
-    res.json(sector)
+    try {
+        const sector  =  await Sector.findByIdAndDelete(req.params.id)
+        if (!sector) return res.status(404).json({ message: "Sector not found"});
+        return res.sendStatus(204)
+    } catch (error) {
+        return res.status(404).json({ message: "Sector no Encontrado"})
+    }
 }
 
 export const updateSector = async (req, res) => {
-    const sector  =  await Sector.findByIdAndUpdate(req.params.id, req.body, {
-        new: true
-    })
-    if (!sector) return res.status(404).json({ message: "Sector not found"});
-    res.json(sector)
+    try {
+        const sector  =  await Sector.findByIdAndUpdate(req.params.id, req.body, {
+            new: true
+        })
+        if (!sector) return res.status(404).json({ message: "Sector not found"});
+        res.json(sector)
+    } catch (error) {
+        return res.status(404).json({ message: "Sector no Encontrado"})
+    }
 }

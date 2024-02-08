@@ -1,10 +1,15 @@
 import User from '../models/user.models.js'
 import bcrypt from 'bcryptjs'
 import { createAccessToken } from '../libs/jwt.js'
+import jwt from 'jsonwebtoken'
+import { TOKEN_SECRET } from '../config.js'
 
 export const registerDocente =  async (req, res) => {
     const { identificacion, nombre, apellido, correo, contraseña } = req.body
     try {
+
+        const userFound = await User.findOne({correo})
+        if (userFound) return res.status(400).json(["the email is already in use"]);
 
         const passwordHash = await bcrypt.hash(contraseña, 10)
         const newUser = new User({
@@ -69,3 +74,22 @@ export const profile = async (req, res) => {
         apellido: userFound.apellido,
     })
 }
+
+export const verifyToken = async (req, res) => {
+    const {token} = req.cookies
+
+    if (!token) return res.status(401).json({ message: "Sin autorizacion"});
+
+    jwt.verify(token, TOKEN_SECRET, async (err, user) => {
+        if (err) return res.status(401).json({ message: "No autorizado"});
+    
+        const userFound = await User.findById(user.id)
+        if (!userFound) return res.status(401).json({ message: "No autorizado"});
+    
+        return res.json({
+            id: userFound._id,
+            nombre: userFound.nombre,
+            apellido: userFound.apellido,
+        });
+    });
+};
