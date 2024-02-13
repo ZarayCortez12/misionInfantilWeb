@@ -16,6 +16,8 @@ const userSchema = new mongoose.Schema({
     correo: {
         type: String, 
         require: true,
+        trim: true,
+        unique: true,
     },
     contraseña: {
         type: String,
@@ -38,5 +40,5 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 })
 
-//Con esto interactuamos con la base de datos
+//Con esto interactuamos con la base de datos, de modo quepodamos hacer consultas
 export default mongoose.model('Usuario', userSchema)

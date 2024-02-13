@@ -3,7 +3,7 @@
 //Creo el servidor por donde se va a desplegar la aplicacion con ayuda de express
 //https:localhost/4000
 import app from './app.js'
-import { connectDB } from "./db.js"
+import {connectDB} from "./db.js"
 
 connectDB();
 app.listen(4000)
