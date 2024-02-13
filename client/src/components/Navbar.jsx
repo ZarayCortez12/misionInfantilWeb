@@ -34,6 +34,9 @@ function Navbar() {
                         <Link to='/login'>Login</Link>
                      </li>
                      <li>
+                        <Link to='/bienvenidaAdmin'>Bienvenida Admin</Link>
+                     </li>
+                     <li>
                         <Link to='/registerDocente'>Register Docente</Link>
                      </li>
                     </>

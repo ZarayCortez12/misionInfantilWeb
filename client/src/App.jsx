@@ -9,6 +9,8 @@ import RegisterSectorPage from "./pages/RegisterSectorPage"
 import ProtectedRoute from "./ProtectedRoute"
 import { SectorProvider } from "./context/SectorContext"
 import Navbar from "./components/Navbar"
+import BienvenidaAdmin from "./pages/ModuloAdmin/Bienvenida"
+
 function App() {
   return (
     <AuthProvider>
@@ -20,6 +22,7 @@ function App() {
               <Route path='/'  element={<HomePage/>} />
               <Route path='/login'  element={<LoginPage/>} />
               <Route path='/registerDocente'  element={<RegisterDocentePage/>} />
+              <Route path='/bienvenidaAdmin'  element={<BienvenidaAdmin/>} />
               
               <Route element={<ProtectedRoute/>}>
                 <Route path='/sectores'  element={<SectorPage/>} />
