@@ -40,5 +40,5 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 })
 
-//Con esto interactuamos con la base de datos, de modo quepodamos hacer consultas
+//Con esto interactuamos con la base de datos, de modo que podamos hacer consultas
 export default mongoose.model('Usuario', userSchema)
