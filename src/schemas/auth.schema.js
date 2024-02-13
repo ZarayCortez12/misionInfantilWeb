@@ -2,11 +2,8 @@ import { z } from "zod"
 
 export const registerDocenteSchema = z.object({
     identificacion: z
-    .number({
+    .string({
         require_error: "Identificacion is required"
-    })
-    .min(7, {
-        message: "Identificacion no puede tener menos carcteres de 7"
     }),
     nombre: z.string({
         required_error: "Nombre is required"
