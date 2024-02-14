@@ -14,8 +14,7 @@ function App() {
     <AuthProvider>
       <SectorProvider>
         <BrowserRouter>
-          <main className="container mx-auto px-10">
-            <Navbar/>
+          <main className="">
             <Routes>
               <Route path='/'  element={<HomePage/>} />
               <Route path='/login'  element={<LoginPage/>} />
