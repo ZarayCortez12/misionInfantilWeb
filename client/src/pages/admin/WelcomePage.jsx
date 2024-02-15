@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 function WelcomePage() {
     return(
         <div className='mt-2 flex grow flex-col gap-4 md:flex-row'>
-            /*Bienvenida*/
+            {/*Bienvenida*/}
             <div className="flex flex-col gap-4 px-5 py-5 md:w-100 md:px-10">
                 <p className="py-3 text-xl md:text-2xl font-semibold">¡Hola!</p>
                 <strong className="px-10 py-3 text-4xl md:text-5xl">Administrador</strong>
