@@ -17,18 +17,36 @@ function App() {
     <AuthProvider>
       <SectorProvider>
         <BrowserRouter>
-          <Layout></Layout>
-          <main className="container mx-auto px-10">
+          <Navbar></Navbar>
+          <main className="">
             <Routes>
-              <Route path='/'  element={<HomePage/>} />
-              <Route path='/login'  element={<LoginPage/>} />
-              <Route path='/registerDocente'  element={<RegisterDocentePage/>} />
-              <Route path='/welcomeAdmin'  element={<WelcomePage/>} />
+              <Route>
+                <Route path='/'  element={<HomePage/>} />
+                <Route path='/login'  element={<LoginPage/>} />
+                <Route path='/registerDocente'  element={<RegisterDocentePage/>} />
+              </Route>
               
-              
+              <Route element={<ProtectedRoute/>}>
+                <Route path='/welcomeAdmin'  
+                  element={
+                    <>
+                    <Layout>
+                      <WelcomePage></WelcomePage>
+                    </Layout>
+
+                    </>
+                    } 
+                    />
+              </Route>
 
               <Route element={<ProtectedRoute/>}>
-                <Route path='/sectores'  element={<SectorPage/>} />
+                <Route path='/sectores'  
+                  element={
+                    <>
+                    <SectorPage/>
+                    </>
+                    } 
+                    />
                 <Route path='/add-sector'  element={<RegisterSectorPage/>} />
                 <Route path='/sectores/:id'  element={<RegisterSectorPage/>} />
               </Route>
