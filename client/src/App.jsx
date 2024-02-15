@@ -9,7 +9,7 @@ import RegisterSectorPage from "./pages/RegisterSectorPage"
 import ProtectedRoute from "./ProtectedRoute"
 import { SectorProvider } from "./context/SectorContext"
 import Navbar from "./components/Navbar"
-import BienvenidaAdmin from "./pages/ModuloAdmin/Bienvenida"
+import WelcomePage from "./pages/admin/WelcomePage"
 
 function App() {
   return (
@@ -22,8 +22,8 @@ function App() {
               <Route path='/'  element={<HomePage/>} />
               <Route path='/login'  element={<LoginPage/>} />
               <Route path='/registerDocente'  element={<RegisterDocentePage/>} />
-              <Route path='/bienvenidaAdmin'  element={<BienvenidaAdmin/>} />
-              
+              <Route path='/welcomeAdmin'  element={<WelcomePage/>} />
+
               <Route element={<ProtectedRoute/>}>
                 <Route path='/sectores'  element={<SectorPage/>} />
                 <Route path='/add-sector'  element={<RegisterSectorPage/>} />
