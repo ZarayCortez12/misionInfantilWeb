@@ -10,19 +10,22 @@ import ProtectedRoute from "./ProtectedRoute"
 import { SectorProvider } from "./context/SectorContext"
 import Navbar from "./components/Navbar"
 import WelcomePage from "./pages/admin/WelcomePage"
+import Layout from "./pages/admin/Layout"
 
 function App() {
   return (
     <AuthProvider>
       <SectorProvider>
         <BrowserRouter>
+          <Layout></Layout>
           <main className="container mx-auto px-10">
-            <Navbar/>
             <Routes>
               <Route path='/'  element={<HomePage/>} />
               <Route path='/login'  element={<LoginPage/>} />
               <Route path='/registerDocente'  element={<RegisterDocentePage/>} />
               <Route path='/welcomeAdmin'  element={<WelcomePage/>} />
+              
+              
 
               <Route element={<ProtectedRoute/>}>
                 <Route path='/sectores'  element={<SectorPage/>} />

@@ -33,7 +33,7 @@ function WelcomePage() {
                 </div>
             </div>
             
-            /*Versiculo de bienvenida*/
+            {/*Versiculo de bienvenida*/}
             <div className="flex flex-col gap-3 ml-3 mr-3 mt-5 py-8 md:mt-0">
                 <p className="text-custom-brown2 text-xl text-center">
                 VERSICULO DEL DIA

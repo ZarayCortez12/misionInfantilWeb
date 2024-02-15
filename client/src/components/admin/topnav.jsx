@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { BellIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 
 export default function TopNav() {
