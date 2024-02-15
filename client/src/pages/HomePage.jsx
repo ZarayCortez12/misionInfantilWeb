@@ -2,7 +2,7 @@ import logo from '../assets/IPUC_COLOR para fondo oscuro (1).png'
 import imagen1 from '../assets/grupo1.jpeg'
 import imagen2 from '../assets/grupo2.jpeg'
 import imagen3 from '../assets/grupo3.jpeg'
-import biblia from '../assets/biblia.jpg'
+import biblia from '../assets/biblia.png'
 import imagen4 from '../assets/grupo4.jpeg'
 import imagen5 from '../assets/grupo5.jpeg'
 import imagen6 from '../assets/grupo6.jpeg'
@@ -30,6 +30,7 @@ import material2 from '../assets/manualidad2.jpeg'
 import material3 from '../assets/manualidad3.jpeg'
 import material4 from '../assets/manualidad4.jpeg'
 import material5 from '../assets/manualidad5.jpeg'
+import wave from '../assets/wave.png';
 
 import { FiAlignJustify } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
@@ -38,10 +39,10 @@ import { RiInstagramFill } from "react-icons/ri";
 import { FaGooglePlus } from "react-icons/fa6";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
+import { BiMinusFront } from "react-icons/bi";
 
 import React, { useState, useEffect } from 'react';
 import Slider from "react-slick";
-
 
 import ImageSlider from '../components/ImageSlider';
 function HomePage() {
@@ -93,138 +94,140 @@ function HomePage() {
       margin: "0 auto",
     };
 
-   //pendiente de quitar
-    const [valorArchivo, setValorArchivo] = useState('');
-    const archivo = "../contador.php";
-
-    useEffect(() => {
-      fetch(archivo)
-        .then(response => response.text())
-        .then(data => {
-          setValorArchivo(data);
-        })
-        .catch(error => {
-          console.error('Error al obtener el valor del archivo:', error);
-        });
-
-    }, []); //igual aca 
-
-  
-
-
+    let [open,setOpen] = useState(false);
+   
     return(
         <>
-        <header className="flex place-content-between items-center px-2 pt-6">
-      <img className="w-32" src={logo} alt="logo" />
 
-     <ul className={`sm:flex text-[18px] sm:w-[438px] sm:place-content-around sm:text-[16px] sm:items-center hidden`}>
-      <div className='w-10 h-10 cursor-pointer sm:hidden' > <IoCloseSharp size={42}/></div>
-      <li className="overflow-hidden whitespace-nowrap">
-    <a href="#">INICIO</a>
-      </li>
-      <li className="overflow-hidden whitespace-nowrap"> 
-    <a href="#quehacemos">¿QUÉ HACEMOS?</a>
-      </li>
-     <li className="overflow-hidden whitespace-nowrap">
-     <a href="#quienesSomos">¿QUIÉNES SOMOS?</a>
-      </li>
-      <li className="overflow-hidden whitespace-nowrap">
-    <a href="/login"><FaUserCircle className="w-8 h-8" /></a>
-      </li>
+
+<div className=' px-2 pt-6'> 
+  <div className='lg:flex bg-white py-4 lg:px-10 px-7 items-center justify-between'>
+    <div className='font-bold text-2xl cursor-pointer 
+    flex items-center poppins text-gray-800'>
+       <img className="w-32 ml-8" src={logo} alt="logo" />
+    </div>
+   
+    <div onClick={() => setOpen(!open)} className='text-3xl cursor-pointer absolute right-8 top-6  
+    lg:hidden' > <FiAlignJustify name={open ? 'close' : 'menu'} size={42} /> </div>
+
+     <ul className='lg:flex lg:items-center lg:pb-0 pb-12 absolute md:static bg-white 
+     lg:z-auto z-[-1] left-0 w-full lg:w-auto lg:pl-0 pl-9 transition-all duration-500 
+     ease-in '>
+      
+         <li className=" lg:ml-12 text-xl lg:my-0 my-7">
+            <a href="" className='carrois-gothicSC text-gray-800 hover:text-gray-400 duration-500'>INICIO</a>
+          </li>
+          <li className=" lg:ml-12 lg:my-0 my-7 text-xl "> 
+            <a href="#quehacemos" className='carrois-gothicSC text-gray-800 hover:text-gray-400 duration-500' >¿QUÉ HACEMOS?</a>
+          </li>
+          <li className=" lg:ml-12 text-xl lg:my-0 my-7">
+            <a href="#quienesSomos" className='carrois-gothicSC text-gray-800 hover:text-gray-400 duration-500'>¿QUIÉNES SOMOS?</a>
+          </li>
+          <li className=" lg:ml-12 text-xl lg:my-0 my-7">
+            <a href="/login"><FaUserCircle className="w-8 h-8 mr-12 " /></a>
+          </li> 
+      
       </ul>
-  
-      <div  className='w-10 h-10 cursor-pointer sm:hidden' ><FiAlignJustify size={42} /></div>
-    </header>
-
-
-        <section className='flex flex-col lg:flex-row items-center bg-blue-900 h-auto lg:h-96'>
-  <div className='w-full lg:w-1/2 text-white px-8 lg:pr-4 lg:pl-0 lg:py-0 py-4'>
-    <h1 className='text-white text-center font-bold text-[28px] pl-4'>Cada momento dedicado a la lectura y estudio de la Biblia es una inversión eterna en nuestro crecimiento espiritual.</h1>
-  </div>
-  <div className='w-full lg:w-1/2 flex justify-center lg:pl-4 lg:pr-0 lg:py-0 py-4'>
-    <img className="w-full lg:w-96 rounded-lg" src={imagen1} alt="grupo" />
-  </div>
-</section>
-
-<div className='mt-24 mb-12 text-center text-blue-900 font-bold text-[28px]'>DATOS IMPORTANTES</div>
+      <div className='w-10 h-10 cursor-pointer lg:hidden' > <IoCloseSharp size={42}/></div>
+    </div>
+ </div>
+ 
+   <section className='flex flex-col lg:flex-row items-center bg-blue-900 h-auto lg:h-96'>
+     <div className='w-full  text-white px-8 lg:pr-4  lg:ml-24 ml-0' >
+       <h1 className='text-white text-center font-bold text-[36px] poppins lg:mt-0 mt-12 lg:mb-0 mb-12'>Cada momento dedicado a la lectura y estudio de la Biblia es una inversión eterna en nuestro crecimiento espiritual.</h1>
+     </div>
+     <div className='w-full  flex justify-center lg:mb-0 mb-12'>
+        <img className=" lg:w-96  w-80 rounded-xl lg:mr-24 mr-0" src={imagen1} alt="grupo" />
+     </div>
+   </section>
+<div className='mt-24 mb-12 text-center text-blue-900 font-bold text-[28px] carrois-gothicSC  '> <h1 className='text-shadow-lg'>DATOS IMPORTANTES</h1></div>
 <div className="flex flex-col lg:flex-row lg:justify-evenly items-center">
-  <div className='bg-yellow-900 text-white w-32 h-32 rounded-lg justify-around items-center shadow-xl mb-4 lg:mb-0'>
-    <div className="text-center mt-4 text-[26px] font-bold">
-      </div>  
-    <div className="text-center text-[16px] font-thin">Visitantes a la pagina</div>
+
+  <div className='bg-yellow-900 text-white w-64 h-40 rounded-full flex flex-col justify-center
+   items-center shadow-xl mb-4 lg:mb-0 '>
+    <div className="text-center  text-[50px] font-bold poppins"> 56</div>  
+    <div className="text-center text-[20px] font-thin carrois-gothic">Sectores</div>
   </div>
-  <div className='bg-yellow-900 text-white w-32 h-32 rounded-lg justify-around items-center shadow-xl mb-4 lg:mb-0'>
-    <div className="text-center mt-4 text-[26px] font-bold">9</div>  
-    <div className="text-center text-[16px] font-thin">Distritos</div>
-  </div>
-  <div className='bg-yellow-900 text-white w-32 h-32 rounded-lg justify-around items-center shadow-xl'>
-    <div className="text-center mt-4 text-[26px] font-bold">13</div>  
-    <div className="text-center text-[16px] font-thin">Obras Misioneras nacionales</div>
+
+  <div className='bg-yellow-900 text-white w-64 h-40 rounded-full flex flex-col justify-center 
+  items-center shadow-xl mb-4 lg:mb-0 '>
+    <div className="text-center text-[50px] font-bold poppins">9</div>  
+    <div className="text-center text-[20px] font-thin carrois-gothic">Distritos</div>
+</div>
+
+  <div className='bg-yellow-900 text-white w-64 h-40 rounded-full flex flex-col justify-center
+   items-center shadow-xl mb-4 lg:mb-0 '>
+    <div className="text-center  text-[50px] font-bold poppins">13</div>  
+    <div className="text-center text-[20px] font-thin carrois-gothic"> Obras Misioneras</div>
   </div>
 </div>
 
 
-
-<section id="quehacemos" className='flex flex-col lg:flex-row items-center  h-auto lg:h-80 mt-24'>
-  <div className='w-full lg:w-1/2 flex justify-center mb-4 lg:mb-0'>
-    <img className="w-96 rounded-lg" src={imagen2} alt="grupo" />
+<section id="quehacemos" className='flex flex-col lg:flex-row items-center h-auto lg:h-80 mt-24'>
+  <div className='w-full  flex justify-center  '>
+    <img className="w-96 rounded-lg lg:ml-24 ml-0" src={imagen2} alt="grupo" /> 
   </div>
-  <div className='w-full lg:w-1/2  px-8'>
-    <h1  className='text-center font-bold text-[22px] mb-2'>¿QUÉ HACEMOS?</h1>
-    <h2 className=' text-center text-[18px]'>Formamos parte de la Iglesia Pentecostal Unida de Colombia y nos dedicamos con pasión a impartir clases bíblicas exclusivamente a niños. Nuestra labor busca proporcionar una guía espiritual sólida y significativa a esta etapa crucial de la vida.</h2>
-  </div>
-</section>
-
-<section className='flex flex-col lg:flex-row items-center mt-24 bg-blue-900 text-white h-auto lg:h-96'>
-  <div className='w-full lg:w-1/2 px-8 lg:px-12 py-8 lg:py-0'>
-    <h1 className='text-center font-bold text-[22px] mb-2 lg:mb-4'>¿CUÁL ES NUESTRO OBJETIVO?</h1>
-    <h2 className='text-center text-[18px]'>En nuestras clases, abordamos diversos temas bíblicos adaptados a sus necesidades y niveles de comprensión, fomentando no solo el conocimiento sino también el crecimiento espiritual y la comunión entre los jóvenes.</h2>
-  </div>
-  <div className='w-full lg:w-1/2 flex justify-center mb-4 lg:mb-0'>
-    <img className="w-full lg:w-96 rounded-lg" src={imagen3} alt="grupo" />
+  <div className='w-full lg:mr-24 mr-0'>
+    <h1  className='text-center font-bold text-[30px] mb-2 poppins'>¿QUÉ HACEMOS?</h1>
+    <h2 className=' text-center text-[22px] carrois-gothic'>Formamos parte de la Iglesia Pentecostal Unida de Colombia y nos dedicamos con pasión a impartir clases bíblicas exclusivamente a niños. Nuestra labor busca proporcionar una guía espiritual sólida y significativa a esta etapa crucial de la vida.</h2>
   </div>
 </section>
+
+
+ <div className='bg-blue-900 mt-12'>
+ <img className="transform  scale-y-[-1] w-full h-24" src={wave} alt="grupo" /> 
+   <section className='flex flex-col lg:flex-row items-center mt-6 bg-blue-900 text-white h-auto lg:h-96'>
+  <div className='w-full  px-8 lg:pr-4  lg:ml-24 ml-0'>
+    <h1 className='text-center font-bold text-[22px] mb-2 lg:mb-4 poppins lg:mt-0 mt-12 lg:mb-0 mb-12'>¿CUÁL ES NUESTRO OBJETIVO?</h1>
+    <h2 className='text-center text-[22px] carrois-gothic lg:mt-0 mt-12 lg:mb-0 mb-12'>En nuestras clases, abordamos diversos temas bíblicos adaptados a sus necesidades y niveles de comprensión, fomentando no solo el conocimiento sino también el crecimiento espiritual y la comunión entre los jóvenes.</h2>
+  </div>
+  <div className='w-full  '>
+    <img className="lg:w-96  w-96 rounded-lg lg:mr-24 mx-auto mb-12" src={imagen3} alt="grupo" />
+  </div>
+</section></div>
+
 
 <div className='flex flex-col items-center mt-24 mb-24'>
-  <h1 className="text-center text-[22px] font-bold m-12">Creemos firmemente que esta educación basada en la Palabra de Dios es esencial para fortalecer su fe y orientarlos en su camino hacia la salvación</h1>
+  <h1 className="text-center text-[33px] font-bold m-12 carrois-gothic ">Creemos firmemente que esta educación basada en la Palabra de Dios es esencial para fortalecer su fe y orientarlos en su camino hacia la salvación</h1>
   <img className="w-96 rounded-lg" src={biblia} alt="grupo" />
 </div>
 
 <section id="quienesSomos" className='flex flex-col lg:flex-row items-center h-auto lg:h-80 mt-24'>
-  <div className='w-full lg:w-1/2 flex justify-center mb-4 lg:mb-0'>
-  <img className="w-full lg:w-96 rounded-lg" src={imagen4} alt="grupo" />
+  <div className=' w-full flex justify-center '>
+  <img className=" w-full lg:w-96 rounded-lg mx-auto" src={imagen4} alt="grupo" />
   </div>
-  <div className='w-full lg:w-1/2 px-8 flex flex-col items-center'>
-  <h1 className='text-center font-bold text-[22px] mb-2'>¿QUIÉNES SOMOS?</h1>
-  <h2 className='text-center text-[18px] mb-6'>La Iglesia Pentecostal Unida de Colombia (IPUC) es una denominación cristiana pentecostal unicitaria en Colombia, completamente autónoma (dirigida netamente por colombianos).</h2>
-  <button className="bg-blue-500 py-2 px-4 rounded-lg hover:text-white" onClick={redirectToLink}>Conoce más</button>
+  <div className='w-full  px-8 flex flex-col items-center'>
+  <h1 className='font-bold text-[22px] mb-2 poppins lg:mr-24 mr-0'>¿QUIÉNES SOMOS?</h1>
+  <h2 className=' text-[22px] mb-6 carrois-gothic lg:mr-24 mr-0 text-center'>La Iglesia Pentecostal Unida de Colombia (IPUC) es una denominación cristiana pentecostal unicitaria en Colombia, completamente autónoma (dirigida netamente por colombianos).</h2>
+  <button className="bg-blue-500 py-2 px-4 rounded-lg hover:text-white poppins" onClick={redirectToLink}> <div className='flex'>Conoce más <BiMinusFront className='ml-4 mt-1'/></div></button>
 </div>
 </section>
 
-<div class='bg-blue-900 mt-24 justify-around h-auto lg:h-96 flex flex-col lg:flex-row items-center text-white'>
-
-  <div class="mb-8 lg:mb-0">
-    <h1 class='text-center font-bold text-[22px] '>CLASES</h1>
-    <div class="lg:w-96" style={containerStyles}> <ImageSlider slides={clases} /> </div>
+<div className='bg-blue-900 lg:mt-6'> 
+<img className="transform scale-x-[-1] scale-y-[-1] w-full h-24 " src={wave} alt="grupo" /> 
+   <div className=' mt-6 justify-around h-auto lg:h-96 flex flex-col lg:flex-row items-center text-white'>
+  <div className="mb-8 lg:mb-0">
+    <h1 className='text-center font-bold text-[22px] poppins mb-8'>CLASES</h1>
+    <div className="lg:w-96" style={containerStyles}> <ImageSlider slides={clases} /> </div>
   </div>
 
-  <div class="mb-8 lg:mb-0">
-    <h1 class='text-center font-bold text-[22px] '>ENCUENTROS</h1>
-    <div class="lg:w-96" style={containerStyles}> <ImageSlider slides={encuentros} /> </div>
+  <div className="mb-8 lg:mb-0">
+    <h1 className='text-center font-bold text-[22px] poppins mb-8'>ENCUENTROS</h1>
+    <div className="lg:w-96" style={containerStyles}> <ImageSlider slides={encuentros} /> </div>
   </div>
 
-  <div class="mb-8 lg:mb-0">
-    <h1 class='text-center font-bold text-[22px] '>MANUALIDADES</h1>
-    <div class="lg:w-96" style={containerStyles}> <ImageSlider slides={materiales} /> </div>
+  <div className="mb-8 lg:mb-0">
+    <h1 className='text-center font-bold text-[22px] poppins mb-8'>MANUALIDADES</h1>
+    <div className="lg:w-96" style={containerStyles}> <ImageSlider slides={materiales} /> </div>
   </div>
+</div> </div>
 
-</div>
 
 
 
 <section className='flex flex-col lg:flex-row items-center h-auto lg:h-80 mt-6 lg:mt-0'>
   <div className='w-full lg:w-1/2 px-8 lg:px-4 lg:mb-4'>
-    <h1 className='text-center font-bold text-[16px] mb-2'>ENCUENTRANOS</h1>
+    <h1 className='text-center font-bold text-[16px] mb-2 carrois-gothicSC'>ENCUENTRANOS</h1>
     <div className='flex justify-center space-x-4 lg:space-x-8'>
       <FaFacebook size={36} className="mx-2"/>
       <RiInstagramFill size={36} className="mx-2"/>
@@ -233,7 +236,7 @@ function HomePage() {
     </div>
   </div>
   <div className='w-full lg:w-1/2 px-8 lg:px-4 lg:mb-4'>
-    <h1 className='text-center font-bold text-[22px] mb-2'>SE PARTE DE NUESTRA GRAN COMUNIDAD</h1>
+    <h1 className='text-center font-bold text-[22px] mb-2 poppins'>SE PARTE DE NUESTRA GRAN COMUNIDAD</h1>
   </div>
   <div className='w-full lg:w-1/2 px-8 flex justify-center'>
     <img className="w-52 mx-auto" src={logo} alt="logo" />
