@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+<<<<<<< HEAD
 input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
@@ -16,3 +17,9 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+=======
+body {
+  background: #ffffff;
+  color: rgb(0, 0, 0);
+}
+>>>>>>> RamaCarlos
