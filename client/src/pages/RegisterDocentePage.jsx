@@ -2,6 +2,11 @@ import { useForm } from "react-hook-form"
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaUser, FaPhoneAlt } from "react-icons/fa";
+import { HiIdentification } from "react-icons/hi2";
+import { MdEmail } from "react-icons/md";
+import { TbLock } from "react-icons/tb";
+import { IoIosSave } from "react-icons/io";
 
 function RegisterDocentePage() {
     const { 
@@ -22,74 +27,123 @@ function RegisterDocentePage() {
     });
 
     return (
-        <div className="bg-zinc-800 max-w-md p-10 rounded-md">
-            {
-                registerErrors.map((error, i) => (
+        <div className="flex flex-col items-center justify-center h-screen">
+            <div className="bg-yellow-800 bg-opacity-50 w-150 p-10 rounded-md">
+                {registerErrors.map((error, i) => (
                     <div className="bg-red-500 p-2 text-white" key={i}>
                         {error}
                     </div>
-                ))
-            }
-            <form onSubmit={onSubmit}>
-                <label>Número de documento:</label>
-                <input 
-                    type="text" 
-                    {...register("identificacion", { required: true })}
-                    className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                    placeholder="Numero de Identificacion"
-                ></input>
-                {errors.identificacion && (
-                    <p className="text-red-500">identificacion is required</p>
-                )}
+                ))}
 
-                <label>Correo Electronico:</label>
-                <input 
-                    type="email" 
-                    {...register("correo", { required: true })}
-                    className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                    placeholder="Correo Electronico"
-                ></input>
-                {errors.correo && (
-                    <p className="text-red-500">Correo is required</p>
-                )}
+                <form onSubmit={onSubmit} className="flex justify-center">
+                    {/* Columna izquierda */}
+                    <div className="flex flex-col items-center text-white mr-4">
 
-                <label>Nombre:</label>
-                <input 
-                    type="text" 
-                    {...register("nombre", { required: true })}
-                    className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                    placeholder="Nombres"
-                ></input>
-                {errors.nombre && (
-                    <p className="text-red-500">Nombre is required</p>
-                )}
+                        <div className="flex items-center mb-2">
+                            <div className="text-white mr-2">
+                            <HiIdentification className='w-5 h-5' />
+                            </div>
+                            <input 
+                            type="text" 
+                            {...register("identificacion", { required: true })}
+                            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+                            placeholder="Número de Identificación"
+                            />
+                        </div>
+                        {errors.identificacion && (
+                            <p className="text-red-500">Identificación is required</p>
+                        )}
 
-                <label>Apellido:</label>
-                <input 
-                    type="text" 
-                    {...register("apellido", { required: true })}
-                    className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                    placeholder="Apellidos"
-                ></input>
-                {errors.apellido && (
-                    <p className="text-red-500">Apellido is required</p>
-                )}
+                        <div className="flex items-center mb-2">
+                            <div className="text-white mr-2">
+                            <FaUser className='w-5 h-5' />
+                            </div>
+                            <input 
+                            type="text" 
+                            {...register("nombre", { required: true })}
+                            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+                            placeholder="Nombres"
+                            />
+                        </div>
+                        {errors.nombre && (
+                            <p className="text-red-500">Nombre is required</p>
+                        )}
 
-                <label>Contraseña:</label>
-                <input 
-                    type="password" 
-                    {...register("contraseña", { required: true })}
-                    className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                    placeholder="Contaseña"
-                ></input>
-                {errors.contraseña && (
-                    <p className="text-red-500">Contraseña is required</p>
-                )}
+                        <div className="flex items-center mb-2">
+                            <div className="text-white mr-2">
+                            <FaUser className='w-5 h-5' />
+                            </div>
+                            <input 
+                            type="text" 
+                            {...register("apellido", { required: true })}
+                            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+                            placeholder="Apellidos"
+                            />
+                        </div>
+                        {errors.apellido && (
+                            <p className="text-red-500">Apellido is required</p>
+                        )}
+                        </div>
 
-                <input type="submit" value="Guardar"></input>
+                        {/* Columna derecha */}
+                        <div className="flex flex-col items-center text-white">
+                        <div className="flex items-center mb-2">
+                            <div className="text-white mr-2">
+                            <MdEmail className='w-5 h-5' />
+                            </div>
+                            <input 
+                            type="email" 
+                            {...register("correo", { required: true })}
+                            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+                            placeholder="Correo Electronico"
+                            />
+                        </div>
+                        {errors.correo && (
+                            <p className="text-red-500">Correo is required</p>
+                        )}
 
-            </form>
-        
+                        <div className="flex items-center mb-2">
+                            <div className="text-white mr-2">
+                            <FaPhoneAlt className='w-5 h-5' />
+                            </div>
+                            <input 
+                            type="text" 
+                            {...register("telefono", { required: true })}
+                            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+                            placeholder="Telefono"
+                            />
+                        </div>
+                        {errors.telefono && (
+                            <p className="text-red-500">Telefono is required</p>
+                        )}
+
+                        <div className="flex items-center mb-2">
+                            <div className="text-white mr-2">
+                            <TbLock className='w-5 h-5' />
+                            </div>
+                            <input 
+                            type="password" 
+                            {...register("contraseña", { required: true })}
+                            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+                            placeholder="Contraseña"
+                            />
+                        </div>
+                        {errors.contraseña && (
+                            <p className="text-red-500">Contraseña is required</p>
+                        )}
+
+                    </div>
+
+                    <div className="flex items-center justify-center mt-4">
+                        <input
+                            type="submit"
+                            value="Guardar"
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md ml-2"
+                        />
+                    </div>
+
+                </form>
+            </div>
         </div>
     )
 }
