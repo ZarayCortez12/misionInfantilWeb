@@ -94,45 +94,53 @@ function HomePage() {
       margin: "0 auto",
     };
 
-    let [open,setOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+
    
     return(
         <>
 
 
-<div className=' px-2 pt-6'> 
-  <div className='lg:flex bg-white py-4 lg:px-10 px-7 items-center justify-between'>
+<header className=' shadow-md w-full fixed top-0 left-0 '> 
+  <div className='lg:flex bg-white py-4 lg:px-10 px-7 items-center justify-between '>
+
     <div className='font-bold text-2xl cursor-pointer 
     flex items-center poppins text-gray-800'>
        <img className="w-32 ml-8" src={logo} alt="logo" />
     </div>
    
-    <div onClick={() => setOpen(!open)} className='text-3xl cursor-pointer absolute right-8 top-6  
-    lg:hidden' > <FiAlignJustify name={open ? 'close' : 'menu'} size={42} /> </div>
+     {/* Botón para abrir el menú */}
+     <div className={`text-3xl cursor-pointer absolute right-8 top-6 lg:hidden ${menuOpen ? 'hidden' : ''}`} onClick={()=>setMenuOpen(!menuOpen)}>
+    <FiAlignJustify size={42} className='m-8' /> </div>
 
-     <ul className='lg:flex lg:items-center lg:pb-0 pb-12 absolute md:static bg-white 
-     lg:z-auto z-[-1] left-0 w-full lg:w-auto lg:pl-0 pl-9 transition-all duration-500 
-     ease-in '>
+  {/* Botón para cerrar el menú */} 
+    <div className={`text-3xl cursor-pointer absolute right-8 top-6 lg:hidden ${menuOpen ? '' : 'hidden'}`} onClick={()=>setMenuOpen(!menuOpen)}>
+        <IoCloseSharp size={42} className='m-8' />
+      </div>
+
+     <ul className={`lg:flex lg:items-center lg:pb-0 pb-9 absolute
+     lg:static bg-white lg:z-auto z-[-1] left-0 w-full lg:w-auto
+     lg:pl-0 pl-9 transition-all duration-500 ease-in pt-6
+      ${menuOpen ? 'top-20 opacity-100' : 'top-[-490px]'} lg:opacity-100 opacity-0`}>
       
-         <li className=" lg:ml-12 text-xl lg:my-0 my-7">
-            <a href="" className='carrois-gothicSC text-gray-800 hover:text-gray-400 duration-500'>INICIO</a>
+         <li className=" lg:ml-12 text-xl lg:my-0 my-7 ">
+            <a href="" className='carrois-gothicSC text-gray-800 hover:text-blue-400 duration-500'>INICIO</a>
           </li>
           <li className=" lg:ml-12 lg:my-0 my-7 text-xl "> 
-            <a href="#quehacemos" className='carrois-gothicSC text-gray-800 hover:text-gray-400 duration-500' >¿QUÉ HACEMOS?</a>
+            <a href="#quehacemos" className='carrois-gothicSC text-gray-800 hover:text-blue-400 duration-500' >¿QUÉ HACEMOS?</a>
           </li>
           <li className=" lg:ml-12 text-xl lg:my-0 my-7">
-            <a href="#quienesSomos" className='carrois-gothicSC text-gray-800 hover:text-gray-400 duration-500'>¿QUIÉNES SOMOS?</a>
+            <a href="#quienesSomos" className='carrois-gothicSC text-gray-800 hover:text-blue-400 duration-500'>¿QUIÉNES SOMOS?</a>
           </li>
           <li className=" lg:ml-12 text-xl lg:my-0 my-7">
-            <a href="/login"><FaUserCircle className="w-8 h-8 mr-12 " /></a>
+            <a href="/login"><FaUserCircle className="w-8 h-8 mr-6 hover:text-blue-400 duration-500" /></a>
           </li> 
-      
+
       </ul>
-      <div className='w-10 h-10 cursor-pointer lg:hidden' > <IoCloseSharp size={42}/></div>
     </div>
- </div>
+ </header>
  
-   <section className='flex flex-col lg:flex-row items-center bg-blue-900 h-auto lg:h-96'>
+   <section className='flex flex-col lg:flex-row items-center bg-blue-900 h-auto lg:h-96 mt-32'>
      <div className='w-full  text-white px-8 lg:pr-4  lg:ml-24 ml-0' >
        <h1 className='text-white text-center font-bold text-[36px] poppins lg:mt-0 mt-12 lg:mb-0 mb-12'>Cada momento dedicado a la lectura y estudio de la Biblia es una inversión eterna en nuestro crecimiento espiritual.</h1>
      </div>
