@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 import { TOKEN_SECRET } from '../config.js'
 
 export const registerDocente =  async (req, res) => {
-    const { identificacion, nombre, apellido, correo, contraseña } = req.body
+    const { identificacion, nombre, apellido, correo, telefono, contraseña } = req.body
     try {
 
         const userFound = await User.findOne({correo})
@@ -16,6 +16,7 @@ export const registerDocente =  async (req, res) => {
             identificacion,
             apellido,
             correo,
+            telefono,
             contraseña: passwordHash,
             estado: "INACTIVO",
             nombre,
@@ -31,18 +32,27 @@ export const registerDocente =  async (req, res) => {
             apellido: userSave.apellido
         });
     } catch (error) {
+        console.error("Error:", error); 
         res.status(500).json({ message: error.message });
     } 
 }
 
-
-export const loginDocente =  async (req, res) => {
-    const { correo, contraseña } = req.body
+export const login =  async (req, res) => {
+    const { correo, contraseña, option} = req.body
+    console.log(option)
     try {
+        if (option !== "ESTUDIANTE"){
+            // Verificar el formato del correo electrónico
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(correo)) {
+                return res.status(400).json({ message: "Formato de correo electrónico no válido" });
+            }
+        }
         const userFound = await User.findOne({ correo });
-        if(!userFound) return res.status(400).json({ message: "User Not Found"});
+        if(!userFound) return res.status(400).json({ message: "Usuario no registrado en el sistema"});
+        if (userFound.rol !== option) return res.status(400).json({ message: `${option} no registrado en el sistema` });
         const isMath = await bcrypt.compare(contraseña, userFound.contraseña) 
-        if(!isMath) return res.status(400).json({ message: "Incorrect Password"});
+        if(!isMath) return res.status(400).json({ message: "Contraseña Incorrecta"});
         const token = await createAccessToken({ id: userFound._id });
         res.cookie('token', token);
         res.json({
