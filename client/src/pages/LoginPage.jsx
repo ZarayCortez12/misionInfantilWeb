@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form'
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../components/styles/LoginStyle.css'
 import logoOrganizacion from '../assets/logoOrganizacion.png';
 import { FaUser, FaChalkboardTeacher, FaArrowAltCircleLeft } from "react-icons/fa";
 import { TbLock } from "react-icons/tb";
