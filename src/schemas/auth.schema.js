@@ -21,15 +21,15 @@ export const registerDocenteSchema = z.object({
     contraseña: z.string({
         required_error: "Contraseña is required"
     }),
+    telefono: z.string({
+        required_error: "Apellido is required"
+    }),
 });
 
-export const loginDocentesSchema = z.object({
+export const loginSchema = z.object({
     correo: z
     .string({
         require_error: "Correo is required"
-    })
-    .email({
-        message: "Invalid Correo"
     }),
     contraseña: z.string({
         required_error: "Contraseña is required"
