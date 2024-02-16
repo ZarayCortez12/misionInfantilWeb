@@ -8,6 +8,7 @@ import { TbLock } from "react-icons/tb";
 import { MdAdminPanelSettings, MdRemoveRedEye } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import { Link } from "react-router-dom"
+import "../components/styles/LoginStyle.css"
 
 function LoginPage() {
 
