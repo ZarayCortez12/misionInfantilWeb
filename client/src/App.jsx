@@ -17,10 +17,6 @@ function App() {
     <AuthProvider>
       <SectorProvider>
         <BrowserRouter>
-<<<<<<< HEAD
-          <Navbar></Navbar>
-=======
->>>>>>> RamaCarlos
           <main className="">
             <Routes>
               <Route>
