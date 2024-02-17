@@ -124,13 +124,13 @@ function HomePage() {
       ${menuOpen ? 'top-20 opacity-100' : 'top-[-490px]'} lg:opacity-100 opacity-0`}>
       
          <li className=" lg:ml-12 text-xl lg:my-0 my-7 ">
-            <a href="" className='carrois-gothicSC text-gray-800 hover:text-blue-400 duration-500'>INICIO</a>
+            <a href="" className='poppins text-gray-800 hover:text-blue-400 duration-500'>INICIO</a>
           </li>
           <li className=" lg:ml-12 lg:my-0 my-7 text-xl "> 
-            <a href="#quehacemos" className='carrois-gothicSC text-gray-800 hover:text-blue-400 duration-500' >¿QUÉ HACEMOS?</a>
+            <a href="#quehacemos" className='poppins text-gray-800 hover:text-blue-400 duration-500' >¿QUÉ HACEMOS?</a>
           </li>
           <li className=" lg:ml-12 text-xl lg:my-0 my-7">
-            <a href="#quienesSomos" className='carrois-gothicSC text-gray-800 hover:text-blue-400 duration-500'>¿QUIÉNES SOMOS?</a>
+            <a href="#quienesSomos" className='poppins text-gray-800 hover:text-blue-400 duration-500'>¿QUIÉNES SOMOS?</a>
           </li>
           <li className=" lg:ml-12 text-xl lg:my-0 my-7">
             <a href="/login"><FaUserCircle className="w-8 h-8 mr-6 hover:text-blue-400 duration-500" /></a>
