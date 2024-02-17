@@ -8,7 +8,7 @@ export default function TopNav() {
             <BellIcon className="w-7 md:w-8" />
             </Link>
 
-            <Link href="/out" className='text-white mr-4 hover:text-red-600'>
+            <Link href="/login" className='text-white mr-4 hover:text-red-600'>
             <ArrowRightOnRectangleIcon className="w-7 md:w-8" />
             </Link>
         </div>

@@ -7,11 +7,11 @@ import clsx from 'clsx';
 
 const links = [
   { name: '', 
-    href: '/admin/notificaciones', 
+    href: '/admin/notifications', 
     icon: BellIcon },
   {
     name: '',
-    href: '/out',
+    href: '/login',
     icon: ArrowRightStartOnRectangleIcon,
   },
 ];

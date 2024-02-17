@@ -9,8 +9,9 @@ import RegisterSectorPage from "./pages/RegisterSectorPage"
 import ProtectedRoute from "./ProtectedRoute"
 import { SectorProvider } from "./context/SectorContext"
 import Navbar from "./components/Navbar"
-import WelcomePage from "./pages/admin/WelcomePage"
+import IndexAdmin from "./pages/admin/IndexAdmin"
 import Layout from "./pages/admin/Layout"
+import Teachers from "./pages/admin/teachers/Teachers"
 
 function App() {
   return (
@@ -25,18 +26,8 @@ function App() {
                 <Route path='/registerDocente'  element={<RegisterDocentePage/>} />
               </Route>
               
-              <Route element={<ProtectedRoute/>}>
-                <Route path='/welcomeAdmin'  
-                  element={
-                    <>
-                    <Layout>
-                      <WelcomePage></WelcomePage>
-                    </Layout>
-
-                    </>
-                    } 
-                    />
-              </Route>
+              <Route path='/indexAdmin'  
+              element={<Layout><IndexAdmin></IndexAdmin></Layout>}/>              
 
               <Route element={<ProtectedRoute/>}>
                 <Route path='/sectores'  

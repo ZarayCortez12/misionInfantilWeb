@@ -2,7 +2,7 @@ import React from 'react';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
 
-function WelcomePage() {
+function IndexAdmin() {
     return(
         <div className='mt-2 flex grow flex-col gap-4 md:flex-row'>
             {/*Bienvenida*/}
@@ -51,4 +51,4 @@ function WelcomePage() {
     );
 }
 
-export default WelcomePage
+export default IndexAdmin

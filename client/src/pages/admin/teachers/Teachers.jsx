@@ -4,4 +4,4 @@ function Teachers() {
     )
 }
 
-export default HomePage
+export default Teachers
