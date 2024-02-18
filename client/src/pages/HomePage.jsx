@@ -25,11 +25,10 @@ import clase11 from '../assets/clase12.jpeg'
 import clase12 from '../assets/clase13.jpeg'
 import clase13 from '../assets/clase14.jpeg'
 import clase14 from '../assets/clase15.jpeg'
-import material1 from '../assets/manualidad1.jpeg'
-import material2 from '../assets/manualidad2.jpeg'
-import material3 from '../assets/manualidad3.jpeg'
-import material4 from '../assets/manualidad4.jpeg'
-import material5 from '../assets/manualidad5.jpeg'
+import material1 from '../assets/material1.jpeg'
+import material2 from '../assets/material2.jpeg'
+import material3 from '../assets/material3.jpeg'
+import material4 from '../assets/material4.jpeg'
 import wave from '../assets/wave.png';
 
 import { FiAlignJustify } from "react-icons/fi";
@@ -85,7 +84,6 @@ function HomePage() {
       {url:material2},
       {url:material3},
       {url:material4},
-      {url:material5},
     ]
 
     const containerStyles = {
