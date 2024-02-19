@@ -42,7 +42,7 @@ export default function NavLinks() {
             key={link.name}
             to={link.to}
             className={clsx(
-              'flex h-[48px] gap-3 grow items-center justify-center rounded-md bg-custom-blue1 p-3 text-sm text-white font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
+              'flex h-[48px] gap-3 grow items-center justify-center rounded-md bg-custom-blue1 p-3 text-sm text-white font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-7',
               {
                 'bg-custom-blue2 text-white': pathname === link.to,
               },

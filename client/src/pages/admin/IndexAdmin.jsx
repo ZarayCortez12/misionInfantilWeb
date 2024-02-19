@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function IndexAdmin() {
     return(
-        <div className='mt-2 flex grow flex-col gap-4 md:flex-row'>
+        <div className='mt-0 mr-0  ml-0 flex grow flex-col gap-4 md:flex-row'>
             {/*Bienvenida*/}
             <div className="flex flex-col gap-4 px-5 py-5 md:w-100 md:px-10">
                 <p className="py-3 text-xl md:text-2xl font-semibold">¡Hola!</p>
@@ -38,7 +38,7 @@ function IndexAdmin() {
                 <p className="text-custom-brown2 text-xl text-center">
                 VERSICULO DEL DIA
                 </p>
-                <p className="text-white text-2xl md:text-3xl font-medium text-center bg-custom-brown2 rounded-lg ml-5 mr-5 mt-5 px-5 py-10 md:ml-10 md:mr-10 md:py-16 md:px-10">
+                <p className="text-white text-2xl md:text-3xl font-medium text-center bg-custom-brown2 rounded-lg ml-5 mr-5 mt-5 px-5 py-10 md:ml-9 md:mr-9 md:py-9 md:px-10">
                     <strong>
                         Porque tanto amó Dios al mundo que dio a su Hijo unigénito, para que todo el que cree en él no se pierda, sino que tenga vida eterna.
                     </strong>

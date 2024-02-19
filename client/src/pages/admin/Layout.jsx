@@ -10,7 +10,7 @@ function Layout({ children }) {
         </div>
 
         <div className='flex flex-col md:flex-row'>
-            <div className="flex-none w-full md:w-64">
+            <div className="flex-none w-full md:w-56">
                 <SideNav></SideNav>
             </div>
             <div className="flex-grow p-6 md:overflow-y-auto md:p-12">

@@ -4,7 +4,7 @@ import { BellIcon, ArrowRightStartOnRectangleIcon} from '@heroicons/react/24/out
 export default function TopNav() {
     return (
         <div className="flex h-20 items-center justify-end">
-            <Link to="indexAdmin/Notifications" className='text-white flex items-center mr-5 hover:text-yellow-500' >
+            <Link to= "/indexAdmin/Notifications" className='text-white flex items-center mr-5 hover:text-yellow-500' >
             <BellIcon className="w-7 md:w-8" />
             </Link>
 
