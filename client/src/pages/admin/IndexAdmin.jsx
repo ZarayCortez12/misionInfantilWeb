@@ -12,22 +12,22 @@ function IndexAdmin() {
                 
                 <div className="flex flex-col gap-5 px-10 py-10">
                     <Link className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-                        href="/login" //ruta a la que lleva
+                        href="/login"  to="/" //ruta a la que lleva 
                         ><PlusCircleIcon className="w-6" /> <span>REALIZAR NUEVO EVENTO</span> 
                     </Link>
 
                     <Link className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-                        href="/login" //ruta a la que lleva
+                        href="/login"  to="/" //ruta a la que lleva
                         ><PlusCircleIcon className="w-6" /> <span>INGRESAR DOCENTE</span>
                     </Link>
 
                     <Link className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-                        href="/login" //ruta a la que lleva
+                        href="/login"  to="/" //ruta a la que lleva
                         ><PlusCircleIcon className="w-6" /> <span>INGRESAR SECTOR</span>
                     </Link>
 
                     <Link className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-                        href="/login" //ruta a la que lleva
+                        href="/login"  to="/" //ruta a la que lleva
                         ><PlusCircleIcon className="w-6" /> <span >CREAR CURSO</span> 
                     </Link>
                 </div>

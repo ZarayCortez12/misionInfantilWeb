@@ -1,8 +1,9 @@
 import SideNav from '../../components/admin/sidenav';
 import TopNav from '../../components/admin/topnav';
- 
+
 function Layout({ children }) {
   return (
+    
     <div className=" flex-col min-h-screen md:flex-row bg md:overflow-hidden">
         <div className="flex h-20 w-full items-center justify-end bg-custom-blue1 hidden md:block">
             <TopNav></TopNav>
