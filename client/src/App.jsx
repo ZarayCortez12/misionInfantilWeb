@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { AuthProvider } from "./context/AuthContext"
-
 import RegisterDocentePage from "./pages/RegisterDocentePage"
 import LoginPage from "./pages/LoginPage"
 import HomePage from "./pages/HomePage"
@@ -19,43 +18,19 @@ function App() {
         <BrowserRouter>
           <main className="">
             <Routes>
-              <Route>
-                <Route path='/'  element={<HomePage/>} />
-                <Route path='/login'  element={<LoginPage/>} />
-                <Route path='/registerDocente'  element={<RegisterDocentePage/>} />
-              </Route>
-              
-              <Route element={<ProtectedRoute/>}>
-                <Route path='/welcomeAdmin'  
-                  element={
-                    <>
-                    <Layout>
-                      <WelcomePage></WelcomePage>
-                    </Layout>
+              <Route path='/' element={<HomePage />} />
+              <Route path='/login' element={<LoginPage />} />
 
-                    </>
-                    } 
-                    />
-              </Route>
-
-              <Route element={<ProtectedRoute/>}>
-                <Route path='/sectores'  
-                  element={
-                    <>
-                    <SectorPage/>
-                    </>
-                    } 
-                    />
-                <Route path='/add-sector'  element={<RegisterSectorPage/>} />
-                <Route path='/sectores/:id'  element={<RegisterSectorPage/>} />
-              </Route>
-
+              <Route path='/welcome/ADMINISTRADOR' element={<Layout><WelcomePage /></Layout>} />
+              <Route path='/registerDocente' element={<Layout><RegisterDocentePage /></Layout>} />
+              <Route path='/sectores' element={<SectorPage />} />
+              <Route path='/add-sector' element={<RegisterSectorPage />} />
+              <Route path='/sectores/:id' element={<RegisterSectorPage />} />
             </Routes>
           </main>
         </BrowserRouter>
       </SectorProvider>
     </AuthProvider>
-  )
+  );
 }
-
 export default App 

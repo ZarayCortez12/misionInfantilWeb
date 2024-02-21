@@ -11,7 +11,7 @@ import { Link } from "react-router-dom"
 import "../components/styles/LoginStyle.css"
 
 function LoginPage() {
-
+ 
     const {
         register, 
         handleSubmit,
@@ -20,27 +20,30 @@ function LoginPage() {
 
     const {signin, errors: signinErrors, isAuthenticated } = useAuth();
     const navigate = useNavigate();
-    const onSubmit = handleSubmit((data) => {
-        console.log("estos son los datos obtenidos del formulario",data);
-        // Agrega el tipo de usuario al objeto data
-        signin(data);
+    const onSubmit = handleSubmit(async (data) => {
+        try {
+            console.log("informacion.",data)
+            const userData = await signin(data);
+            console.log(userData);
+    
+            navigate(`/welcome/${userData.rol}`);
+    
+        } catch (error) {
+            console.error("Error al iniciar sesión:", error);
+        }
     });
     
-
-    useEffect(() => {
-        if (isAuthenticated) navigate("/sectores");
-    }, [isAuthenticated])
 
     return (
         <div className='flex h-[calc(100vh-100px)] items-center justify-center space-x-20'>
 
             <div className="relative">
                 
-                <div className="bg-yellow-700 h-16 fixed top-0 w-full z-10 flex items-center justify-start right-0 m-0 p-0">
-                    
-                    <Link to='/'><FaArrowAltCircleLeft className="text-white ml-4 cursor-pointer top-0 z-20 w-8 h-8"/></Link>
-                    
-                </div>
+            <div className="bg-yellow-700 h-16 fixed top-0 w-full z-10 flex items-center justify-start right-0 m-0 p-0">
+                <Link to='/'>
+                    <FaArrowAltCircleLeft className="text-white ml-4 cursor-pointer top-0 z-20 w-8 h-8 hover:text-custom-blue1" />
+                </Link>
+            </div>
             
             </div>
             
@@ -88,12 +91,12 @@ function LoginPage() {
                         </div>
                         <input 
                             type="password" 
-                            {...register("contraseña", { required: true })}
+                            {...register("clave", { required: true })}
                             className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
                             placeholder="Contraseña"
                         ></input>
                     </div>
-                    {errors.contraseña && (
+                    {errors.clave && (
                         <p className="text-red-500">Contraseña is required</p>
                     )}
                     <br></br>
@@ -107,6 +110,7 @@ function LoginPage() {
                             <div className='flex flex-col items-center mb-4'>
                             <MdAdminPanelSettings className='text-4xl text-white' />
                             <label htmlFor='administrador' className='text-xs text-white'>ADMINISTRADOR</label>
+                            <br></br>
                             <input
                                 type="radio"
                                 id="eadministrador"
@@ -122,6 +126,7 @@ function LoginPage() {
                             <div className='flex flex-col items-center mb-4'>
                             <FaChalkboardTeacher className='text-4xl text-white' />
                             <label htmlFor='docente' className='text-xs text-white'>DOCENTE</label>
+                            <br></br>
                             <input
                                 type="radio"
                                 id="docente"
@@ -137,6 +142,7 @@ function LoginPage() {
                             <div className='flex flex-col items-center mb-4'>
                             <PiStudent className='text-4xl text-white' />
                             <label htmlFor='estudiante' className='text-xs text-white'>ESTUDIANTE</label>
+                            <br></br>
                             <input
                                 type="radio"
                                 id="estudiante"
@@ -165,11 +171,9 @@ function LoginPage() {
                         <input 
                             type="submit" 
                             value="Ingresar"
-                            className="bg-white text-blue-800 px-4 py-2 rounded-md"
+                            className="bg-white text-blue-600 px-4 py-2 rounded-md transition duration-300 ease-in-out hover:bg-custom-brown1 hover:text-white"
                         />
                     </div>
-
-
                 </form>
             </div>
 

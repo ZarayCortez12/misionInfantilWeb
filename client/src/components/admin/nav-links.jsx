@@ -7,7 +7,7 @@ import clsx from 'clsx';
 
 const links = [
   { name: 'INICIO', 
-    href: '/admin', 
+    href: '/welcome/ADMINISTRADOR',
     icon: HandRaisedIcon },
   {
     name: 'DOCENTES',
