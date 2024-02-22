@@ -8,7 +8,7 @@ function Layout({ children }) {
             <TopNav></TopNav>
         </div>
 
-        <div className='flex flex-col md:flex-row'>
+        <div className='flex flex-col md:flex-row h-screen'>
             <div className="flex-none w-full md:w-64">
                 <SideNav></SideNav>
             </div>

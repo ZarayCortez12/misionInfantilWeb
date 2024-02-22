@@ -1,6 +1,18 @@
 import axios from "./axios"
 
-export const registerRequest =  (user) => axios.post(`/registerDocente`, user)
+export const registerRequest = async (user) => {
+    const form = new FormData();
+
+    for(let key in user){
+        form.append(key, user[key]);
+    }
+
+    return await axios.post(`/registerDocente`, form, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
 
 export const loginRequest = (user) => axios.post(`/login`, user);
 

@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
         type: String, 
         require: true,
     },
-    contraseña: {
+    clave: {
         type: String,
         require: true, 
     },
@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema({
         require: true, 
         unique: true,
     },
+    image: {
+        url: String,
+        public_id: String
+    }
 }, {
     timestamps: true
 })
