@@ -2,7 +2,7 @@
 
 import { HandRaisedIcon, UserIcon, AcademicCapIcon, BookOpenIcon, GlobeAmericasIcon, CalendarIcon} from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import clsx from 'clsx';
 
 const links = [
