@@ -94,7 +94,7 @@ function RegisterDocentePage() {
                                 telefono: Yup.string().required("Telefono is Required"),
                                 correo: Yup.string().email('Formato de correo no válido').required('Correo es obligatorio'),
                                 clave: Yup.string().required("Contraseña is Required"),
-                                //image: Yup.mixed().required("The image required"),
+                                image: Yup.mixed().required("The image required"),
                             })}
                             onSubmit={async (values, actions) => {
                                 console.log("informacion del formulario", values)
