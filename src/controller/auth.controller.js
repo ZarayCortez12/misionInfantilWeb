@@ -32,13 +32,12 @@ export const registerDocente =  async (req, res) => {
             apellido: userSave.apellido
         });
     } catch (error) {
-        console.error("Error:", error); 
         res.status(500).json({ message: error.message });
     } 
 }
 
 export const login =  async (req, res) => {
-    const { correo, contraseña, option} = req.body
+    const { correo, clave, option} = req.body
     console.log(option)
     try {
         if (option !== "ESTUDIANTE"){
@@ -51,7 +50,7 @@ export const login =  async (req, res) => {
         const userFound = await User.findOne({ correo });
         if(!userFound) return res.status(400).json({ message: "Usuario no registrado en el sistema"});
         if (userFound.rol !== option) return res.status(400).json({ message: `${option} no registrado en el sistema` });
-        const isMath = await bcrypt.compare(contraseña, userFound.contraseña) 
+        const isMath = await bcrypt.compare(clave, userFound.clave) 
         if(!isMath) return res.status(400).json({ message: "Contraseña Incorrecta"});
         const token = await createAccessToken({ id: userFound._id });
         res.cookie('token', token);
@@ -61,6 +60,7 @@ export const login =  async (req, res) => {
             apellido: userFound.apellido
         });
     } catch (error) {
+        console.error("Error:", error); 
         res.status(500).json({ message: error.message });
     } 
 }

@@ -88,7 +88,7 @@ function LoginPage() {
                         </div>
                         <input 
                             type="password" 
-                            {...register("contraseña", { required: true })}
+                            {...register("clave", { required: true })}
                             className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
                             placeholder="Contraseña"
                         ></input>

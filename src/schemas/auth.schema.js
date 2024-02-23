@@ -31,7 +31,7 @@ export const loginSchema = z.object({
     .string({
         require_error: "Correo is required"
     }),
-    contraseña: z.string({
+    clave: z.string({
         required_error: "Contraseña is required"
     }),
 });
