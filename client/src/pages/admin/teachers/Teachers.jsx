@@ -1,28 +1,20 @@
 import React, { useState } from 'react';
+import { useAuth } from "../../../context/AuthContext";
+import { useEffect } from 'react';
+import AuthCard from '../../../components/AuthCard'
 
 function Teachers() {
-  const teachers = [
-    { id: 1, firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com', phone: 'Matemáticas' },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com', phone: 'Ciencias' },
-    { id: 3, firstName: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com', phone: 'Ciencias' },
-    { id: 4, firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com', phone: 'Matemáticas' },
-    { id: 5, firstName: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com', phone: 'Ciencias' },
-    // Otros maestros...
-  ];
 
-  return (
-    <div>
-      <h1 className="mt-5 mb-10 text-center text-2xl font-semibold md:text-3xl">Docentes Registrados</h1>
-      <TeacherTable teachers={teachers} />
-    </div>
-  );
-}
+  const { getUsuarios, usuarios } = useAuth();
 
-function TeacherTable({ teachers }) {
+  useEffect(() => {
+    getUsuarios()
+  }, [])
+
   const [selectedTeachers, setSelectedTeachers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
 
-  /*Lleva un control de las casillas se han seleccionado*/
+  //Lleva un control de las casillas se han seleccionado
   const handleCheckboxChange = (teacherId) => {
     if (selectedTeachers.includes(teacherId)) {
       setSelectedTeachers(selectedTeachers.filter(id => id !== teacherId));
@@ -31,7 +23,7 @@ function TeacherTable({ teachers }) {
     }
   };
 
-  /*Permite seleccionar todas las casillas*/
+  //Permite seleccionar todas las casillas
   const selectAllChange = () => {
     if (selectAll) {
       setSelectedTeachers([]);
@@ -52,9 +44,8 @@ function TeacherTable({ teachers }) {
         )}
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border-collapse">
-          <thead /*Encabezado de la tabla*/ >
+      <table>
+      <thead /*Encabezado de la tabla*/ >
             <tr className="items-center justify-center text-left py-3 px-4 uppercase font-semibold text-sm bg-gray-100 border-b">
               <th className='px-4 py-3'>
                 <input
@@ -70,6 +61,26 @@ function TeacherTable({ teachers }) {
               <th className='px-3'>Telefono</th>
             </tr>
           </thead>
+
+      {usuarios.map(usuario => (
+        <TeacherTable teachers={usuario} key={usuario._id} />
+      ))}
+      </table>
+
+      {/*<h1 className="mt-4 mb-10 text-center text-2xl font-semibold md:text-3xl">Docentes Registrados</h1>
+      <TeacherTable teachers={teachers} />*/}
+    </div>
+  );
+}
+
+function TeacherTable({ teachers }) {
+
+  return (
+    <div>
+      
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border-collapse">
           <tbody>
             {teachers.map((teacher, index) => (
               <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>

@@ -14,7 +14,7 @@ export default function SideNav() {
         <div className="flex grow flex-row p-3 space-x-2 md:flex-col md:space-x-0 md:space-y-2">
             <NavLinks />
             <TopLinks />
-            <div className="flex h-auto w-full grow rounded-md hidden md:block"></div>
+            <div className="flex grow h-auto w-full rounded-md hidden md:block"></div>
         </div>
     </div>
   );

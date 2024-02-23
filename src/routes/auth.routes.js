@@ -5,6 +5,7 @@ import {
     logout, 
     profile,
     verifyToken,
+    getUsuarios,
 
 } from "../controller/auth.controller.js"
 
@@ -23,5 +24,7 @@ router.post('/logout', logout)
 router.get('/verify', verifyToken)
 
 router.get('/profile', authRequired, profile)
+
+router.get('/usuarios', getUsuarios)
 
 export default router;

@@ -33,7 +33,7 @@ function LoginPage() {
 
     return (
         <div className='flex h-[calc(100vh-100px)] items-center justify-center space-x-20'>
-
+            
             <div className="relative">
                 
                 <div className="bg-yellow-700 h-16 fixed top-0 w-full z-10 flex items-center justify-start right-0 m-0 p-0">
@@ -86,6 +86,7 @@ function LoginPage() {
                         <div className="text-white mr-2">
                             <TbLock className='w-6 h-6'/>
                         </div>
+
                         <input 
                             type="password" 
                             {...register("contraseña", { required: true })}
@@ -106,17 +107,17 @@ function LoginPage() {
 
                             <div className='flex flex-col items-center mb-4'>
                             <MdAdminPanelSettings className='text-4xl text-white' />
-                            <label htmlFor='administrador' className='text-xs text-white'>ADMINISTRADOR</label>
                             <input
                                 type="radio"
-                                id="eadministrador"
+                                id="administrador"
                                 name="option"
                                 value="ADMINISTRADOR"
                                 {...register('option', {
                                     required: true,
                                     minLength: 1,
                                 })}
-                            />                            
+                            />      
+                            <label htmlFor='administrador' className='text-xs text-white'>ADMINISTRADOR</label>                      
                             </div>
 
                             <div className='flex flex-col items-center mb-4'>

@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useSectores } from "../context/SectorContext"
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react';
+
 function RegisterSectorPage() {
 
     const  {register, handleSubmit, setValue} = useForm();

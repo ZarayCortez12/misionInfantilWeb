@@ -17,10 +17,6 @@ function RegisterDocentePage() {
     const { signup, isAuthenticated, errors: registerErrors } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (isAuthenticated) navigate('/sectores');
-    }, [isAuthenticated]);
-
     const onSubmit = handleSubmit( async (values) => {
         signup(values);
         console.log(values);

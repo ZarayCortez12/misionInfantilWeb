@@ -4,13 +4,16 @@ import { createAccessToken } from '../libs/jwt.js'
 import jwt from 'jsonwebtoken'
 import { TOKEN_SECRET } from '../config.js'
 
+
 export const registerDocente =  async (req, res) => {
-    const { identificacion, nombre, apellido, correo, telefono, contraseña } = req.body
     try {
-
+        const { identificacion, nombre, apellido, correo, telefono, contraseña } = req.body
+        
         const userFound = await User.findOne({correo})
-        if (userFound) return res.status(400).json(["the email is already in use"]);
-
+        const userFound2 = await User.findOne({ identificacion })
+        if (userFound2) return res.status(400).json(["Usuario ya registrado en el sistema"]);
+        if (userFound) return res.status(400).json(["Usuario ya registrado en el sistema"]);
+        
         const passwordHash = await bcrypt.hash(contraseña, 10)
         const newUser = new User({
             identificacion,
@@ -38,7 +41,7 @@ export const registerDocente =  async (req, res) => {
 }
 
 export const login =  async (req, res) => {
-    const { correo, contraseña, option} = req.body
+    const { correo, contraseña, option } = req.body
     console.log(option)
     try {
         if (option !== "ESTUDIANTE"){
@@ -58,7 +61,8 @@ export const login =  async (req, res) => {
         res.json({
             id: userFound._id,
             nombre: userFound.nombre,
-            apellido: userFound.apellido
+            apellido: userFound.apellido,
+            rol: userFound.rol
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -82,6 +86,7 @@ export const profile = async (req, res) => {
         id: userFound._id,
         nombre: userFound.nombre,
         apellido: userFound.apellido,
+        rol: userFound.rol,
     })
 }
 
@@ -100,6 +105,16 @@ export const verifyToken = async (req, res) => {
             id: userFound._id,
             nombre: userFound.nombre,
             apellido: userFound.apellido,
+            rol: userFound.rol,
         });
     });
-};
+}
+
+export const getUsuarios = async (req, res) => {
+    try {
+     const usuarios = await User.find()
+     res.json(usuarios)
+    } catch (error) {
+     return res.status(404).json({ message: "Usuario no Encontrado"})
+    }
+ };

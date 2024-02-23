@@ -38,7 +38,7 @@ function App() {
               <Route path='/indexAdmin/students' element={<Layout> <Students/> </Layout>}/>              
               <Route path='/indexAdmin/teachers' element={<Layout> <Teachers/> </Layout>}/>              
 
-              <Route element={<ProtectedRoute/>}>
+              
                 <Route path='/sectores'  
                   element={
                     <>
@@ -48,7 +48,7 @@ function App() {
                     />
                 <Route path='/add-sector'  element={<RegisterSectorPage/>} />
                 <Route path='/sectores/:id'  element={<RegisterSectorPage/>} />
-              </Route>
+              
 
             </Routes>
           </main>
