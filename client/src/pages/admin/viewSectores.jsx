@@ -1,13 +1,28 @@
 import React from 'react';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
-import { Link } from 'react-router-dom';
 
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineEdit } from "react-icons/md";
 import { FaRegEye } from "react-icons/fa";
 
+import react, { useState, useEffect } from 'react';
 
  function viewSectores() {
+  const [sectores, setSectores] = useState([]);
+
+  useEffect(() => {
+      fetchSectores();
+  }, []);
+
+  const fetchSectores = async () => {
+      try {
+          const response = await fetch('/api/sectores'); // Ruta de tu API para obtener sectores
+          const data = await response.json();
+          setSectores(data);
+      } catch (error) {
+          console.error('Error al obtener sectores:', error);
+      }
+  };
 
     return(
         <div className='mt-2 flex grow flex-col gap-4 md:flex-row'>
@@ -33,74 +48,25 @@ import { FaRegEye } from "react-icons/fa";
                   </tr>
                  </thead>
                  <tbody>
-                   <tr className=''>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <input type='checkbox'/>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                   </tr>
-                   <tr className=''> 
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <input type='checkbox'/>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                   </tr>
-                   <tr>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <input type='checkbox'/>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                   </tr>
-                   <tr>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <input type='checkbox'/>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                    <td className='p-3 text-sm text-gray-700 '>
-                    <h1>pepito</h1>
-                    </td>
-                   </tr>
+                 {sectores.map((sector, index) => (
+                            <tr key={index}>
+                                <td className='p-3 text-sm text-gray-700 '>
+                                    <input type='checkbox' />
+                                </td>
+                                <td className='p-3 text-sm text-gray-700 '>
+                                    <h1>{sector.numero}</h1>
+                                </td>
+                                <td className='p-3 text-sm text-gray-700 '>
+                                    <h1>{sector.nombre}</h1>
+                                </td>
+                                <td className='p-3 text-sm text-gray-700 '>
+                                    <h1>{sector.barrio}</h1>
+                                </td>
+                                <td className='p-3 text-sm text-gray-700 '>
+                                    <h1>{sector.direccion}</h1>
+                                </td>
+                            </tr>
+                        ))}
 
                  </tbody>
 
