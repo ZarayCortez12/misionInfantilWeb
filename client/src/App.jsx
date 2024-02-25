@@ -11,7 +11,6 @@ import { SectorProvider } from "./context/SectorContext"
 import Navbar from "./components/Navbar"
 import WelcomePage from "./pages/admin/WelcomePage"
 import Layout from "./pages/admin/Layout"
-import ViewSectores from "./pages/admin/viewSectores"
 
 function App() {
   return (
@@ -42,15 +41,14 @@ function App() {
               <Route element={<ProtectedRoute/>}>
                 <Route path='/sectores'  
                   element={
-                    <>
+                    <Layout>
                     <SectorPage/>
-                    </>
+                    </Layout>
                     } 
                     />
                 <Route path='/add-sector'  element={<RegisterSectorPage/>} />
                 <Route path='/sectores/:id'  element={<RegisterSectorPage/>} />
               </Route>
-              <Route path='/viewSector'  element={<Layout> <ViewSectores/> </Layout>} /> 
             </Routes>
           </main>
         </BrowserRouter>
