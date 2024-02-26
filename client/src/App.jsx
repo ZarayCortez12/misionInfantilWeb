@@ -24,8 +24,6 @@ function App() {
               <Route path='/welcome/ADMINISTRADOR' element={<Layout><WelcomePage /></Layout>} />
               <Route path='/registerDocente' element={<Layout><RegisterDocentePage /></Layout>} />
               <Route path='/sectores' element={<SectorPage />} />
-              <Route path='/add-sector' element={<Layout><RegisterSectorPage /></Layout>} />
-              <Route path='/sectores/:id' element={<Layout><RegisterSectorPage /></Layout>} />
             </Routes>
           </main>
         </BrowserRouter>
