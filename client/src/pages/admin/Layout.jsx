@@ -3,7 +3,6 @@ import TopNav from '../../components/admin/topnav';
 
 function Layout({ children }) {
   return (
-    
     <div className=" flex-col min-h-screen md:flex-row bg md:overflow-hidden">
         <div className="flex h-20 w-full items-center justify-end bg-custom-blue1 hidden md:block">
             <TopNav></TopNav>
@@ -13,7 +12,7 @@ function Layout({ children }) {
             <div className="flex-none w-full md:w-56">
                 <SideNav></SideNav>
             </div>
-            <div className="flex-grow p-6 md:overflow-y-auto md:p-12">
+            <div className="flex-grow px-5 my-5 y-screen md:overflow-y-auto">
                 {children}
             </div>
         </div>

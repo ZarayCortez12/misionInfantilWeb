@@ -112,9 +112,9 @@ export const verifyToken = async (req, res) => {
 
 export const getUsuarios = async (req, res) => {
     try {
-     const usuarios = await User.find()
-     res.json(usuarios)
+        const usuarios = await User.find()
+        res.json(usuarios)
     } catch (error) {
-     return res.status(404).json({ message: "Usuario no Encontrado"})
+        return res.status(404).json({ message: "Usuario no Encontrado"})
     }
  };

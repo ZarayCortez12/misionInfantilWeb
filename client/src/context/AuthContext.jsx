@@ -61,6 +61,19 @@ export const AuthProvider = ({ children }) => {
         }  
     }
 
+    
+    const getTeachers = async () => {
+        try {
+            const res = await getUsuariosRequest();
+            const teachers = res.data.filter(usuario => usuario.rol === "DOCENTE");
+            
+            setUsuarios(teachers);
+        } catch (error) {
+            console.error("Error al obtener los profesores:", error);
+            return [];
+        }
+    }
+
     useEffect(() => {
         if (errors.length > 0) {
             const timer = setTimeout(() => {
@@ -108,6 +121,7 @@ export const AuthProvider = ({ children }) => {
                 signin,
                 logout,
                 getUsuarios,
+                getTeachers,
                 loading,
                 user,
                 isAuthenticated,

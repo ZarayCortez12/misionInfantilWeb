@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function IndexAdmin() {
     return(
-        <div className='flex flex-col gap-3 md:flex-row'>
+        <div className='flex flex-col max-h-screen gap-3 md:flex-row mt-5'>
             {/*Bienvenida*/}
             <div className="flex flex-col gap-4 px-5 mt-4 md:mt-0 md:w-100 md:px-10">
                 <p className="py-3 text-xl md:text-2xl font-semibold">¡Hola!</p>
@@ -34,7 +34,7 @@ function IndexAdmin() {
             </div>
             
             {/*Versiculo de bienvenida*/}
-            <div className="flex flex-col gap-3 ml-3 mr-3 mt-5 py-8 md:mt-0 md:ml-0 md:mr-0">
+            <div className="flex flex-col gap-3 ml-3 mr-3 mt-5 py-8 md:mt-0 md:ml-0 md:mr-5">
                 <p className="text-custom-brown2 text-xl text-center">
                 VERSICULO DEL DIA
                 </p>
