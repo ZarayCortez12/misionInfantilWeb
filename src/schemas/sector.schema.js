@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const createSectorSchema = z.object({
     numero: z.string({
-        required_error: "numero is required"
+        required_error: "Numero is required"
     }),
     nombre: z.string({
         required_error: "Nombre is required"

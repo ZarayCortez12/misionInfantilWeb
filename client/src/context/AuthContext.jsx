@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { registerRequest, loginRequest, verifyTokenRequet } from "../api/auth.js";
+import { registerRequest, loginRequest, verifyTokenRequet, getUsuariosRequest } from "../api/auth";
 import Cookies from 'js-cookie'
 
-export const AuthContext = createContext()
+const AuthContext = createContext()
 
 export const useAuth = () =>{
     const context = useContext(AuthContext);
@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [usuarios, setUsuarios ] = useState([]);
 
     const signup = async (user) => {
         try {
@@ -52,6 +53,28 @@ export const AuthProvider = ({ children }) => {
         Cookies.remove("token");
         setIsAuthenticated(false);
         setUser(null);
+    }
+
+    const getUsuarios = async () => {
+        try {
+            const res = await getUsuariosRequest()
+            setUsuarios(res.data);
+        } catch (error) {
+            console.error(error);
+        }  
+    }
+
+    
+    const getTeachers = async () => {
+        try {
+            const res = await getUsuariosRequest();
+            const teachers = res.data.filter(usuario => usuario.rol === "DOCENTE");
+            
+            setUsuarios(teachers);
+        } catch (error) {
+            console.error("Error al obtener los profesores:", error);
+            return [];
+        }
     }
 
     useEffect(() => {
@@ -96,9 +119,12 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider 
             value={{
+                usuarios,
                 signup,
                 signin,
                 logout,
+                getUsuarios,
+                getTeachers,
                 loading,
                 user,
                 isAuthenticated,

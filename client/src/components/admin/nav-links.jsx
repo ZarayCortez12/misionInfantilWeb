@@ -7,31 +7,32 @@ import clsx from 'clsx';
 
 const links = [
   { name: 'INICIO', 
+<<<<<<< HEAD
     href: '/welcome/ADMINISTRADOR',
+=======
+    to: "/indexAdmin" , 
+>>>>>>> RamaAngie
     icon: HandRaisedIcon },
   {
     name: 'DOCENTES',
-    href: '/admin/teachers',
-    icon: UserIcon,
-  },
-  { name: 'ESTUDIANTES', 
-    href: '/admin/students', 
+    to: "/indexAdmin/Teachers",
+    icon: UserIcon },
+  {
+    name: 'ESTUDIANTES', 
+    to: "/indexAdmin/Students", 
     icon: AcademicCapIcon },
   {
     name: 'CURSOS',
-    href: '/admin/courses',
-    icon: BookOpenIcon,
-  },
+    to: "/indexAdmin/Courses",
+    icon: BookOpenIcon },
   {
     name: 'SECTORES',
-    href: '/admin/sectors',
-    icon: GlobeAmericasIcon,
-  },
+    to: "/indexAdmin/Sectors",
+    icon: GlobeAmericasIcon },
   {
     name: 'EVENTOS',
-    href: '/admin/events',
-    icon: CalendarIcon,
-  },
+    to: "/indexAdmin/Events",
+    icon: CalendarIcon }
 ];
 
 export default function NavLinks() {
@@ -43,11 +44,11 @@ export default function NavLinks() {
         return (
           <Link
             key={link.name}
-            href={link.href}
+            to={link.to}
             className={clsx(
-              'flex h-[48px] gap-3 grow items-center justify-center rounded-md bg-custom-blue1 p-3 text-sm text-white font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
+              'flex h-[48px] gap-3 grow items-center justify-center rounded-md bg-custom-blue1 p-3 text-sm text-white font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-7',
               {
-                'bg-custom-blue2 text-white': pathname === link.href,
+                'bg-custom-blue2 text-white': pathname === link.to,
               },
             )}
           >

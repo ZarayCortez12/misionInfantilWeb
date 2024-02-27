@@ -8,11 +8,16 @@ import { useAuth } from '../../context/AuthContext';
 
 const links = [
   { name: '', 
-    href: '/admin/notificaciones', 
+    to: '/indexAdmin/Notifications', 
     icon: BellIcon },
   {
+<<<<<<< HEAD
     name: 'salida',
     href: '/',
+=======
+    name: '',
+    to: '/',
+>>>>>>> RamaAngie
     icon: ArrowRightStartOnRectangleIcon,
   },
 ];
@@ -22,8 +27,24 @@ export default function TopLinks() {
   const { logout } = useAuth();
   return (
     <>
+<<<<<<< HEAD
     {links.map((link) => {
       const LinkIcon = link.icon;
+=======
+      {links.map((link) => {
+        const LinkIcon = link.icon;
+        return (
+          <Link
+            key={link.name}
+            to={link.to}    
+            className={clsx(
+              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-custom-blue1 p-3 text-sm text-white font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 md:hidden',
+              {
+                'bg-custom-blue2 text-white': pathname === link.to,
+              },
+            )}
+           >
+>>>>>>> RamaAngie
 
       return (
         <Link

@@ -7,10 +7,15 @@ import SectorPage from "./pages/SectorPage"
 import RegisterSectorPage from "./pages/RegisterSectorPage"
 import ProtectedRoute from "./ProtectedRoute"
 import { SectorProvider } from "./context/SectorContext"
-import Navbar from "./components/Navbar"
-import WelcomePage from "./pages/admin/WelcomePage"
+import IndexAdmin from "./pages/admin/IndexAdmin"
 import Layout from "./pages/admin/Layout"
 import ViewSectores from "./pages/admin/viewSectores"
+import Courses from "./pages/admin/courses/Courses"
+import Events from "./pages/admin/events/Events"
+import Notifications from "./pages/admin/notifications/Notifications"
+import Sectors from "./pages/admin/sectors/Sectors"
+import Students from "./pages/admin/students/Students"
+import Teachers from "./pages/admin/teachers/Teachers"
 
 function App() {
   return (
@@ -25,20 +30,15 @@ function App() {
                 <Route path='/registerDocente'  element={<RegisterDocentePage/>} />
               </Route>
               
-              <Route element={<ProtectedRoute/>}>
-                <Route path='/welcomeAdmin'  
-                  element={
-                    <>
-                    <Layout>
-                      <WelcomePage></WelcomePage>
-                    </Layout>
+              <Route path='/indexAdmin' element={<Layout> <IndexAdmin/> </Layout>}/>           
+              <Route path='/indexAdmin/courses' element={<Layout> <Courses/> </Layout>}/>              
+              <Route path='/indexAdmin/events' element={<Layout> <Events/> </Layout>}/>       
+              <Route path='/indexAdmin/notifications' element={<Layout> <Notifications/> </Layout>}/>         
+              <Route path='/indexAdmin/sectors' element={<Layout> <Sectors/> </Layout>}/>             
+              <Route path='/indexAdmin/students' element={<Layout> <Students/> </Layout>}/>              
+              <Route path='/indexAdmin/teachers' element={<Layout> <Teachers/> </Layout>}/>              
 
-                    </>
-                    } 
-                    />
-              </Route>
-
-              <Route element={<ProtectedRoute/>}>
+              
                 <Route path='/sectores'  
                   element={
                     <>
@@ -48,8 +48,8 @@ function App() {
                     />
                 <Route path='/add-sector'  element={<RegisterSectorPage/>} />
                 <Route path='/sectores/:id'  element={<RegisterSectorPage/>} />
-              </Route>
-              <Route path='/viewSector'  element={<Layout> <ViewSectores/> </Layout>} /> 
+              
+
             </Routes>
           </main>
         </BrowserRouter>

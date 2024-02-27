@@ -67,6 +67,10 @@ function RegisterDocentePage() {
         setShowModal(false);
         navigate("/welcome/ADMINISTRADOR");
     };
+    const onSubmit = handleSubmit( async (values) => {
+        signup(values);
+        console.log(values);
+    });
 
     return (
             <div className="flex flex-col items-center justify-center mt-0">

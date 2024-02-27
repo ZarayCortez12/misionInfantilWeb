@@ -6,6 +6,7 @@ import { TOKEN_SECRET } from '../config.js'
 import { uploadImage } from '../libs/cloudinary.js'
 import fs from 'fs-extra'
 
+
 export const registerDocente =  async (req, res) => {
     try {
 
@@ -121,4 +122,13 @@ export const verifyToken = async (req, res) => {
             rol: userFound.rol,
         });
     });
-};
+}
+
+export const getUsuarios = async (req, res) => {
+    try {
+        const usuarios = await User.find()
+        res.json(usuarios)
+    } catch (error) {
+        return res.status(404).json({ message: "Usuario no Encontrado"})
+    }
+ };

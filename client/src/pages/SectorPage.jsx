@@ -11,10 +11,12 @@ function SectorPage() {
     }, [])
     
     return ( 
-        <div className="grid grid-cols-3 gap-2">
-            {sectores.map(sector => (
-                <SectorCard sector={sector} key={sector._id} />
-            ))}
+        <div>
+            <div className="grid grid-cols-3 gap-2">
+                {sectores.map(sector => (
+                    <SectorCard sector={sector} key={sector._id} />
+                ))}
+            </div>
         </div>
     );
 }
