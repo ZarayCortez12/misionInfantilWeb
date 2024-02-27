@@ -42,7 +42,7 @@ export const deleteSector = async (req, res) => {
     try {
         const sector  =  await Sector.findByIdAndDelete(req.params.id)
         if (!sector) return res.status(404).json({ message: "Sector not found"});
-        return res.sendStatus(204)
+        return res.sendStatus(204) 
     } catch (error) {
         return res.status(404).json({ message: "Sector no Encontrado"})
     }

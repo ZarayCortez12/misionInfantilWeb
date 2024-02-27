@@ -49,7 +49,6 @@ export const registerDocente =  async (req, res) => {
             apellido: userSave.apellido
         });
     } catch (error) {
-        console.error("Error:", error); 
         res.status(500).json({ message: error.message });
     } 
 }
@@ -79,6 +78,7 @@ export const login =  async (req, res) => {
             rol: userFound.rol
         });
     } catch (error) {
+        console.error("Error:", error); 
         res.status(500).json({ message: error.message });
     } 
 }

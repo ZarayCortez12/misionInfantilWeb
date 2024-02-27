@@ -9,6 +9,7 @@ import ProtectedRoute from "./ProtectedRoute"
 import { SectorProvider } from "./context/SectorContext"
 import IndexAdmin from "./pages/admin/IndexAdmin"
 import Layout from "./pages/admin/Layout"
+<<<<<<< HEAD
 import ViewSectores from "./pages/admin/viewSectores"
 import Courses from "./pages/admin/courses/Courses"
 import Events from "./pages/admin/events/Events"
@@ -16,6 +17,8 @@ import Notifications from "./pages/admin/notifications/Notifications"
 import Sectors from "./pages/admin/sectors/Sectors"
 import Students from "./pages/admin/students/Students"
 import Teachers from "./pages/admin/teachers/Teachers"
+=======
+>>>>>>> RamaCarlos2
 
 function App() {
   return (
@@ -41,9 +44,9 @@ function App() {
               
                 <Route path='/sectores'  
                   element={
-                    <>
+                    <Layout>
                     <SectorPage/>
-                    </>
+                    </Layout>
                     } 
                     />
                 <Route path='/add-sector'  element={<RegisterSectorPage/>} />
