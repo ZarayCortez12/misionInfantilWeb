@@ -30,7 +30,7 @@ function IndexAdmin() {
       }
 
     return(
-        <div className='flex flex-col max-h-screen gap-3 md:flex-row mt-5'>
+        <div style={{ marginTop: '4.5rem' }} className='flex flex-col max-h-screen gap-3 md:flex-row'>
             {/*Bienvenida*/}
             <div className="flex flex-col gap-4 px-5 mt-4 md:mt-0 md:w-100 md:px-10">
                 <p className="py-3 text-xl md:text-2xl font-semibold">¡Hola!</p>

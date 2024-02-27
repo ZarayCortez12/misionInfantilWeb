@@ -75,7 +75,8 @@ export const login =  async (req, res) => {
             id: userFound._id,
             nombre: userFound.nombre,
             apellido: userFound.apellido,
-            rol: userFound.rol
+            rol: userFound.rol,
+            image: userFound.image
         });
     } catch (error) {
         console.error("Error:", error); 

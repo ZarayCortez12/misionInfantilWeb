@@ -26,7 +26,7 @@ function LoginPage() {
             const userData = await signin(data);
             console.log(userData);
     
-            navigate(`/welcome/${userData.rol}`);
+            navigate(`/${userData.rol}`);
     
         } catch (error) {
             console.error("Error al iniciar sesión:", error);
@@ -110,6 +110,8 @@ function LoginPage() {
 
                             <div className='flex flex-col items-center mb-4'>
                             <MdAdminPanelSettings className='text-4xl text-white' />
+                            <label htmlFor='administrador' className='text-xs text-white'>ADMINISTRADOR</label>     
+                            <br />
                             <input
                                 type="radio"
                                 id="administrador"
@@ -119,8 +121,7 @@ function LoginPage() {
                                     required: true,
                                     minLength: 1,
                                 })}
-                            />      
-                            <label htmlFor='administrador' className='text-xs text-white'>ADMINISTRADOR</label>                      
+                            />                       
                             </div>
 
                             <div className='flex flex-col items-center mb-4'>

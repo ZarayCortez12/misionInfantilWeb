@@ -1,4 +1,4 @@
-import { useSectores } from "../context/SectorContext"
+import { useSectores } from "../../../context/SectorContext"
 import { useEffect } from "react";
 import React, { useState } from 'react';
 
@@ -18,16 +18,6 @@ function SectorPage() {
     useEffect(() => {
         getSectores()
     }, [])
-<<<<<<< HEAD
-    
-    return ( 
-        <div>
-            <div className="grid grid-cols-3 gap-2">
-                {sectores.map(sector => (
-                    <SectorCard sector={sector} key={sector._id} />
-                ))}
-            </div>
-=======
 
     const [selectedSectors, setSelectedSectors] = useState([]); // []
     const [showDiv, setShowDiv] = useState(false);
@@ -151,7 +141,6 @@ function SectorPage() {
                  <span className="carrois-gothicSC">Cancelar</span>
                </button>
              </div>
->>>>>>> RamaCarlos2
         </div>
     </div>)}
   </div>    
