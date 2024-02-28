@@ -42,14 +42,20 @@ function IndexAdmin() {
                         ><PlusCircleIcon className="w-6" /> <span>REALIZAR NUEVO EVENTO</span> 
                     </Link>
 
-                    <Link className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-                        href="/login"  to="/" //ruta a la que lleva
-                        ><PlusCircleIcon className="w-6" /> <span>INGRESAR DOCENTE</span>
+                    <Link
+                        className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
+                        to='/administrador/docentes/register'
+                    >
+                        <PlusCircleIcon className="w-6" />
+                        <span>INGRESAR DOCENTE</span>
                     </Link>
 
-                    <Link className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-                        href="/login"  to="/" //ruta a la que lleva
-                        ><PlusCircleIcon className="w-6" /> <span>INGRESAR SECTOR</span>
+                    <Link 
+                        className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
+                        to="/administrador/sectores/register" //ruta a la que lleva
+                    >
+                        <PlusCircleIcon className="w-6" /> 
+                        <span>INGRESAR SECTOR</span>
                     </Link>
 
                     <Link className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"

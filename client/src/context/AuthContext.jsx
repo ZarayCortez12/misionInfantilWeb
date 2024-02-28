@@ -21,15 +21,18 @@ export const AuthProvider = ({ children }) => {
 
     const signup = async (user) => {
         try {
-            const res = await registerRequest(user);
-            console.log(res.data);
-            setUser(res.data);
-            setIsAuthenticated(true);
+          const res = await registerRequest(user);
+          console.log(res.data);
+          setUser(res.data);
+          setIsAuthenticated(true);
+          setErrors([]);  // Limpiar los errores al tener éxito
+          return res.data;
         } catch (error) {
-            setErrors(error.response.data)
-            console.log(error);
+          setErrors(error.response.data);
+          console.error(error);
+          throw error.response.data.message || "Error en el registro.";
         }
-    }
+    };
 
     const signin = async (user) => {
         try {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form'
-import { useSectores } from "../context/SectorContext"
+import { useSectores } from "../../../context/SectorContext"
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react';
 import { IoIosSave } from "react-icons/io";
@@ -36,13 +36,14 @@ function RegisterSectorPage() {
         } else {  
           createSector(data);
         }
-        navigate('/sectores');
+        navigate('/administrador/sectores');
       });
     
       return (
         <div className='flex h-[calc(100vh-100px)] items-center justify-center space-x-20'>
 
             <div className='bg-blue-900 max-w-md w-full p-10 rounded-md items-center justify-center relative'>
+            <h1 className='text-2xl font-bold my-2 text-white text-center'>Agregar Sector</h1><br />
                 <form onSubmit={onSubmit}>
                     <label className='text-white'>Número de Sector:</label>
                     {params.id ? (

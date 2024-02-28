@@ -9,6 +9,7 @@ import { MdAdminPanelSettings, MdRemoveRedEye } from "react-icons/md";
 import { PiStudent } from "react-icons/pi";
 import { Link } from "react-router-dom"
 import "../components/styles/LoginStyle.css"
+import { useState } from 'react';
 
 function LoginPage() {
  
@@ -19,18 +20,22 @@ function LoginPage() {
     } = useForm();
 
     const {signin, errors: signinErrors, isAuthenticated } = useAuth();
+    const [ userDatas, setUserDatas ] = useState('');
     const navigate = useNavigate();
+
     const onSubmit = handleSubmit(async (data) => {
         try {
-            console.log("informacion.",data)
+            
             const userData = await signin(data);
-            console.log(userData);
+            setUserDatas(userData);
+            localStorage.setItem('user', JSON.stringify(userData));
     
             navigate(`/${userData.rol}`);
     
         } catch (error) {
             console.error("Error al iniciar sesión:", error);
         }
+
     });
     
 
@@ -58,12 +63,12 @@ function LoginPage() {
 
 
 
-            <div className=' contenedor bg-blue-900 max-w-md w-full p-10 rounded-md items-center justify-center relative'>
+            <div className='contenedor bg-blue-900 max-w-md w-full p-10 rounded-md items-center justify-center relative'>
                   
                 {signinErrors.map((error, i) => (
-                        <div className="bg-red-500 p-2 text-white text-center" key={i}>
-                            {error}
-                        </div>
+                    <div className="bg-red-500 p-2 text-white text-center" key={i}>
+                        {error}
+                    </div>
                 ))}
 
                 <h1 className='text-2xl font-bold my-2 text-white text-center'>Inicio de Sesión</h1>

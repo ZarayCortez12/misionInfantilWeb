@@ -7,10 +7,10 @@ import { HiIdentification } from "react-icons/hi2";
 import { MdEmail } from "react-icons/md";
 import { TbLock } from "react-icons/tb";
 import { IoIosSave } from "react-icons/io";
-import '../components/styles/RegisterDocente.css'
+import "../../../components/styles/RegisterDocente.css"
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from 'yup'
-import user from '../assets/user.png'
+import user from '../../../assets/user.png'
 
 const ModalContent = ({ closeModal }) => (
     <div className="bg-blue-600 p-4 rounded-md">
@@ -27,7 +27,8 @@ const ModalContent = ({ closeModal }) => (
         Cerrar
       </button>
     </div>
-  );
+);
+
 
 
 function RegisterDocentePage() {
@@ -44,6 +45,7 @@ function RegisterDocentePage() {
 
     const [selectedImage, setSelectedImage] = useState(user);
     const [showModal, setShowModal] = useState(false);
+    
 
     const handleImageClick = () => {
         inputRef.current.click();
@@ -65,19 +67,33 @@ function RegisterDocentePage() {
     
     const closeModal = () => {
         setShowModal(false);
-        navigate("/welcome/ADMINISTRADOR");
+        navigate(`/ADMINISTRADOR`);
     };
+    
     const onSubmit = handleSubmit( async (values) => {
-        signup(values);
-        console.log(values);
+        try {
+            
+            signup(values);
+            console.log(values);
+            setShowModal(true);
+    
+        } catch (error) {
+            console.error("Error al Registrar:", error);
+        }
+       
     });
 
     return (
             <div className="flex flex-col items-center justify-center mt-0">
                 <div>
+                
                 <h1 className='text-2xl font-bold my-2 text-blue-700 text-center'>Agregar Docente</h1>
                 <br></br>
-                    
+                {Array.isArray(registerErrors) && registerErrors.map((error, i) => (
+                        <div className="bg-red-500 p-2 text-white text-center" key={i}>
+                            {error}
+                        </div>
+                ))}  
                         <Formik 
                             initialValues={
                                 {
@@ -92,13 +108,13 @@ function RegisterDocentePage() {
                             }
                             enableReinitialize
                             validationSchema={Yup.object({
-                                identificacion: Yup.string().required("Identificacion is Required"),
-                                nombre: Yup.string().required("Nombre is Required"),
-                                apellido: Yup.string().required("Apellido is Required"),
-                                telefono: Yup.string().required("Telefono is Required"),
+                                identificacion: Yup.string().required("Identificación es requerido"),
+                                nombre: Yup.string().required("Nombre es requerido"),
+                                apellido: Yup.string().required("Apellido es requerido"),
+                                telefono: Yup.string().required("Telefono es requerido"),
                                 correo: Yup.string().email('Formato de correo no válido').required('Correo es obligatorio'),
-                                clave: Yup.string().required("Contraseña is Required"),
-                                image: Yup.mixed().required("The image required"),
+                                clave: Yup.string().required("Contraseña es requerido"),
+                                image: Yup.mixed().required("La imagen es requerida"),
                             })}
                             onSubmit={async (values, actions) => {
                                 console.log("informacion del formulario", values)
@@ -219,7 +235,6 @@ function RegisterDocentePage() {
                                                 <img src={selectedImage} alt="Selected" style={{ width: "200px", height: "200px", borderRadius: "50%", marginTop: "-15px" }} />
                                                 
                                             </div>
-                                            
                                             <ErrorMessage
                                                 component="p"
                                                 name="image"
@@ -241,8 +256,7 @@ function RegisterDocentePage() {
                             
                         </Formik>
                     </div>
-                {/* Modal */}
-                {showModal && (
+                    {showModal && (
                     <div className="fixed top-42 left-120 flex items-center justify-center ml-90">
                     <ModalContent closeModal={closeModal} />
                     </div>

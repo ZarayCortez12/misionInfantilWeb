@@ -2,9 +2,18 @@ import NavLinks from './nav-links'
 import TopLinks from './top-links'
 import { useAuth } from '../../context/AuthContext';
 import userImage from '../../assets/user.png'
+import { useEffect, useState } from 'react';
 
 export default function SideNav() {
   const { isAuthenticated, user } = useAuth();
+  const [ image, setImage ] = useState("")
+
+  //Para mantener la imagen se guarda en el localStorage
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem('user')) || {}; 
+    setImage(data.image || ""); 
+  }, [isAuthenticated]);
+  
   return (
     <div style={{ minHeight: '88.8vh' }} className="flex flex-col bg-custom-blue1"> {/* Agregado h-screen para que ocupe toda la altura de la pantalla */}
 
@@ -13,7 +22,7 @@ export default function SideNav() {
           {isAuthenticated ? (
             <>
               <img
-                src={user.image.url}
+                src={image}
                 alt=""
                 className="w-full h-auto rounded-full h-full"
                 style={{ objectFit: 'cover' }} // Ajusta la propiedad de object-fit según lo necesites
@@ -22,7 +31,7 @@ export default function SideNav() {
           ) : (
             <>
               <img
-                src={user}
+                src={userImage}
                 alt=""
                 className="w-full h-auto rounded-full"
                 style={{ objectFit: 'cover' }} // Ajusta la propiedad de object-fit según lo necesites

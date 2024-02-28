@@ -7,27 +7,27 @@ import clsx from 'clsx';
 
 const links = [
   { name: 'INICIO', 
-    href: '/welcome/ADMINISTRADOR',
+    to: '/administrador',
     icon: HandRaisedIcon },
   {
     name: 'DOCENTES',
-    to: "/indexAdmin/Teachers",
+    to: "/administrador/docentes",
     icon: UserIcon },
   {
     name: 'ESTUDIANTES', 
-    to: "/indexAdmin/Students", 
+    to: "/administrador/estudiantes", 
     icon: AcademicCapIcon },
   {
     name: 'CURSOS',
-    to: "/indexAdmin/Courses",
+    to: "/administrador/cursos",
     icon: BookOpenIcon },
   {
     name: 'SECTORES',
-    to: "/indexAdmin/Sectors",
+    to: "/administrador/sectores",
     icon: GlobeAmericasIcon },
   {
     name: 'EVENTOS',
-    to: "/indexAdmin/Events",
+    to: "/administrador/eventos",
     icon: CalendarIcon }
 ];
 

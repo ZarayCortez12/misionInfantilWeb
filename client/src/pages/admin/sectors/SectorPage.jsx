@@ -1,7 +1,7 @@
 import { useSectores } from "../../../context/SectorContext"
 import { useEffect } from "react";
 import React, { useState } from 'react';
-
+import { Link } from 'react-router-dom';
 
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
 
@@ -116,8 +116,16 @@ function SectorPage() {
             </tbody>
         </table>
 
-               <div className=' flex justify-center'> <button className='bg-yellow-900 py-2 px-4 rounded-lg hover:bg-yellow-500  poppins  items-center' > 
-            <div className='flex justify-around text-white carrois-gothicSC'> <PlusCircleIcon className="w-6 mr-2" /> Ingresar Sector </div></button> </div>
+               <div className=' flex justify-center'> 
+                    <Link className="bg-yellow-900 py-2 px-4 rounded-lg hover:bg-yellow-500  poppins  items-center"
+                        to='/administrador/sectores/register'
+                            >
+                            <div className='flex justify-around text-white carrois-gothicSC'> 
+                                <PlusCircleIcon className="w-6 mr-2" /> 
+                                Ingresar Sector 
+                            </div> 
+                    </Link> 
+                </div>
             
         </div> 
 

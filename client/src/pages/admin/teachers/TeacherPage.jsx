@@ -91,7 +91,7 @@ function Teachers() {
       </div>
       <div className="mt-16 ml-5 md:mt-7"> 
           <Link className="flex gap-3 items-center justify-start rounded-lg bg-custom-brown1 w-56 md:w-64 px-5 py-3 text-sm font-light text-white transition-colors hover:bg-custom-brown2"
-                href="/login"  to="/" //ruta a la que lleva 
+                to='/administrador/docentes/register' //ruta a la que lleva 
                 ><HiPlusCircle size={24} /> <span>INGRESAR DOCENTE</span> 
           </Link>
       </div>

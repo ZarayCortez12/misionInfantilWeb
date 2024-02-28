@@ -36,8 +36,7 @@ const userSchema = new mongoose.Schema({
     },
     telefono: {
         type: String,
-        require: true, 
-        unique: true,
+        require: true,
     },
     image: {
         url: String,
