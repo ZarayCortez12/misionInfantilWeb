@@ -57,22 +57,22 @@ function SectorPage() {
             
             {/*tabla de sectores*/}
 
-        <div className='p-5 bg-gray-100 h-auto w-screen relative'>
+        <div className='p-5 bg-gray-100 h-auto w-full relative'>
 
             <div className="mb-6"> 
             <h1 className='text-[28px] poppins text-center poppins bold-text'> Sectores Registrados</h1>
             </div>
 
             {showDiv && (
-                <div id='opciones' className='flex justify-around mb-4' >
-                <div className='flex items-center hover:text-red-500 hover:cursor-pointer' onClick={() => setShowEliminarAviso(true)}> 
+                <div id='opciones' className='flex justify-end mb-4' >
+                <div className='flex items-center hover:text-red-500 hover:cursor-pointer m-2' onClick={() => setShowEliminarAviso(true)}> 
                 <RiDeleteBin6Line className="hover:text-red-500 mr-2"/>  <h1 className='ml-2'>Eliminar</h1>
                 </div> 
-                <div className='flex items-center hover:text-yellow-500 hover:cursor-pointer '>
+                <div className='flex items-center hover:text-yellow-500 hover:cursor-pointer m-2'>
                      <MdOutlineEdit className="hover:text-red-500 mr-2"/> <h1 className='ml-2'>Editar</h1> 
                      </div> 
-                <div className='flex items-center hover:text-blue-500 hover:cursor-pointer'> <
-                    FaRegEye className="hover:text-red-500 mr-2"/><h1 className='ml-2'>Visualizar</h1>
+                <div className='flex items-center hover:text-blue-500 hover:cursor-pointer m-2'> 
+                    <FaRegEye className="hover:text-red-500 mr-2"/><h1 className='ml-2'>Visualizar</h1>
                     </div>
              </div>
                 )}
@@ -89,7 +89,9 @@ function SectorPage() {
                 </tr>
             </thead>
             <tbody>
-                {sectores.map((sector, index) => (
+                {sectores
+                .sort((a, b) => a.numero - b.numero)
+                .map((sector, index) => (
                     <tr key={index}>
                         <td className='p-3 text-sm text-gray-700 '>
                             {/* Agregar el controlador de eventos onChange */}

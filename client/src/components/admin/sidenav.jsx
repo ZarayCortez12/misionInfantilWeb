@@ -15,16 +15,16 @@ export default function SideNav() {
   }, [isAuthenticated]);
   
   return (
-    <div style={{ minHeight: '88.8vh' }} className="flex flex-col bg-custom-blue1"> {/* Agregado h-screen para que ocupe toda la altura de la pantalla */}
+    <div className="flex flex-col bg-custom-blue1 h-full md:h-screen"> {/* Agregado h-screen para que ocupe toda la altura de la pantalla */}
 
-      <div className="flex mb-2 items-center text-center justify-center hidden md:block">
+      <div className="flex mb-2 items-center text-center justify-center hidden md:block md:h10">
       <div className="w-1/2 h-40 ml-16 mb-5 border-4 border-orange-500 rounded-full overflow-hidden">
           {isAuthenticated ? (
             <>
               <img
                 src={image}
                 alt=""
-                className="w-full h-auto rounded-full h-full"
+                className="w-full rounded-full h-full"
                 style={{ objectFit: 'cover' }} // Ajusta la propiedad de object-fit según lo necesites
               />
             </>
