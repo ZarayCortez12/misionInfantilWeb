@@ -10,11 +10,15 @@ body{
 }
 
 .contenedor{
-    margin-top: 100px;
+    margin-top: 1000px;
 }
 
 .inferior{
     margin-left: -5000px;
     margin-right: 500px;
     width: 100%;
+}
+
+.bg-brown-500 {
+    background-color: #8B4513; /* Puedes ajustar el código de color según tu preferencia */
 }

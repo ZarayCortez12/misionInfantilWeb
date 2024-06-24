@@ -1,6 +1,6 @@
 import SideNav from '../../components/admin/sidenav';
 import TopNav from '../../components/admin/topnav';
- 
+
 function Layout({ children }) {
   return (
     <div className=" flex-col min-h-screen md:flex-row bg md:overflow-hidden">
@@ -9,10 +9,10 @@ function Layout({ children }) {
         </div>
 
         <div className='flex flex-col md:flex-row'>
-            <div className="flex-none w-full md:w-64">
+            <div className="flex-none w-full md:w-56">
                 <SideNav></SideNav>
             </div>
-            <div className="flex-grow p-6 md:overflow-y-auto md:p-12">
+            <div className="flex-grow px-5 my-5 y-screen md:overflow-y-auto">
                 {children}
             </div>
         </div>

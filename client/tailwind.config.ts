@@ -14,6 +14,7 @@ const config: Config = {
           500: '#0070F3',
           600: '#2F6FEB',
         },
+        brown: '#8B4513',
         'custom-brown1': '#8C6428',
         'custom-brown2': '#B58D52',
         'custom-blue1': '#0F3174',

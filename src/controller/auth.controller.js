@@ -3,25 +3,41 @@ import bcrypt from 'bcryptjs'
 import { createAccessToken } from '../libs/jwt.js'
 import jwt from 'jsonwebtoken'
 import { TOKEN_SECRET } from '../config.js'
+import { uploadImage } from '../libs/cloudinary.js'
+import fs from 'fs-extra'
 
 export const registerDocente =  async (req, res) => {
-    const { identificacion, nombre, apellido, correo, telefono, contraseña } = req.body
     try {
 
-        const userFound = await User.findOne({correo})
-        if (userFound) return res.status(400).json(["the email is already in use"]);
+        const { identificacion, nombre, apellido, telefono, correo, clave } = req.body
 
-        const passwordHash = await bcrypt.hash(contraseña, 10)
+        let image;
+
+        console.log(req.files.image)
+        if (req.files.image) {
+            const result = await uploadImage(req.files.image.tempFilePath)
+            await fs.remove(req.files.image.tempFilePath)
+            image = {
+                url: result.secure_url,
+                public_id: result.public_id
+            }
+        }
+        const userFound = await User.findOne({correo})
+        const userFound2 = await User.findOne({ identificacion })
+        if (userFound2) return res.status(400).json(["Identificación ya registrada en el sistema"]);
+        if (userFound) return res.status(400).json(["Usuario ya registrado en el sistema"]);
+        const passwordHash = await bcrypt.hash(clave, 10)
         const newUser = new User({
             identificacion,
             apellido,
             correo,
             telefono,
-            contraseña: passwordHash,
+            clave: passwordHash,
             estado: "INACTIVO",
             nombre,
             rol: "DOCENTE",
-            username: `${identificacion}`
+            username: `${identificacion}`,
+            image
         });
         const userSave = await newUser.save();
         const token = await createAccessToken({ id: userSave._id });
@@ -53,11 +69,14 @@ export const login =  async (req, res) => {
         const isMath = await bcrypt.compare(clave, userFound.clave) 
         if(!isMath) return res.status(400).json({ message: "Contraseña Incorrecta"});
         const token = await createAccessToken({ id: userFound._id });
+        
         res.cookie('token', token);
         res.json({
             id: userFound._id,
             nombre: userFound.nombre,
-            apellido: userFound.apellido
+            apellido: userFound.apellido,
+            rol: userFound.rol,
+            image: userFound.image.url
         });
     } catch (error) {
         console.error("Error:", error); 
@@ -82,6 +101,7 @@ export const profile = async (req, res) => {
         id: userFound._id,
         nombre: userFound.nombre,
         apellido: userFound.apellido,
+        rol: userFound.rol,
     })
 }
 
@@ -100,6 +120,16 @@ export const verifyToken = async (req, res) => {
             id: userFound._id,
             nombre: userFound.nombre,
             apellido: userFound.apellido,
+            rol: userFound.rol,
         });
     });
-};
+}
+
+export const getUsuarios = async (req, res) => {
+    try {
+        const usuarios = await User.find()
+        res.json(usuarios)
+    } catch (error) {
+        return res.status(404).json({ message: "Usuario no Encontrado"})
+    }
+ };

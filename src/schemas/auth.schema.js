@@ -3,26 +3,26 @@ import { z } from "zod"
 export const registerDocenteSchema = z.object({
     identificacion: z
     .string({
-        require_error: "Identificacion is required"
+        require_error: "Identificación es requerida"
     }),
     nombre: z.string({
-        required_error: "Nombre is required"
+        required_error: "Nombre es requerido"
     }),
     apellido: z.string({
-        required_error: "Apellido is required"
+        required_error: "Apellido es requerido"
     }),
     correo: z
     .string({
-        require_error: "Correo is required"
+        require_error: "Correo es requerido"
     })
     .email({
-        message: "Invalid Correo"
+        message: "Correo Invalido"
     }),
-    contraseña: z.string({
-        required_error: "Contraseña is required"
+    clave: z.string({
+        required_error: "Contraseña es requerido"
     }),
     telefono: z.string({
-        required_error: "Apellido is required"
+        required_error: "Telefono es requerido"
     }),
 });
 

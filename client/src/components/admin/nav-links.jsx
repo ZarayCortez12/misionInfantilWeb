@@ -7,31 +7,28 @@ import clsx from 'clsx';
 
 const links = [
   { name: 'INICIO', 
-    href: '/admin', 
+    to: '/administrador',
     icon: HandRaisedIcon },
   {
     name: 'DOCENTES',
-    href: '/admin/teachers',
-    icon: UserIcon,
-  },
-  { name: 'ESTUDIANTES', 
-    href: '/admin/students', 
+    to: "/administrador/docentes",
+    icon: UserIcon },
+  {
+    name: 'ESTUDIANTES', 
+    to: "/administrador/estudiantes", 
     icon: AcademicCapIcon },
   {
     name: 'CURSOS',
-    href: '/admin/courses',
-    icon: BookOpenIcon,
-  },
+    to: "/administrador/cursos",
+    icon: BookOpenIcon },
   {
     name: 'SECTORES',
-    href: '/admin/sectors',
-    icon: GlobeAmericasIcon,
-  },
+    to: "/administrador/sectores",
+    icon: GlobeAmericasIcon },
   {
     name: 'EVENTOS',
-    href: '/admin/events',
-    icon: CalendarIcon,
-  },
+    to: "/administrador/eventos",
+    icon: CalendarIcon }
 ];
 
 export default function NavLinks() {
@@ -43,11 +40,11 @@ export default function NavLinks() {
         return (
           <Link
             key={link.name}
-            href={link.href}
+            to={link.to}
             className={clsx(
-              'flex h-[48px] gap-3 grow items-center justify-center rounded-md bg-custom-blue1 p-3 text-sm text-white font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
+              'flex h-[48px] gap-3 grow items-center justify-center rounded-md bg-custom-blue1 p-3 text-sm text-white font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-7',
               {
-                'bg-custom-blue2 text-white': pathname === link.href,
+                'bg-custom-blue2 text-white': pathname === link.to,
               },
             )}
           >

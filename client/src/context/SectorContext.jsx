@@ -14,6 +14,7 @@ export const useSectores = () => {
 export function SectorProvider({ children }) {
     
     const [ sectores, setSectores ] = useState([]);
+    const [errors, setErrors] = useState([]);
    
     const getSectores = async () => {
         try {
@@ -29,8 +30,11 @@ export function SectorProvider({ children }) {
         try {
             const res = await createSectorRequest(sector);
             console.log(res.data);
+            setErrors([]);
           } catch (error) {
-            console.log(error);
+            setErrors(error.response.data);
+            console.error(error);
+            throw error.response.data.message || "Error en el registro.";
           }
     }
 
@@ -70,6 +74,7 @@ export function SectorProvider({ children }) {
                 deleteSector,
                 getSector,
                 updateSector,
+                errors,
             }}
         >
             { children }

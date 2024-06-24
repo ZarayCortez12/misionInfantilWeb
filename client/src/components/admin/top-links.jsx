@@ -4,6 +4,7 @@ import { BellIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline
 import { Link } from 'react-router-dom';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { useAuth } from '../../context/AuthContext';
 
 const links = [
   { 
@@ -20,6 +21,7 @@ const links = [
 
 export default function TopLinks() {
   const pathname = usePathname();
+  const { logout } = useAuth();
   return (
     <>
       {links.map((link) => {
