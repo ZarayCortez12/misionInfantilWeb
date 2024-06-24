@@ -12,7 +12,7 @@ import { createSectorSchema } from "../schemas/sector.schema.js";
 
 const router = Router()
 
-router.get('/sectores', authRequired, getSectores )
+router.get('/sectores', getSectores )
 router.get('/sectores/:id', authRequired, getSector)
 router.post(
     '/sectores', 
@@ -20,7 +20,7 @@ router.post(
     validateSchema(createSectorSchema),
     createSector
 );
-router.delete('/sectores/:id', authRequired, deleteSector)
-router.put('/sectores/:id', authRequired, updateSector)
+router.delete('/sectores/:id', deleteSector)
+router.put('/sectores/:id',  updateSector)
 
 export default router

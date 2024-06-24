@@ -14,7 +14,6 @@ const sectorSchema = new mongoose.Schema({
     direccion: {
         type: String, 
         require: true,
-        unique: true,
     },
     barrio: {
         type: String, 
