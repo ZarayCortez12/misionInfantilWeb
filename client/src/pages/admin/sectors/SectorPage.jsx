@@ -1,4 +1,4 @@
-import { useSectores } from "../context/SectorContext";
+import { useSectores } from "../../../context/SectorContext"; //acomodar
 import { useEffect } from "react";
 import React, { useState } from "react";
 
@@ -14,6 +14,8 @@ import DataTable from "react-data-table-component";
 import Modal from "react-modal";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
+
+import { VscEdit, VscTrash } from "react-icons/vsc";
 
 import { MdSaveAlt } from "react-icons/md";
 import { record } from "zod";
@@ -120,11 +122,12 @@ function SectorPage() {
     },
     rows: {
       style: {
-        fontSize: "16px",
+        fontSize: "14px",
       },
     },
     table: {
       style: {
+        
         borderRadius: "10px",
         overflow: "hidden",
         width: 1100, // Ajusta el ancho de la tabla
@@ -196,7 +199,7 @@ function SectorPage() {
       <div className="mt-2 flex grow flex-col gap-4 md:flex-row static">
         {/*tabla de sectores*/}
 
-        <div className="p-5 bg-gray-100 h-auto w-screen relative">
+        <div className="p-5  h-auto w-screen relative">
           <div className="mb-6">
             <h1 className="text-[38px] poppins text-center poppins bold-text">
               {" "}
@@ -221,21 +224,36 @@ function SectorPage() {
             </div>
           </div>
 
-          <div>
-            <DataTable
+          <div className="flex grow justify-end items-end mt-20 w-auto md:mt-0">
+          
+            <>
+              <div className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5" href="/login"  to="/">
+                  <VscEdit size="30px" className='w-5 md:w-6'/>
+              </div>
+              <div className="flex items-center bg-red-500 hover:bg-red-700 text-white text-sm py-2 px-3 rounded" href="/login"  to="/">
+                  <VscTrash size="30px" className='w-5 md:w-6'/>
+              </div>
+            </>
+         
+        </div>
+
+          <div className="outer-wrapper p-5 h-auto">
+        <div className=" overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
+        <DataTable
               columns={columns}
               data={filteredRecords}
               selectableRows
               selectableRowsSingle
               pagination
-              paginationPerPage={4}
+              paginationPerPage={5}
               onSelectedRowsChange={(state) => setSelectedRows(state)}
               fixedHeader
               progressPending={loading}
               customStyles={customStyles}
             />
-          </div>
-
+           </div>
+      </div>
+          
           <div className=" flex justify-center mt-6 ">
             {" "}
             <button

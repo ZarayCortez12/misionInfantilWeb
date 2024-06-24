@@ -57,8 +57,8 @@ function Teachers() {
       </div>
       
       <div className="outer-wrapper p-5">
-      <div className="table-wrapper overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
-        <table className="w-screen min-h-full bg-white border-collapse rounded-lg">
+        <div className="table-wrapper overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
+           <table className="w-screen min-h-full bg-white border-collapse rounded-lg">
           <thead /*Encabezado de la tabla*/ >
                 <tr className="items-center justify-center text-center uppercase font-semibold text-xs">
                   <th>
@@ -86,8 +86,8 @@ function Teachers() {
             />
         ))}
           </tbody>
-        </table>
-      </div>
+             </table>
+           </div>
       </div>
       <div className="mt-16 ml-5 md:mt-7"> 
           <Link className="flex gap-3 items-center justify-start rounded-lg bg-custom-brown1 w-56 md:w-64 px-5 py-3 text-sm font-light text-white transition-colors hover:bg-custom-brown2"
