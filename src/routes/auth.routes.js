@@ -1,7 +1,6 @@
 import {Router} from 'express'
 import {
     login, 
-    registerDocente, 
     logout, 
     profile,
     verifyToken,
@@ -11,11 +10,9 @@ import {
 
 import { authRequired } from '../middlewares/validateToken.js';
 import { validateSchema } from '../middlewares/validator.middleware.js';
-import { registerDocenteSchema, loginSchema } from '../schemas/auth.schema.js';
+import { loginSchema } from '../schemas/auth.schema.js';
 
 const router = Router()
-
-router.post('/registerDocente', validateSchema(registerDocenteSchema), registerDocente);
 
 router.post('/login', validateSchema(loginSchema), login)
 

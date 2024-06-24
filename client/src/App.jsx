@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { AuthProvider } from "./context/AuthContext"
 import { SectorProvider } from "./context/SectorContext"
+import { TeacherProvider } from "./context/TeacherContext"
 import LoginPage from "./pages/LoginPage"
 import HomePage from "./pages/HomePage"
 import ProtectedRoute from "./ProtectedRoute"
@@ -14,10 +15,12 @@ import Notifications from "./pages/admin/notifications/Notifications"
 import Students from "./pages/admin/students/Students"
 import Events from "./pages/admin/events/Events"
 import Courses from "./pages/admin/courses/Courses"
+import EditTeacherPage from "./pages/admin/teachers/EditTeacherPage"
 
 function App() {
   return (
     <AuthProvider>
+      <TeacherProvider>
       <SectorProvider>
         <BrowserRouter>
           <Routes>
@@ -31,6 +34,7 @@ function App() {
                   <Route path="/administrador/sectores/register" element={<AdminLayout> <RegisterSectorPage/> </AdminLayout>} />
                   <Route path="/administrador/docentes" element={<AdminLayout> <TeacherPage/> </AdminLayout>} />
                   <Route path="/administrador/docentes/register" element={<AdminLayout> <RegisterTeacherPage/> </AdminLayout>} />
+                  <Route path="/administrador/docentes/edit/:id" element={<AdminLayout> <EditTeacherPage/> </AdminLayout>} />
                   <Route path='/administrador/cursos' element={<AdminLayout> <Courses/> </AdminLayout>} />
                   <Route path='/administrador/eventos' element={<AdminLayout> <Events/> </AdminLayout>} />
                   <Route path='/administrador/estudiantes' element={<AdminLayout> <Students/> </AdminLayout>} />
@@ -39,6 +43,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </SectorProvider>
+      </TeacherProvider>
     </AuthProvider>
   );
 }
