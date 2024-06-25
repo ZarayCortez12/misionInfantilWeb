@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Carrois+Gothic+SC&family=Poppins:wght@500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,3 +23,8 @@
 .content-form{
     background-color: #B58D52;
 }
+
+.body{
+    font-family: 'Poppins', sans-serif;
+}
+

@@ -15,7 +15,7 @@ import user from "../../../assets/user.png";
 const ModalContent = ({ closeModal }) => (
   <div className="bg-blue-600 p-4 rounded-md">
     <p className="text-white text-xl font-semibold mb-4">¡Registro exitoso!</p>
-    <p>La informacion del Docente ha sido actualizada correctamente.</p>
+    <p>La información del Docente ha sido actualizada correctamente.</p>
     <button
       onClick={() => {
         closeModal();
@@ -38,6 +38,7 @@ function EditTeacherPage() {
     apellido: "",
     correo: "",
     telefono: "",
+    imagen: "",
   });
 
   const {
@@ -61,9 +62,9 @@ function EditTeacherPage() {
   useEffect(() => {
     const loadDocente = async () => {
       if (id) {
-        setIsLoading(true);
         try {
           const docenteObtenido = await getTeacher(id);
+          console.log("docenteObtenido: ", docenteObtenido);
           setDocente({
             id: docenteObtenido._id,
             identificacion: docenteObtenido.identificacion,
@@ -71,36 +72,21 @@ function EditTeacherPage() {
             apellido: docenteObtenido.apellido,
             correo: docenteObtenido.correo,
             telefono: docenteObtenido.telefono,
+            imagen: docenteObtenido.image.url,
           });
-          setIsLoading(false);
+
+          // Solo actualiza selectedImage si la imagen está disponible
+          if (docenteObtenido.image.url) {
+            setSelectedImage(docenteObtenido.image.url);
+          }
         } catch (error) {
           console.error("Error al cargar el docente:", error);
-          setIsLoading(false);
         }
       }
     };
     loadDocente();
-  }, [id, getTeacher]);
+  }, [id]); // Asegúrate de que el efecto se ejecute solo cuando `id` cambie
 
-
-  useEffect(() => {
-    const loadEntrenamiento = async () => {
-      if (id) {
-        const entrenamientoObtenido = await getEntrenamiento(id);
-        console.log("entrenamientoObtenido: ", entrenamientoObtenido);
-        setEntrenamiento({
-          fecha: entrenamientoObtenido.sesion.fecha,
-          hora_inicio: entrenamientoObtenido.sesion.hora_inicio,
-          hora_fin: entrenamientoObtenido.sesion.hora_fin,
-          categoria: entrenamientoObtenido.sesion.categoria,
-          lugar: entrenamientoObtenido.sesion.id_lugar,
-          tipo_entrenamiento: entrenamientoObtenido.sesion.tipo_entrenamiento,
-          entrenador: entrenamientoObtenido.sesion.entrenador,
-        });
-      }
-    };
-    loadEntrenamiento();
-  }, [id, getEntrenamiento]);
   const handleImageChange = (event, setFieldValue) => {
     const file = event.target.files[0];
     if (file) {
@@ -132,7 +118,7 @@ function EditTeacherPage() {
   return (
     <div className="flex flex-col items-center justify-center mt-0">
       <div>
-        <h1 className="text-2xl font-bold my-2 text-blue-700 text-center">
+        <h1 className="text-4xl font-bold my-5 text-center tittle-edit mt-6">
           Actualizar Información Personal
         </h1>
         <br></br>
@@ -144,31 +130,29 @@ function EditTeacherPage() {
           ))}
         <Formik
           initialValues={{
-            identificacion: "",
-            nombre: "",
-            apellido: "",
-            telefono: "",
-            correo: "",
-            clave: "",
-            image: null,
+            identificacion: docente.identificacion,
+            nombre: docente.nombre,
+            apellido: docente.apellido,
+            telefono: docente.telefono,
+            correo: docente.correo,
+            image: docente.imagen,
           }}
           enableReinitialize
           validationSchema={Yup.object({
             identificacion: Yup.string().required(
-              "Identificación es requerido"
+              "Identificación es requerida"
             ),
             nombre: Yup.string().required("Nombre es requerido"),
             apellido: Yup.string().required("Apellido es requerido"),
-            telefono: Yup.string().required("Telefono es requerido"),
+            telefono: Yup.string().required("Teléfono es requerido"),
             correo: Yup.string()
               .email("Formato de correo no válido")
               .required("Correo es obligatorio"),
-            clave: Yup.string().required("Contraseña es requerido"),
             image: Yup.mixed().required("La imagen es requerida"),
           })}
           onSubmit={async (values, actions) => {
-            console.log("informacion del formulario", values);
-            await signup(values);
+            console.log("información del formulario", values);
+            await updateTeacher(values);
             setShowModal(true);
           }}
         >
@@ -190,6 +174,7 @@ function EditTeacherPage() {
                       className="w-96 bg-zinc-700 text-white px-4 py-2 rounded-md my-2 h-14"
                       placeholder="Número de Identificación"
                       pattern="[0-9]*"
+                      readOnly={true}
                     />
                   </div>
                   <ErrorMessage
@@ -242,7 +227,7 @@ function EditTeacherPage() {
                       type="text"
                       name="telefono"
                       className="w-96 bg-zinc-700 text-white px-4 py-2 rounded-md my-2 h-14"
-                      placeholder="Telefono"
+                      placeholder="Teléfono"
                       pattern="[0-9]*"
                     />
                   </div>
@@ -260,7 +245,7 @@ function EditTeacherPage() {
                       type="email"
                       name="correo"
                       className="w-96 bg-zinc-700 text-white px-4 py-2 rounded-md my-2 h-14"
-                      placeholder="Correo Electronico"
+                      placeholder="Correo Electrónico"
                     />
                   </div>
                   <ErrorMessage
@@ -287,7 +272,6 @@ function EditTeacherPage() {
                       style={{
                         width: "200px",
                         height: "200px",
-                        borderRadius: "50%",
                         marginTop: "-15px",
                       }}
                     />
