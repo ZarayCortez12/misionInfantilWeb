@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { AuthProvider } from "./context/AuthContext"
 import { SectorProvider } from "./context/SectorContext"
+import { StudentProvider } from "./context/StudentContext"
+import { EventoProvider} from "./context/EventoContext"
+import { CursoProvider } from "./context/CursoContext"
 import LoginPage from "./pages/LoginPage"
 import HomePage from "./pages/HomePage"
 import ProtectedRoute from "./ProtectedRoute"
@@ -14,11 +17,16 @@ import Notifications from "./pages/admin/notifications/Notifications"
 import Students from "./pages/admin/students/Students"
 import Events from "./pages/admin/events/Events"
 import Courses from "./pages/admin/courses/Courses"
+import CrearStudent from "./pages/admin/students/CrearStudent"
+import EditarStudent from "./pages/admin/students/EditarStudent"
 
 function App() {
   return (
     <AuthProvider>
+      <CursoProvider>
+      <EventoProvider>
       <SectorProvider>
+        <StudentProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -34,12 +42,19 @@ function App() {
                   <Route path='/administrador/cursos' element={<AdminLayout> <Courses/> </AdminLayout>} />
                   <Route path='/administrador/eventos' element={<AdminLayout> <Events/> </AdminLayout>} />
                   <Route path='/administrador/estudiantes' element={<AdminLayout> <Students/> </AdminLayout>} />
+                  <Route path='/administrador/estudiantes/registrar' element={<AdminLayout> <CrearStudent/> </AdminLayout>} />
+                  <Route path='/administrador/estudiantes/:ced' element={<AdminLayout> <EditarStudent/> </AdminLayout>} />
+                  
             </Route>
 
           </Routes>
         </BrowserRouter>
+        </StudentProvider>
       </SectorProvider>
+      </EventoProvider>
+      </CursoProvider>
     </AuthProvider>
+
   );
 }
 export default App 

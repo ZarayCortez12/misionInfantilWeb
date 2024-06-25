@@ -63,7 +63,7 @@ function LoginPage() {
 
 
 
-            <div className='contenedor bg-blue-900 max-w-md w-full p-10 rounded-md items-center justify-center relative'>
+            <div className='contenedor mt-20  bg-blue-900 max-w-md w-full p-10 rounded-md items-center justify-center relative'>
                   
                 {signinErrors.map((error, i) => (
                     <div className="bg-red-500 p-2 text-white text-center" key={i}>

@@ -6,6 +6,9 @@ import fileUpload from "express-fileupload";
 
 import authRoutes from './routes/auth.routes.js'
 import sectorRoutes from './routes/sector.routes.js'
+import StudentsRouter from './routes/student.routes.js';
+import eventoRoutes from './routes/eventos.routes.js';
+import cursosRoutes from './routes/cursos.routes.js';
 
 const app = express();
 
@@ -26,5 +29,8 @@ app.use(cookieParser());
 
 app.use("/api", authRoutes); 
 app.use("/api", sectorRoutes); 
+app.use("/api", StudentsRouter);
+app.use("/api", eventoRoutes);
+app.use("/api", cursosRoutes);
 
 export default app;
