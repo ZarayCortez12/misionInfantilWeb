@@ -6,6 +6,7 @@ import fileUpload from "express-fileupload";
 
 import authRoutes from './routes/auth.routes.js'
 import sectorRoutes from './routes/sector.routes.js'
+import teacherRoutes from './routes/teacher.routes.js'
 
 const app = express();
 
@@ -26,5 +27,6 @@ app.use(cookieParser());
 
 app.use("/api", authRoutes); 
 app.use("/api", sectorRoutes); 
+app.use("/api", teacherRoutes);
 
 export default app;

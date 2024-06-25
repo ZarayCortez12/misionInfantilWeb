@@ -1,6 +1,8 @@
 import axios from "./axios"
 
-export const getTeachersRequest = () => axios.get("/docentes");
+export const getTeachersRequest = () => axios.get("/");
+
+export const getTeacherRequest = (id) => axios.get(`/getDocente/${id}`);
 
 export const registerTeacherRequest = async (user) => {
     const form = new FormData();
