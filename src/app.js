@@ -9,6 +9,7 @@ import sectorRoutes from './routes/sector.routes.js'
 import StudentsRouter from './routes/student.routes.js';
 import eventoRoutes from './routes/eventos.routes.js';
 import cursosRoutes from './routes/cursos.routes.js';
+import docenteRoutes from './routes/docente.routes.js';
 
 const app = express();
 
@@ -32,5 +33,6 @@ app.use("/api", sectorRoutes);
 app.use("/api", StudentsRouter);
 app.use("/api", eventoRoutes);
 app.use("/api", cursosRoutes);
+app.use("/api", docenteRoutes);
 
 export default app;

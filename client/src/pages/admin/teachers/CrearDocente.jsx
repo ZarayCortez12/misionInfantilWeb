@@ -1,5 +1,5 @@
 import { Form, Formik } from "formik";
-import { useStudent } from "../../../context/StudentContext";
+import { useDocente } from "../../../context/DocentesContext";
 import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
@@ -16,18 +16,18 @@ import { FaCheck } from "react-icons/fa";
 
 Modal.setAppElement("#root"); // Necesario para accesibilidad
 
-function CrearStudent() {
+function CrearDocente() {
   const navigate = useNavigate();
   const [imagen, setImagen] = useState(null);
   const [showAviso ,setShowAviso] = useState(false);
 
   const handleClick = () => {
-    navigate("/administrador/estudiantes");
+    navigate("/administrador/docentes");
   };
 
   const {
-    registerStudent,
-  } = useStudent();
+    registerDocente,
+  } = useDocente();
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
@@ -40,7 +40,7 @@ function CrearStudent() {
 
   const correoRegistrado = async (correo) => {
     try {
-      const response = await axios.get("http://localhost:4000/api/estudiantes");
+      const response = await axios.get("http://localhost:4000/api/docentes");
       const usuarios = response.data;
 
       // Verificar si el correo está en la lista de usuarios
@@ -56,7 +56,7 @@ function CrearStudent() {
 
   const documentoRegistrado = async (identificacion) => {
     try {
-      const response = await axios.get("http://localhost:4000/api/estudiantes");
+      const response = await axios.get("http://localhost:4000/api/docentes");
       const usuarios = response.data;
       const usuarioEncontrado = usuarios.some(
         (usuario) => String(usuario.identificacion) === String(identificacion)
@@ -119,7 +119,7 @@ function CrearStudent() {
       <div className="">
         <h1 className="text-[38px] poppins text-center poppins bold-text mb-4">
           {" "}
-          Agregar Estudiante
+          Agregar Docente
         </h1>
         <Formik
           initialValues={{
@@ -134,12 +134,13 @@ function CrearStudent() {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
-              await registerStudent(values);
+              console.log(values);
+              //await registerDocente(values);
               setShowAviso(true);
               setImagen(null);
               resetForm();
             } catch (error) {
-              console.error("Error al crear el estudiante:", error);
+              console.error("Error al crear el docentes:", error);
             }
             setSubmitting(false);
           }}
@@ -297,7 +298,7 @@ function CrearStudent() {
                       name="image"
                       accept="image/*"
                       onChange={(e) => {
-                        setFieldValue("image", e.target.files[0]);
+                        setFieldValue("imagen", e.target.files[0]);
                         setImagen(e.target.files[0]);
                         handleImagenChange(e);
                       }}
@@ -351,7 +352,7 @@ function CrearStudent() {
         <div className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96">
           <div className="mb-8 text-white text-center poppins text-[25px] m-6">
             <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
-            Estudiante creado con éxito.
+            Docente creado con éxito.
             </h2>
           </div>
           <div className="flex justify-center space-x-4">
@@ -371,4 +372,4 @@ function CrearStudent() {
   );
 }
 
-export default CrearStudent;
+export default CrearDocente;

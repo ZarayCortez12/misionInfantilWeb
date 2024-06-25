@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
-import { useStudent } from "../../../context/StudentContext";
-import React, { useState } from "react";
+import { useDocente } from "../../../context/DocentesContext";
+import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { MdSaveAlt } from "react-icons/md";
@@ -8,35 +8,64 @@ import { FaRegIdCard, FaPhoneAlt } from "react-icons/fa";
 import { IoIosMail } from "react-icons/io";
 import { FaFileImage } from "react-icons/fa6";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Modal from "react-modal";
 import axios from "axios";
 import { FaCheck } from "react-icons/fa";
 
-
 Modal.setAppElement("#root"); // Necesario para accesibilidad
 
-function CrearStudent() {
+function EditarDocente() {
+  const { ced } = useParams();
   const navigate = useNavigate();
-  const [imagen, setImagen] = useState(null);
-  const [showAviso ,setShowAviso] = useState(false);
+  const [showAviso, setShowAviso] = useState(false);
+  const [estudiante, setEstudiante] = useState({
+
+    documento: "",
+    nombre: "",
+    apellido: "",
+    correo: "",
+    telefono: "",
+    estado: "",
+    image: null,
+  });
+
+  const { 
+    updateDocente
+   } =
+  useDocente();
 
   const handleClick = () => {
-    navigate("/administrador/estudiantes");
+    navigate("/administrador/docentes");
   };
 
-  const {
-    registerStudent,
-  } = useStudent();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Cargar entrenador
+        if (ced) {
+          const estudianteData = await getDocente(ced);
+          console.log(estudianteData);
+          setEstudiante({
+            identificacion: estudianteData.identificacion,
+            nombre: estudianteData.nombre,
+            apellido: estudianteData.apellido,
+            correo: estudianteData.correo,
+            telefono: estudianteData.telefono,
+            estado: estudianteData.estado,
+            image: estudianteData.image,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
 
-  const handleImagenChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImagen(file);
-    } else {
-      setImagen(null);
-    }
-  };
+    fetchData();
+  }, []);
+
+  const { getDocente } = useDocente();
 
   const correoRegistrado = async (correo) => {
     try {
@@ -56,7 +85,7 @@ function CrearStudent() {
 
   const documentoRegistrado = async (identificacion) => {
     try {
-      const response = await axios.get("http://localhost:4000/api/estudiantes");
+      const response = await axios.get("http://localhost:4000/api/docentes");
       const usuarios = response.data;
       const usuarioEncontrado = usuarios.some(
         (usuario) => String(usuario.identificacion) === String(identificacion)
@@ -64,30 +93,11 @@ function CrearStudent() {
       return usuarioEncontrado;
     } catch (error) {
       console.error("Error al verificar el documento:", error);
-      return false; 
+      return false;
     }
   };
 
-
-  const handleClickImagen = () => {
-    document.getElementById("imagen").click();
-  };
-
   const validationSchema = Yup.object().shape({
-    identificacion: Yup.string()
-      .matches(
-        /^\+?[0-9]{8,10}$/,
-        "La cedula debe tener entre 8 y 10 dígitos numéricos"
-      )
-      .required("El documento es requerido")
-      .test(
-        "check-duplicado",
-        "Documento registrado",
-        async (identificacion) => {
-          const Duplicado = await documentoRegistrado(identificacion);
-          return !Duplicado;
-        }
-      ),
     nombre: Yup.string()
       .max(50, "El nombre no puede tener más de 50 caracteres")
       .matches(/^[A-Za-z ]+$/, "Solo letras permitidas")
@@ -99,48 +109,65 @@ function CrearStudent() {
     telefono: Yup.string()
       .matches(/^\+?[0-9]{10}$/, "El teléfono debe tener 10 dígitos numéricos")
       .required("El teléfono es requerido"),
-    correo: Yup.string()
-      .max(125, "El correo no puede tener más de 125 caracteres")
-      .email("Formato de correo electrónico inválido")
-      .required("El Correo es requerido")
-      .test(
-        "check-duplicado",
-        "El Correo ya esta registrado",
-        async (correo) => {
-          const Duplicado = await correoRegistrado(correo);
-          return !Duplicado;
-        }
-      ),
-    imagen: Yup.mixed().required("Debe seleccionar una imagen"),
+   
+    image: Yup.mixed().required("Debe seleccionar una imagen"),
   });
+  const [imagen, setImagen] = useState(null);
+  const [imagenURL, setImagenURL] = useState(null);
+
+  const handleImagenChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImagen(file);
+      setImagenURL(URL.createObjectURL(file));
+    } else {
+      setImagen(null);
+      setImagenURL(null);
+    }
+  };
+
+  const handleClickImagen = () => {
+    document.getElementById("imagen").click();
+  };
 
   return (
     <>
       <div className="">
         <h1 className="text-[38px] poppins text-center poppins bold-text mb-4">
           {" "}
-          Agregar Estudiante
+          Actualizar Docente
         </h1>
         <Formik
           initialValues={{
-            identificacion: "",
-            nombre: "",
-            apellido: "",
-            telefono: "",
-            correo: "",
-            image: null,
+            identificacion: estudiante.identificacion || "",
+            nombre: estudiante?.nombre || "",
+            apellido: estudiante?.apellido || "",
+            telefono: estudiante?.telefono || "",
+            correo: estudiante?.correo || "",
+            image: estudiante?.image|| "",
           }}
           enableReinitialize={true}
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
-              await registerStudent(values);
+             await updateDocente(ced,values);
               setShowAviso(true);
               setImagen(null);
               resetForm();
             } catch (error) {
               console.error("Error al crear el estudiante:", error);
             }
+
+            setEstudiante({
+                documento: "",
+                nombre: "",
+                apellido: "",
+                correo: "",
+                telefono: "",
+                estado: "",
+                image: null,
+              });
+
             setSubmitting(false);
           }}
         >
@@ -171,14 +198,11 @@ function CrearStudent() {
                       placeholder="Documento"
                       className="ml-2 bg-gray-700 text-white h-12 rounded-lg w-64 pl-4"
                       name="identificacion"
+                      value={values.identificacion}
                       onChange={handleChange}
+                     disabled
                     />
                   </div>
-                  {errors.identificacion && touched.identificacion && (
-                    <div className="text-red-500 justify-center text-center">
-                      {errors.identificacion}
-                    </div>
-                  )}
 
                   <div
                     className={`flex m-4 items-center ${
@@ -194,6 +218,7 @@ function CrearStudent() {
                       placeholder="Nombres"
                       className="m-2 ml-3 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
                       name="nombre"
+                      value={values.nombre}
                       onChange={handleChange}
                     />
                   </div>
@@ -216,6 +241,7 @@ function CrearStudent() {
                       className="m-2 h-12 ml-3 rounded-lg bg-gray-700 text-white w-full pl-4"
                       placeholder="Apellidos"
                       name="apellido"
+                      value={values.apellido}
                       onChange={handleChange}
                     />
                   </div>
@@ -238,6 +264,7 @@ function CrearStudent() {
                       className="m-2 h-12 ml-3 rounded-lg bg-gray-700 text-white w-full pl-4"
                       placeholder="Telefono"
                       name="telefono"
+                      value={values.telefono}
                       onChange={handleChange}
                     />
                   </div>
@@ -260,50 +287,54 @@ function CrearStudent() {
                       className="m-2 ml-3 bg-gray-700 h-12 rounded-lg text-white w-full pl-4"
                       placeholder="Correo"
                       name="correo"
+                      value={values.correo}
                       onChange={handleChange}
+                      disabled
                     />
                   </div>
-                  {errors.correo && touched.correo && (
-                    <div className="text-red-500 justify-center text-center">
-                      {errors.correo}
-                    </div>
-                  )}
                 </div>
                 <div className="justify-center m-6 items-center">
                   <div className="flex items-center justify-center rounded-lg bg-gray-700 h-60 w-64 relative ml-14 mt-6 ">
-                    {imagen ? (
-                      <img
-                        src={URL.createObjectURL(imagen)}
-                        alt="Imagen seleccionada"
-                        className="h-full w-full object-cover rounded-lg cursor-pointer"
-                        onClick={handleClickImagen}
-                      />
-                    ) : (
-                      <label
-                        htmlFor="imagen"
-                        className="cursor-pointer flex flex-col items-center"
-                      >
-                        <FaFileImage
-                          className="text-white"
-                          style={{ fontSize: "8rem" }}
-                        />
-                        <h1 className="text-white">Subir imagen</h1>
-                      </label>
-                    )}
-                    <input
-                      type="file"
-                      id="imagen"
-                      className="hidden"
-                      name="image"
-                      accept="image/*"
-                      onChange={(e) => {
-                        setFieldValue("image", e.target.files[0]);
-                        setImagen(e.target.files[0]);
-                        handleImagenChange(e);
-                      }}
+                  {imagenURL ? (
+                    <img
+                      src={imagenURL}
+                      alt="Imagen seleccionada"
+                      className="h-full w-full object-cover rounded-lg cursor-pointer"
+                      onClick={handleClickImagen}
                     />
+                  ) : estudiante.image ? (
+                    <img
+                      src={estudiante.image.url}
+                      alt="Imagen seleccionada"
+                      className="h-full w-full object-cover rounded-lg cursor-pointer"
+                      onClick={handleClickImagen}
+                    />
+                  ) : (
+                    <label
+                      htmlFor="image"
+                      className="cursor-pointer flex flex-col justify-center items-center"
+                    >
+                      <FaFileImage
+                        className="text-white"
+                        style={{ fontSize: "8rem" }}
+                      />
+                      <h1 className="text-white">Subir imagen</h1>
+                    </label>
+                  )}
+                  <input
+                    type="file"
+                    id="imagen"
+                    className="hidden"
+                    name="image"
+                    accept="image/*"
+                    onChange={(e) => {
+                      setFieldValue("image", e.target.files[0]);
+                      handleImagenChange(e);
+                    }}
+                  />
+                    
                   </div>
-                  {errors.image && touched.image  && (
+                  {errors.image && touched.image && (
                     <div className="text-red-500 justify-center text-center">
                       {errors.image}
                     </div>
@@ -325,8 +356,7 @@ function CrearStudent() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleClick()
-                      }
+                      onClick={() => handleClick()}
                       className="bg-red-700 py-2 px-4 rounded-lg hover:bg-red-600 text-white flex items-center"
                     >
                       <IoClose className="w-6 mr-2" />
@@ -340,18 +370,18 @@ function CrearStudent() {
         </Formik>
       </div>
 
- {/* Aviso de Creacion Alumno*/}
+      {/* Aviso de Creacion Alumno*/}
       <Modal
         isOpen={showAviso}
         onRequestClose={() => setShowAviso(false)}
-        contentLabel="Notificacion Aviso  Estudiante"
+        contentLabel="Notificacion Aviso  Docente"
         className="absolute  top-1/4 left-1/2"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       >
         <div className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96">
           <div className="mb-8 text-white text-center poppins text-[25px] m-6">
             <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
-            Estudiante creado con éxito.
+             Docente Actualizado con éxito.
             </h2>
           </div>
           <div className="flex justify-center space-x-4">
@@ -371,4 +401,4 @@ function CrearStudent() {
   );
 }
 
-export default CrearStudent;
+export default EditarDocente;
