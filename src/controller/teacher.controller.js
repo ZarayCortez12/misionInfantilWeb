@@ -10,12 +10,14 @@ export const createProfesor =  async (req, res) => {
         let image;
         console.log(req.files.image)
         if (req.files.image) {
+          console.log("SI hay Imagen");
             const result = await uploadImage(req.files.image.tempFilePath)
             await fs.remove(req.files.image.tempFilePath)
             image = {
                 url: result.secure_url,
                 public_id: result.public_id
             }
+            console.log("esta es la imagen", image);
         }
         const passwordHash = await bcrypt.hash("12345", 10)
         const newUser = new User({

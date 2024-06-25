@@ -1,5 +1,6 @@
 import { Form, Formik } from "formik";
 import { useStudent } from "../../../context/StudentContext";
+import {editedStudentRequest} from "../../../api/student";
 import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
@@ -45,7 +46,6 @@ function EditarStudent() {
         // Cargar entrenador
         if (ced) {
           const estudianteData = await getStudent(ced);
-          console.log(estudianteData);
           setEstudiante({
             identificacion: estudianteData.identificacion,
             nombre: estudianteData.nombre,
@@ -139,7 +139,7 @@ function EditarStudent() {
         </h1>
         <Formik
           initialValues={{
-            identificacion: estudiante.identificacion || "",
+            identificacion: estudiante?.identificacion || "",
             nombre: estudiante?.nombre || "",
             apellido: estudiante?.apellido || "",
             telefono: estudiante?.telefono || "",
@@ -150,23 +150,15 @@ function EditarStudent() {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
-             await updateStudent(ced,values);
+              console.log("este es el id que envio", ced)
+              const response = await axios.put(`http://localhost:4000/api/estudiantes/${ced}`, values);
+              console.log(response)
               setShowAviso(true);
-              setImagen(null);
+             setImagen(null);
               resetForm();
             } catch (error) {
-              console.error("Error al crear el estudiante:", error);
+              console.error("Error al Editar el estudiante:", error);
             }
-
-            setEstudiante({
-                documento: "",
-                nombre: "",
-                apellido: "",
-                correo: "",
-                telefono: "",
-                estado: "",
-                image: null,
-              });
 
             setSubmitting(false);
           }}
@@ -295,6 +287,8 @@ function EditarStudent() {
                 </div>
                 <div className="justify-center m-6 items-center">
                   <div className="flex items-center justify-center rounded-lg bg-gray-700 h-60 w-64 relative ml-14 mt-6 ">
+                  
+
                   {imagenURL ? (
                     <img
                       src={imagenURL}
@@ -331,8 +325,7 @@ function EditarStudent() {
                       setFieldValue("image", e.target.files[0]);
                       handleImagenChange(e);
                     }}
-                  />
-                    
+                    />
                   </div>
                   {errors.image && touched.image && (
                     <div className="text-red-500 justify-center text-center">

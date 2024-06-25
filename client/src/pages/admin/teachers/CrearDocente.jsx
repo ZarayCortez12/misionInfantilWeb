@@ -111,7 +111,7 @@ function CrearDocente() {
           return !Duplicado;
         }
       ),
-    imagen: Yup.mixed().required("Debe seleccionar una imagen"),
+    image: Yup.mixed().required("Debe seleccionar una imagen"),
   });
 
   return (
@@ -137,8 +137,8 @@ function CrearDocente() {
               console.log(values);
               //await registerDocente(values);
               setShowAviso(true);
-              setImagen(null);
-              resetForm();
+              //setImagen(null);
+              //resetForm();
             } catch (error) {
               console.error("Error al crear el docentes:", error);
             }
@@ -293,7 +293,7 @@ function CrearDocente() {
                     )}
                     <input
                       type="file"
-                      id="imagen"
+                      id="image"
                       className="hidden"
                       name="image"
                       accept="image/*"

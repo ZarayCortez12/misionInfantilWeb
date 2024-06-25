@@ -60,7 +60,7 @@ export const StudentProvider = ({ children }) => {
 
     const  updateStudent = async (id, user) => {
         try {
-            await updateSectorRequest(id, user);
+            await editedStudentRequest(id, user);
         } catch (error) {
             console.error(error)
         }

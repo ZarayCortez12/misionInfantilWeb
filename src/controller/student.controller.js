@@ -77,6 +77,7 @@ export const deleteStudent = async (req, res) => {
 
 export const updateStudent = async (req, res) => {
     try {
+      console.log(req.params)
       const { nombre, apellido, telefono , estado} = req.body;
       const userId = req.params.id;
   

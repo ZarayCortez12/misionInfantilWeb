@@ -111,7 +111,7 @@ function CrearStudent() {
           return !Duplicado;
         }
       ),
-    imagen: Yup.mixed().required("Debe seleccionar una imagen"),
+    image: Yup.mixed().required("Debe seleccionar una imagen"),
   });
 
   return (
@@ -134,9 +134,10 @@ function CrearStudent() {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
-              await registerStudent(values);
+              console.log(values);
+             await registerStudent(values);
               setShowAviso(true);
-              setImagen(null);
+             setImagen(null);
               resetForm();
             } catch (error) {
               console.error("Error al crear el estudiante:", error);

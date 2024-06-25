@@ -23,7 +23,7 @@ export const editedStudentRequest = async (user) => {
         form.append(key, user[key]);
     }
 
-    return await axios.post(`/estudiantes`, form, {
+    return await axios.put(`/estudiantes`, form, {
         headers: {
             "Content-Type": "multipart/form-data",
         },
