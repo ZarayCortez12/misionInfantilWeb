@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaEye, FaTrash } from 'react-icons/fa';
+import axios from 'axios';
 
 const EventCard = ({ title, date }) => (
   <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between">
     <h2 className="text-lg font-bold">{title}</h2>
-    <p className="text-sm">Fecha Creación: {date}</p>
+    <p className="text-sm">Fecha Creación: {new Date(date).toLocaleDateString()}</p>
     <div className="flex justify-end space-x-2 mt-2">
       <button className="text-green-500">
         <FaEye />
@@ -23,7 +24,7 @@ const EventCarousel = ({ title, events }) => (
       <button className="text-3xl">&lt;</button>
       <div className="flex space-x-4 overflow-x-auto">
         {events.map((event, index) => (
-          <EventCard key={index} title={event.title} date={event.date} />
+          <EventCard key={index} title={event.nombre} date={event.fecha} />
         ))}
       </div>
       <button className="text-3xl">&gt;</button>
@@ -32,19 +33,30 @@ const EventCarousel = ({ title, events }) => (
 );
 
 const Events = () => {
-  const eventosPasados = [
-    { title: 'Palabra De Dios', date: '14/02/2024' },
-    { title: 'Aprendamos de DIos', date: '25/04/2024' },
-    { title: 'Manos Sagradas', date: '18/05/2024' },
-    { title: 'Gozos de Dios', date: '16/06/2024' },
-  ];
+  const [eventosPasados, setEventosPasados] = useState([]);
+  const [eventosProximos, setEventosProximos] = useState([]);
 
-  const eventosProximos = [
-    { title: 'Caminemos de la Mano', date: '11/12/2024' },
-    { title: 'Pacto De Dios', date: '09/10/2024' },
-    { title: 'Fuerza Externa', date: '15/09/2024' },
-    { title: 'Palabra Activgua', date: '11/08/2024' },
-  ];
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/api/eventos');
+        const events = response.data;
+        console.log(events)
+        console.log(events[0].fecha)
+        // Separar eventos pasados y próximos según la fecha actual
+        const currentDate = new Date();
+        const pastEvents = events.filter(event => new Date(event.fecha) < currentDate);
+        const upcomingEvents = events.filter(event => new Date(event.fecha) >= currentDate);
+        
+        setEventosPasados(pastEvents);
+        setEventosProximos(upcomingEvents);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <div className="container mx-auto p-4 ">
@@ -56,7 +68,3 @@ const Events = () => {
 };
 
 export default Events;
-
-
-
-
