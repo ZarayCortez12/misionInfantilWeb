@@ -112,6 +112,16 @@ const Events = () => {
     }
   };
 
+  const validationSchema = Yup.object({
+    nombre: Yup.string().required("Nombre es requerido"),
+    fecha: Yup.date()
+      .min(new Date().toISOString().split("T")[0], "La fecha no puede ser anterior a hoy")
+      .required("Fecha es requerida"),
+    hora: Yup.string().required("Hora es requerida"),
+    lugar: Yup.string().required("Lugar es requerido"),
+    descripcion: Yup.string().required("Descripción es requerida"),
+  });
+
   return (
     <div className="container mx-auto p-4 ">
       <h1 className="text-3xl font-bold text-center mb-8">
@@ -157,13 +167,7 @@ const Events = () => {
               lugar: "",
               descripcion: "",
             }}
-            validationSchema={Yup.object({
-              nombre: Yup.string().required("Nombre es requerido"),
-              fecha: Yup.string().required("Fecha es requerida"),
-              hora: Yup.string().required("Hora es requerida"),
-              lugar: Yup.string().required("Lugar es requerido"),
-              descripcion: Yup.string().required("Descripción es requerida"),
-            })}
+            validationSchema={validationSchema}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
               await createEvent(values);
               resetForm();
