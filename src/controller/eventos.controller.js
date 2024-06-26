@@ -1,4 +1,5 @@
 import Evento from '../models/eventos.model.js'
+import Sector from '../models/sector.model.js'
 
 export const getEventos = async (req, res) => {
    try {
@@ -11,13 +12,17 @@ export const getEventos = async (req, res) => {
 
 export const createEvento = async (req, res) => {
     try {
-        const { nombre_curso, sector, docentes, fecha, hora } = req.body;
+        console.log(req.body);
+        const { nombre, lugar, descripcion, fecha, hora } = req.body;
+
+        const lugarEvento = await Sector.findOne({ nombre: lugar });
+        console.log(lugarEvento);
 
         // Crear un nuevo evento con los datos del request
         const newEvento = new Evento({
-            nombre_curso,
-            sector,
-            docentes,
+            nombre_curso: nombre,
+            sector: lugarEvento.numero,
+            descripcion,
             fecha,
             hora,
         });
