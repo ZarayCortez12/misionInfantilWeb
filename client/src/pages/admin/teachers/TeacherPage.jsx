@@ -1,10 +1,9 @@
 import { useDocente } from "../../../context/DocentesContext"; //acomodar
 import { useEffect } from "react";
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-
 
 import { IoClose } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa";
@@ -14,16 +13,10 @@ import * as Yup from "yup";
 
 import { VscEdit, VscTrash } from "react-icons/vsc";
 
-
 Modal.setAppElement("#root"); // Necesario para accesibilidad
 
 function Teachers() {
-  
-  const { 
-    getDocentes,
-    deleteDocente,
-   } =
-  useDocente();
+  const { getDocentes, deleteDocente } = useDocente();
 
   useEffect(() => {
     getDocentes();
@@ -70,8 +63,7 @@ function Teachers() {
 
   const VistaEditar = (id) => {
     navigate(`${id}`);
-  
-};
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,14 +96,12 @@ function Teachers() {
 
   //variables tabla
 
-
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/administrador/docentes/register');
+    navigate("/administrador/docentes/register");
   };
 
-  
   const [records, setRecords] = useState([]);
   const [filteredRecords, setFilteredRecords] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -120,12 +110,15 @@ function Teachers() {
   const [mostrarOpciones, setMostrarOpciones] = useState(null);
 
   const columns = [
-    { name: "Documento", selector: (row) => row.identificacion, sortable: true },
+    {
+      name: "Documento",
+      selector: (row) => row.identificacion,
+      sortable: true,
+    },
     { name: "Nombre", selector: (row) => row.nombre, sortable: true },
     { name: "Apellido", selector: (row) => row.apellido, sortable: true },
     { name: "Correo", selector: (row) => row.correo, sortable: true },
     { name: "Estado", selector: (row) => row.estado, sortable: true },
-   
   ];
 
   const customStyles = {
@@ -163,44 +156,44 @@ function Teachers() {
           </div>
 
           {mostrarOpciones && (
-        <div className="flex grow justify-end items-end mt-20 mr-20 w-auto md:mt-0">
-          <div
-            className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
-            onClick={() => {handleEditarClick();
-            }}
-          >
-            <VscEdit size="30px" className="w-5 md:w-6" />
-          </div>
-          <div
-            className="flex items-center bg-red-500 hover:bg-red-700 text-white text-sm py-2 px-3 rounded cursor-pointer"
-            onClick={() => handleEliminarClick()}
-          >
-            <VscTrash size="30px" className="w-5 md:w-6" />
-          </div>
-        </div>
-      )}
+            <div className="flex grow justify-end items-end mt-20 mr-20 w-auto md:mt-0">
+              <div
+                className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
+                onClick={() => {
+                  handleEditarClick();
+                }}
+              >
+                <VscEdit size="30px" className="w-5 md:w-6" />
+              </div>
+              <div
+                className="flex items-center bg-red-500 hover:bg-red-700 text-white text-sm py-2 px-3 rounded cursor-pointer"
+                onClick={() => handleEliminarClick()}
+              >
+                <VscTrash size="30px" className="w-5 md:w-6" />
+              </div>
+            </div>
+          )}
 
           <div className="outer-wrapper p-5 h-auto">
-        <div className=" overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
-        <DataTable
-              columns={columns}
-              data={filteredRecords}
-              selectableRows
-              selectableRowsSingle
-              pagination
-              paginationPerPage={5}
-              onSelectedRowsChange={(state) => {setSelectedRows(state);
-                setMostrarOpciones(state.selectedRows[0]);
-              }
+            <div className=" overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
+              <DataTable
+                columns={columns}
+                data={filteredRecords}
+                selectableRows
+                selectableRowsSingle
+                pagination
+                paginationPerPage={5}
+                onSelectedRowsChange={(state) => {
+                  setSelectedRows(state);
+                  setMostrarOpciones(state.selectedRows[0]);
+                }}
+                fixedHeader
+                progressPending={loading}
+                customStyles={customStyles}
+              />
+            </div>
+          </div>
 
-              }
-              fixedHeader
-              progressPending={loading}
-              customStyles={customStyles}
-            />
-           </div>
-      </div>
-          
           <div className=" flex justify-center mt-6 ">
             {" "}
             <button
@@ -236,7 +229,7 @@ function Teachers() {
                   handleDeleteStudent(selectedStudents._id);
                   setShowEliminarAviso(false);
                   location.reload();
-                }} 
+                }}
               >
                 <FaCheck className="w-6 mr-2" />
                 Si, inhabilitar
@@ -251,16 +244,9 @@ function Teachers() {
             </div>
           </div>
         </Modal>
-  
-        
       </div>
     </>
   );
 }
 
 export default Teachers;
-
-
-
-
-
