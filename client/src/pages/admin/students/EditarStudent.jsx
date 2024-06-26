@@ -150,9 +150,10 @@ function EditarStudent() {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
-              console.log("este es el id que envio", ced)
-              const response = await axios.put(`http://localhost:4000/api/estudiantes/${ced}`, values);
-              console.log(response)
+             
+              console.log("datos ", values);
+              await updateStudent(ced,values);
+             // console.log(response);
               setShowAviso(true);
              setImagen(null);
               resetForm();
@@ -307,6 +308,7 @@ function EditarStudent() {
                     <label
                       htmlFor="image"
                       className="cursor-pointer flex flex-col justify-center items-center"
+                      onClick={handleClickImagen}
                     >
                       <FaFileImage
                         className="text-white"

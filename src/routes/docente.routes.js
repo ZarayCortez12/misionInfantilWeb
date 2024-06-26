@@ -21,4 +21,4 @@ router.post(
 router.delete('/docentes/:id', deleteProfesor)
 router.put('/docentes/:id',  updateProfesor)
 
-export default router
+export default router;

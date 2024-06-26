@@ -134,7 +134,6 @@ function CrearStudent() {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
-              console.log(values);
              await registerStudent(values);
               setShowAviso(true);
              setImagen(null);

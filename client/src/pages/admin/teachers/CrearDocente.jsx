@@ -134,11 +134,10 @@ function CrearDocente() {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             try {
-              console.log(values);
-              //await registerDocente(values);
+              await registerDocente(values);
               setShowAviso(true);
-              //setImagen(null);
-              //resetForm();
+              setImagen(null);
+              resetForm();
             } catch (error) {
               console.error("Error al crear el docentes:", error);
             }
@@ -293,12 +292,12 @@ function CrearDocente() {
                     )}
                     <input
                       type="file"
-                      id="image"
+                      id="imagen"
                       className="hidden"
                       name="image"
                       accept="image/*"
                       onChange={(e) => {
-                        setFieldValue("imagen", e.target.files[0]);
+                        setFieldValue("image", e.target.files[0]);
                         setImagen(e.target.files[0]);
                         handleImagenChange(e);
                       }}

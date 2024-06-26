@@ -4,6 +4,7 @@ import { PlusCircleIcon } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
 
 function IndexAdmin() {
+    
     const [versiculo, setVersiculo] = useState(null);
 
     useEffect(() => {

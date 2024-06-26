@@ -20,4 +20,4 @@ router.post(
 router.delete('/cursos/:id', deleteCurso)
 router.put('/cursos/:id',  updateCurso)
 
-export default router
+export default router;
