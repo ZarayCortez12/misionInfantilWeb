@@ -15,14 +15,14 @@ export const registerDocenteRequest = async (user) => {
         },
     });
 };
-export const editedDocenteRequest = async (user) => {
+export const editedDocenteRequest = async (id,user) => {
     const form = new FormData();
 
     for(let key in user){
         form.append(key, user[key]);
     }
 
-    return await axios.post(`/docentes`, form, {
+    return await axios.put(`/docentes/${id}`, form, {
         headers: {
             "Content-Type": "multipart/form-data",
         },

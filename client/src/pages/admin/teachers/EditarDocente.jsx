@@ -45,7 +45,6 @@ function EditarDocente() {
         // Cargar entrenador
         if (ced) {
           const estudianteData = await getDocente(ced);
-          console.log(estudianteData);
           setEstudiante({
             identificacion: estudianteData.identificacion,
             nombre: estudianteData.nombre,
@@ -158,15 +157,7 @@ function EditarDocente() {
               console.error("Error al crear el estudiante:", error);
             }
 
-            setEstudiante({
-                documento: "",
-                nombre: "",
-                apellido: "",
-                correo: "",
-                telefono: "",
-                estado: "",
-                image: null,
-              });
+      
 
             setSubmitting(false);
           }}

@@ -149,13 +149,10 @@ function EditarStudent() {
           enableReinitialize={true}
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
-            try {
-             
-              console.log("datos ", values);
+            try {       
               await updateStudent(ced,values);
-             // console.log(response);
               setShowAviso(true);
-             setImagen(null);
+              setImagen(null);
               resetForm();
             } catch (error) {
               console.error("Error al Editar el estudiante:", error);

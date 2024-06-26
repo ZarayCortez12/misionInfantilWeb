@@ -1,7 +1,7 @@
 import User from '../models/user.models.js'
 import bcrypt from 'bcryptjs'
 import fs from 'fs-extra'
-import { updateImage, uploadImage, deleteImage} from "../libs/cloudinary.estudiante.js";
+import { updateImage, uploadImage, deleteImage} from "../libs/cloudinary.docente.js";
 
 export const createProfesor =  async (req, res) => {
     try {

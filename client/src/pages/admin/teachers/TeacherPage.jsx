@@ -64,7 +64,7 @@ function Teachers() {
       const P1 = selectedRows.selectedRows[0]._id;
       const estudiante = records.find((record) => record._id === P1);
       setSelectedStudens(estudiante);
-      // VistaEditar(estudiante._id);
+      VistaEditar(estudiante._id);
     }
   };
 
