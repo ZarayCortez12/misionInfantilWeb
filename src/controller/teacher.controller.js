@@ -1,96 +1,124 @@
-import { uploadImage } from "../libs/cloudinary.js";
-import User from "../models/user.models.js";
+import User from '../models/user.models.js'
+import bcrypt from 'bcryptjs'
+import fs from 'fs-extra'
+import { updateImage, uploadImage, deleteImage} from "../libs/cloudinary.docente.js";
 
-export const registerDocente = async (req, res) => {
-  try {
-    const { identificacion, nombre, apellido, telefono, correo, clave } =
-      req.body;
-
-    let image;
-
-    console.log(req.files.image);
-    if (req.files.image) {
-      const result = await uploadImage(req.files.image.tempFilePath);
-      await fs.remove(req.files.image.tempFilePath);
-      image = {
-        url: result.secure_url,
-        public_id: result.public_id,
-      };
-    }
-    const userFound = await User.findOne({ correo });
-    const userFound2 = await User.findOne({ identificacion });
-    if (userFound2)
-      return res
-        .status(400)
-        .json(["Identificación ya registrada en el sistema"]);
-    if (userFound)
-      return res.status(400).json(["Usuario ya registrado en el sistema"]);
-    const passwordHash = await bcrypt.hash(clave, 10);
-    const newUser = new User({
-      identificacion,
-      apellido,
-      correo,
-      telefono,
-      clave: passwordHash,
-      estado: "INACTIVO",
-      nombre,
-      rol: "DOCENTE",
-      username: `${identificacion}`,
-      image,
-    });
-    const userSave = await newUser.save();
-    const token = await createAccessToken({ id: userSave._id });
-    res.cookie("token", token);
-    res.json({
-      id: userSave._id,
-      nombre: userSave.nombre,
-      apellido: userSave.apellido,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const updateDocente = async (req, res) => {
-  
-    console.log(req.body);
-    const { identificacion, nombre, apellido, telefono, correo, clave } =
-      req.body;
-
-  
-};
-
-export const getDocentes = async (req, res) => {
+export const createProfesor =  async (req, res) => {
     try {
-      // Consulta usuarios que tengan el rol de 'DOCENTE'
-      const docentes = await User.find({ rol: 'DOCENTE' });
-  
-      // Si no se encontraron usuarios con ese rol, retornar un mensaje de error
-      if (!docentes || docentes.length === 0) {
-        return res.status(404).json({ message: "No se encontraron usuarios con rol de DOCENTE" });
-      }
-      console.log(docentes.length);
-      // Si se encontraron usuarios con ese rol, retornar la lista de usuarios
-      res.json(docentes);
+
+        const { identificacion, nombre, apellido, telefono, correo} = req.body
+        let image;
+        console.log(req.files.image)
+        if (req.files.image) {
+          console.log("SI hay Imagen");
+            const result = await uploadImage(req.files.image.tempFilePath)
+            await fs.remove(req.files.image.tempFilePath)
+            image = {
+                url: result.secure_url,
+                public_id: result.public_id
+            }
+            console.log("esta es la imagen", image);
+        }
+        const passwordHash = await bcrypt.hash("12345", 10)
+        const newUser = new User({
+            identificacion,
+            apellido,
+            correo,
+            telefono,
+            clave: passwordHash,
+            estado: "ACTIVO",
+            nombre,
+            rol: "DOCENTE",
+            username: `${identificacion}`,
+            image,
+        });
+        const userSave = await newUser.save();
+
+        res.json(userSave);
     } catch (error) {
-      // Capturar cualquier error de la consulta
-      console.error("Error al buscar usuarios con rol de DOCENTE:", error);
-      return res.status(500).json({ message: "Error interno del servidor" });
+        res.status(500).json({ message: error.message });
+    } 
+}
+
+export const getProfesor = async (req, res) => {
+    try {
+        const user  =  await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ message: "Profesor  not found"});
+        res.json(user)
+    } catch (error) {
+        return res.status(404).json({ message: "Profesor  no Encontrado"})
+    }
+}
+
+export const getProfesores = async (req, res) => {
+    try {
+        const estudiantes = await User.find({ rol: 'DOCENTE' });
+     res.json(estudiantes)
+    } catch (error) {
+     return res.status(404).json({ message: "Profesor  no Encontrado"})
+    }
+ }
+
+export const deleteProfesor  = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { estado: 'INACTIVO' },
+          { new: true }
+        );
+    
+        if (!updatedUser) {
+          return res.status(404).json({ message: 'Profesor no encontrado' });
+        }
+        res.status(200).json({ message: 'Profesor desactivado correctamente', user: updatedUser });
+      } catch (error) {
+        res.status(500).json({ message: 'Error al desactivar el Profesor', error });
+      }
+}
+
+  export const updateProfesor = async (req, res) => {
+    try {
+      const { nombre, apellido, telefono } = req.body;
+      const userId = req.params.id;
+  
+      let updatedFields = { nombre, apellido, telefono };
+  
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      if (!req.files) {
+        // Actualiza sin cambiar la imagen
+        await User.findByIdAndUpdate(userId, updatedFields);
+      } else {
+     
+        // Elimina la imagen antigua si existe
+        if (user.image && user.image.public_id) {
+          await deleteImage(user.image.public_id);
+        }
+  
+        // Sube la nueva imagen
+        const result = await uploadImage(req.files.image.tempFilePath)
+              await fs.remove(req.files.image.tempFilePath)
+        const image = {
+          url: result.secure_url,
+          public_id: result.public_id
+        };
+  
+  
+        updatedFields = { ...updatedFields, image };
+  
+        // Actualizar el usuario con la nueva imagen
+        await User.findByIdAndUpdate(userId, updatedFields);
+      }
+  
+      const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, { new: true });
+  
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   };
-
-export const getDocente= async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const teacher = await User.findById(id);
-    console.log(teacher);
-    if (!teacher) {
-      return res.status(404).json({ message: "No hay este docente" });
-    }
-
-    return res.status(200).json(teacher);
-  } catch (error) {
-    return res.status(404).json({ message: "No hay este docente" });
-  }
-};

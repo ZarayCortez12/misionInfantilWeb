@@ -105,6 +105,7 @@ function SectorPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRows, setSelectedRows] = useState({ selectedRows: [] });
+  const [mostrarOpciones, setMostrarOpciones] = useState(null);
 
   const columns = [
     { name: "N° Sector", selector: (row) => row.numero, sortable: true },
@@ -207,35 +208,22 @@ function SectorPage() {
             </h1>
           </div>
 
-          <div id="opciones" className="flex justify-around mb-4">
-            <div
-              className="flex items-center hover:text-red-500 hover:cursor-pointer"
-              onClick={() => handleEliminarClick()}
-            >
-              <RiDeleteBin6Line className="hover:text-red-500 mr-2" />{" "}
-              <h1 className="ml-2 text-lg">Eliminar</h1>
-            </div>
-            <div
-              className="flex items-center hover:text-yellow-500 hover:cursor-pointer "
-              onClick={() => handleEditarClick()}
-            >
-              <MdOutlineEdit className="hover:text-yellow-500 mr-2" />{" "}
-              <h1 className="ml-2 text-lg">Editar</h1>
-            </div>
+          {mostrarOpciones && (
+        <div className="flex grow justify-end items-end mt-20 mr-20 w-auto md:mt-0">
+          <div
+            className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5"
+            onClick={() => handleEditarClick()}
+          >
+            <VscEdit size="30px" className="w-5 md:w-6" />
           </div>
-
-          <div className="flex grow justify-end items-end mt-20 w-auto md:mt-0">
-          
-            <>
-              <div className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5" href="/login"  to="/">
-                  <VscEdit size="30px" className='w-5 md:w-6'/>
-              </div>
-              <div className="flex items-center bg-red-500 hover:bg-red-700 text-white text-sm py-2 px-3 rounded" href="/login"  to="/">
-                  <VscTrash size="30px" className='w-5 md:w-6'/>
-              </div>
-            </>
-         
+          <div
+            className="flex items-center bg-red-500 hover:bg-red-700 text-white text-sm py-2 px-3 rounded"
+            onClick={() => handleEliminarClick()}
+          >
+            <VscTrash size="30px" className="w-5 md:w-6" />
+          </div>
         </div>
+      )}
 
           <div className="outer-wrapper p-5 h-auto">
         <div className=" overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
@@ -246,7 +234,11 @@ function SectorPage() {
               selectableRowsSingle
               pagination
               paginationPerPage={5}
-              onSelectedRowsChange={(state) => setSelectedRows(state)}
+              onSelectedRowsChange={(state) => {setSelectedRows(state);
+                setMostrarOpciones(state.selectedRows[0]);
+              }
+
+              }
               fixedHeader
               progressPending={loading}
               customStyles={customStyles}
@@ -257,12 +249,12 @@ function SectorPage() {
           <div className=" flex justify-center mt-6 ">
             {" "}
             <button
-              className="bg-yellow-900 py-2 px-4 rounded-lg hover:bg-yellow-500  poppins  items-center w-96"
+              className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500  poppins  items-center w-96"
               onClick={() => setShowCrearAviso(true)}
             >
               <div className="flex justify-center text-white carrois-gothicSC">
                 {" "}
-                <PlusCircleIcon className="w-6 mr-2" /> <h1></h1>Ingresar Sector{" "}
+                <PlusCircleIcon className="w-6 mr-2" /> Ingresar Sector{" "}
               </div>
             </button>{" "}
           </div>
@@ -447,7 +439,7 @@ function SectorPage() {
                       <button
                         type="button"
                         onClick={() => setShowCrearAviso(false)}
-                        className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-500 text-white flex items-center"
+                        className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-800 text-white flex items-center"
                       >
                         <IoClose className="w-6 mr-2" />
                         <span className="">Cancelar</span>
@@ -516,7 +508,7 @@ function SectorPage() {
                         placeholder="Numero"
                         className="m-2 ml-3 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
                         name="numero"
-                        value={values.nombre}
+                        value={values.numero}
                         onChange={handleChange}
                         disabled
                       />
@@ -601,7 +593,7 @@ function SectorPage() {
                       <button
                         type="button"
                         onClick={() => setEditarAviso(false)}
-                        className="bg-yellow-400 py-2 px-4 rounded-lg hover:bg-yellow-600 text-white flex items-center"
+                        className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-800 text-white flex items-center"
                       >
                         <IoClose className="w-6 mr-2" />
                         <span className="">Cancelar</span>

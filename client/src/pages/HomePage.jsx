@@ -184,7 +184,7 @@ function HomePage() {
  <img className="transform  scale-y-[-1] w-full h-24" src={wave} alt="grupo" /> 
    <section className='flex flex-col lg:flex-row items-center mt-6 bg-blue-900 text-white h-auto lg:h-96'>
   <div className='w-full  px-8 lg:pr-4  lg:ml-24 ml-0'>
-    <h1 className='text-center font-bold text-[22px] mb-2 lg:mb-4 poppins lg:mt-0 mt-12 lg:mb-0 mb-12'>¿CUÁL ES NUESTRO OBJETIVO?</h1>
+    <h1 className='text-center font-bold text-[22px]  poppins lg:mt-0 mt-12 lg:mb-0 mb-12'>¿CUÁL ES NUESTRO OBJETIVO?</h1>
     <h2 className='text-center text-[22px] carrois-gothic lg:mt-0 mt-12 lg:mb-0 mb-12'>En nuestras clases, abordamos diversos temas bíblicos adaptados a sus necesidades y niveles de comprensión, fomentando no solo el conocimiento sino también el crecimiento espiritual y la comunión entre los jóvenes.</h2>
   </div>
   <div className='w-full  '>

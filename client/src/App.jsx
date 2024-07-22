@@ -1,7 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { AuthProvider } from "./context/AuthContext"
 import { SectorProvider } from "./context/SectorContext"
-import { TeacherProvider } from "./context/TeacherContext"
+import { StudentProvider } from "./context/StudentContext"
+import { EventoProvider} from "./context/EventoContext"
+import { CursoProvider } from "./context/CursoContext"
+import { DocenteProvider } from "./context/DocentesContext"
 import LoginPage from "./pages/LoginPage"
 import HomePage from "./pages/HomePage"
 import ProtectedRoute from "./ProtectedRoute"
@@ -15,13 +18,19 @@ import Notifications from "./pages/admin/notifications/Notifications"
 import Students from "./pages/admin/students/Students"
 import Events from "./pages/admin/events/Events"
 import Courses from "./pages/admin/courses/Courses"
-import EditTeacherPage from "./pages/admin/teachers/EditTeacherPage"
+import CrearStudent from "./pages/admin/students/CrearStudent"
+import EditarStudent from "./pages/admin/students/EditarStudent"
+import CrearDocente from "./pages/admin/teachers/CrearDocente"
+import EditarDocente from "./pages/admin/teachers/EditarDocente"
 
 function App() {
   return (
     <AuthProvider>
-      <TeacherProvider>
+      <DocenteProvider>
+      <CursoProvider>
+      <EventoProvider>
       <SectorProvider>
+        <StudentProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -33,18 +42,25 @@ function App() {
                   <Route path="/administrador/sectores" element={<AdminLayout> <SectorPage/> </AdminLayout>} />
                   <Route path="/administrador/sectores/register" element={<AdminLayout> <RegisterSectorPage/> </AdminLayout>} />
                   <Route path="/administrador/docentes" element={<AdminLayout> <TeacherPage/> </AdminLayout>} />
-                  <Route path="/administrador/docentes/register" element={<AdminLayout> <RegisterTeacherPage/> </AdminLayout>} />
-                  <Route path="/administrador/docentes/edit/:id" element={<AdminLayout> <EditTeacherPage/> </AdminLayout>} />
+                  <Route path="/administrador/docentes/register" element={<AdminLayout> <CrearDocente/> </AdminLayout>} />
                   <Route path='/administrador/cursos' element={<AdminLayout> <Courses/> </AdminLayout>} />
                   <Route path='/administrador/eventos' element={<AdminLayout> <Events/> </AdminLayout>} />
                   <Route path='/administrador/estudiantes' element={<AdminLayout> <Students/> </AdminLayout>} />
+                  <Route path='/administrador/estudiantes/registrar' element={<AdminLayout> <CrearStudent/> </AdminLayout>} />
+                  <Route path='/administrador/estudiantes/:ced' element={<AdminLayout> <EditarStudent/> </AdminLayout>} />
+                  <Route path='/administrador/docentes/:ced' element={<AdminLayout> <EditarDocente/> </AdminLayout>} />
+                  
             </Route>
 
           </Routes>
         </BrowserRouter>
+        </StudentProvider>
       </SectorProvider>
-      </TeacherProvider>
+      </EventoProvider>
+      </CursoProvider>
+      </DocenteProvider>
     </AuthProvider>
+
   );
 }
 export default App 

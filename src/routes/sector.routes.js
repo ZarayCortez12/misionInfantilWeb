@@ -23,4 +23,4 @@ router.post(
 router.delete('/sectores/:id', deleteSector)
 router.put('/sectores/:id',  updateSector)
 
-export default router
+export default router;
