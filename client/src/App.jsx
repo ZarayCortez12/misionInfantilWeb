@@ -6,6 +6,7 @@ import { EventoProvider} from "./context/EventoContext"
 import { CursoProvider } from "./context/CursoContext"
 import { DocenteProvider } from "./context/DocentesContext"
 import LoginPage from "./pages/LoginPage"
+import ResetPasswordPage from "./pages/ResetPasswordPage"
 import HomePage from "./pages/HomePage"
 import ProtectedRoute from "./ProtectedRoute"
 import IndexAdmin from "./pages/admin/IndexAdmin"
@@ -35,6 +36,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} /> 
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
             <Route element={<ProtectedRoute/>}>
                   <Route path='/administrador' element={<AdminLayout> <IndexAdmin/> </AdminLayout>} />

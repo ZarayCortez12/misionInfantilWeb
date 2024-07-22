@@ -61,7 +61,7 @@ function LoginPage() {
         </h1>
       </div>
 
-      <div className="contenedor mt-20  bg-blue-900 max-w-md w-full p-10 rounded-md items-center justify-center relative">
+      <div className="contenedor bg-blue-900 max-w-md w-full p-10 rounded-md items-center justify-center relative">
         {signinErrors.map((error, i) => (
           <div className="bg-red-500 p-2 text-white text-center" key={i}>
             {error}
@@ -190,7 +190,11 @@ function LoginPage() {
 
           <p className="text-lg my-2 text-white text-center">
             <span className="smaller-text">¿Olvidaste tu contraseña? </span>
-            <span className="smaller-bold">Reestablecela Aquí</span>
+            <Link to="/reset-password">
+              <span className="smaller-bold cursor-pointer">
+                Reestablecela Aquí
+              </span>
+            </Link>
           </p>
           <br />
           <div className="flex items-center justify-center">
