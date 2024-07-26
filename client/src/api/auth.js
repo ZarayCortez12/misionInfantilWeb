@@ -21,3 +21,7 @@ export const verifyTokenRequet = () => axios.get("/verify");
 export const getUsuariosRequest = () => axios.get("/usuarios");
 
 export const sendEmailRequest = (user) => axios.post("/sendEmail", user);
+
+export const resetPasswordRequest = (cedula, token, contrasena) => {
+  return axios.post(`/reset-password/${cedula}/${token}`, { contrasena });
+};

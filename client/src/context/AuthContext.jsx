@@ -5,6 +5,7 @@ import {
   verifyTokenRequet,
   getUsuariosRequest,
   sendEmailRequest,
+  resetPasswordRequest,
 } from "../api/auth";
 import Cookies from "js-cookie";
 
@@ -75,6 +76,24 @@ export const AuthProvider = ({ children }) => {
       }
       setErrors([error.response.data.message]);
       setSuccessMessage(""); // Limpiar el mensaje de éxito en caso de error
+    }
+  };
+
+  const resetPassword = async (cedula, token, contrasena) => {
+    try {
+      const res = await resetPasswordRequest(cedula, token, contrasena);
+      console.log(res.data);
+      setIsAuthenticated(true);
+      setErrors([]); // Limpiar los errores al tener éxito
+      setSuccessMessage("La contraseña ha sido restablecida correctamente."); // Establecer el mensaje de éxito
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data);
+      }
+      setErrors([error.response.data.message]);
+      setSuccessMessage("");
     }
   };
 
@@ -162,6 +181,7 @@ export const AuthProvider = ({ children }) => {
         sendEmail,
         getUsuarios,
         getTeachers,
+        resetPassword,
         loading,
         user,
         isAuthenticated,

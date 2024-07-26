@@ -7,6 +7,7 @@ import { CursoProvider } from "./context/CursoContext";
 import { DocenteProvider } from "./context/DocentesContext";
 import LoginPage from "./pages/LoginPage";
 import SendEmailPage from "./pages/SendEmailPage";
+import ResetPasswordPage from "./pages/ResetPasswordpage";
 import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./ProtectedRoute";
 import IndexAdmin from "./pages/admin/IndexAdmin";
@@ -37,6 +38,7 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/send-email" element={<SendEmailPage />} />
+                    <Route path="/reset-password/:cedula/:token" element={<ResetPasswordPage />} />
 
                     <Route element={<ProtectedRoute />}>
                       <Route

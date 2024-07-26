@@ -107,10 +107,13 @@ export const sendEmail = async (req, res) => {
         .status(400)
         .json({ message: "Usuario no registrado en el sistema" });
 
-    const token = await createAccessToken({ id: user._id });
+    const token = jwt.sign({ id: user._id }, "jwt-secret-key", {
+      expiresIn: "1h",
+    });
     res.cookie("token", token);
 
     const link = `http://localhost:5173/reset-password/${user.identificacion}/${token}`;
+    console.log("Link de restablecimiento de contraseña: ", link);
 
     const filePath = path.join(__dirname, "../../Plantilla_Correo.html");
     if (!fs.existsSync(filePath)) {
@@ -143,7 +146,50 @@ export const sendEmail = async (req, res) => {
   }
 };
 
-export const resetPassword = async (req, res) => {};
+export const resetPassword = async (req, res) => {
+  const { cedula, token } = req.params;
+  const { contrasena } = req.body;
+  console.log("Esta es la cedula: ", cedula);
+  console.log("Este es el token: ", token);
+
+  jwt.verify(token, "jwt-secret-key", async (err, decoded) => {
+    if (err) {
+      console.error("Error al verificar el token:", err);
+      return res.status(401).json({ Status: "Error With Token" });
+    } else {
+      console.log("Token verificado correctamente:", decoded);
+      try {
+        console.log("Esta es la contraseña: ", typeof contrasena);
+        if (typeof contrasena !== "string") {
+          throw new Error("La contraseña debe ser una cadena de texto");
+        }
+        const hashedPassword = await bcrypt.hash(contrasena, 10);
+        const user = await User.findOne({ identificacion: cedula });
+
+        if (!user) {
+          return res
+            .status(400)
+            .json({ message: "Usuario no registrado en el sistema" });
+        }
+
+        // Actualizar la contraseña del usuario
+        user.contrasena = hashedPassword;
+
+        // Guardar los cambios en la base de datos
+        await user.save();
+
+        return res
+          .status(200)
+          .json({ successMessage: "Contraseña actualizada correctamente" });
+      } catch (error) {
+        console.error("Error interno del servidor:", error);
+        return res
+          .status(500)
+          .json({ Status: "Error interno del servidor", error: error.message });
+      }
+    }
+  });
+};
 
 export const logout = (req, res) => {
   res.cookie("token", "", {
