@@ -5,7 +5,7 @@ import {
     profile,
     verifyToken,
     getUsuarios,
-
+    sendEmail,
 } from "../controller/auth.controller.js"
 
 import { authRequired } from '../middlewares/validateToken.js';
@@ -23,5 +23,7 @@ router.get('/verify', verifyToken)
 router.get('/profile', authRequired, profile)
 
 router.get('/usuarios', getUsuarios)
+
+router.post('/sendEmail', sendEmail)
 
 export default router;

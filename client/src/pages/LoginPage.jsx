@@ -7,6 +7,7 @@ import {
   FaUser,
   FaChalkboardTeacher,
   FaArrowAltCircleLeft,
+  FaEye, FaEyeSlash,
 } from "react-icons/fa";
 import { TbLock } from "react-icons/tb";
 import { MdAdminPanelSettings, MdRemoveRedEye } from "react-icons/md";
@@ -24,6 +25,7 @@ function LoginPage() {
 
   const { signin, errors: signinErrors, isAuthenticated } = useAuth();
   const [userDatas, setUserDatas] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = handleSubmit(async (data) => {
@@ -37,6 +39,23 @@ function LoginPage() {
       console.error("Error al iniciar sesión:", error);
     }
   });
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const handleKeyDown = (e) => {
+    // Permitir solo números y las teclas de navegación (flechas, inicio, fin, etc.)
+    if (
+      !(
+        (e.keyCode > 47 && e.keyCode < 58) ||
+        (e.keyCode > 95 && e.keyCode < 106) ||
+        [8, 9, 13, 27, 35, 36, 37, 39].includes(e.keyCode)
+      )
+    ) {
+      e.preventDefault();
+    }
+  };
 
   return (
     <div className="flex h-[calc(100vh-100px)] items-center justify-center space-x-20">
@@ -82,23 +101,35 @@ function LoginPage() {
               {...register("identificacion", { required: true })}
               className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
               placeholder="Usuario"
+              inputMode="numeric"
+              onKeyDown={handleKeyDown}
             ></input>
           </div>
-          {errors.correo && (
+          {errors.identificacion && (
             <p className="text-red-500">Por favor, ingresa tu identificación</p>
           )}
 
-          <div className="flex items-center">
+          <div className="relative flex items-center">
             <div className="text-white mr-2">
               <TbLock className="w-6 h-6" />
             </div>
 
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               {...register("clave", { required: true })}
-              className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+              className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2 pr-10" // Añadido pr-10 para espacio para el icono
               placeholder="Contraseña"
-            ></input>
+            />
+            <div
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? (
+                <FaEyeSlash className="text-white" />
+              ) : (
+                <FaEye className="text-white" />
+              )}
+            </div>
           </div>
           {errors.clave && (
             <p className="text-red-500">Contraseña es requerida</p>
@@ -190,9 +221,9 @@ function LoginPage() {
 
           <p className="text-lg my-2 text-white text-center">
             <span className="smaller-text">¿Olvidaste tu contraseña? </span>
-            <Link to="/reset-password">
+            <Link to="/send-email">
               <span className="smaller-bold cursor-pointer">
-                Reestablecela Aquí
+                Restablecela Aquí
               </span>
             </Link>
           </p>

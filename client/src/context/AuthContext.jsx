@@ -4,6 +4,7 @@ import {
   loginRequest,
   verifyTokenRequet,
   getUsuariosRequest,
+  sendEmailRequest,
 } from "../api/auth";
 import Cookies from "js-cookie";
 
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [usuarios, setUsuarios] = useState([]);
 
@@ -55,6 +57,24 @@ export const AuthProvider = ({ children }) => {
         return setErrors(error.response.data);
       }
       setErrors([error.response.data.message]);
+    }
+  };
+
+  const sendEmail = async (user) => {
+    try {
+      const res = await sendEmailRequest(user);
+      console.log(res.data);
+      setIsAuthenticated(true);
+      setErrors([]); // Limpiar los errores al tener éxito
+      setSuccessMessage("Por favor, revisa tu bandeja de entrada y de spam."); // Establecer el mensaje de éxito
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      if (Array.isArray(error.response.data)) {
+        return setErrors(error.response.data);
+      }
+      setErrors([error.response.data.message]);
+      setSuccessMessage(""); // Limpiar el mensaje de éxito en caso de error
     }
   };
 
@@ -95,6 +115,15 @@ export const AuthProvider = ({ children }) => {
   }, [errors]);
 
   useEffect(() => {
+    if (successMessage.length > 0) {
+      const timer = setTimeout(() => {
+        setSuccessMessage("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
     async function checkLogin() {
       const cookies = Cookies.get();
 
@@ -130,12 +159,14 @@ export const AuthProvider = ({ children }) => {
         signup,
         signin,
         logout,
+        sendEmail,
         getUsuarios,
         getTeachers,
         loading,
         user,
         isAuthenticated,
         errors,
+        successMessage,
       }}
     >
       {children}

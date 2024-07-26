@@ -4,7 +4,13 @@ import { createAccessToken } from "../libs/jwt.js";
 import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config.js";
 import { uploadImage } from "../libs/cloudinary.js";
+import brevo from "@getbrevo/brevo";
+import { Resend } from "resend";
+import sendEmails from "../sendEmail.js";
+import path from "path";
+import url from "url";
 import fs from "fs-extra";
+import handlebars from "handlebars";
 
 export const registerDocente = async (req, res) => {
   try {
@@ -88,6 +94,56 @@ export const login = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const sendEmail = async (req, res) => {
+  const email = req.body.correo;
+  try {
+    const user = await User.findOne({ correo: email });
+    if (!user)
+      return res
+        .status(400)
+        .json({ message: "Usuario no registrado en el sistema" });
+
+    const token = await createAccessToken({ id: user._id });
+    res.cookie("token", token);
+
+    const link = `http://localhost:5173/reset-password/${user.identificacion}/${token}`;
+
+    const filePath = path.join(__dirname, "../../Plantilla_Correo.html");
+    if (!fs.existsSync(filePath)) {
+      console.error(
+        "El archivo Plantilla_Correo.html no se encuentra en la ruta especificada."
+      );
+      return res
+        .status(500)
+        .json({ message: "Archivo de plantilla no encontrado." });
+    }
+    const source = fs.readFileSync(filePath, "utf8");
+    const template = handlebars.compile(source);
+    const replacements = {
+      nombre: user.nombre,
+      link: link,
+    };
+
+    const htmlToSend = template(replacements);
+    const subject = "Restablecimiento de contraseña";
+
+    // Pasar `htmlToSend` en lugar de `text`
+    await sendEmails(user.correo, subject, htmlToSend);
+
+    return res
+      .status(200)
+      .json({ successMessage: "Por favor, revisa tu correo electrónico" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const resetPassword = async (req, res) => {};
 
 export const logout = (req, res) => {
   res.cookie("token", "", {
