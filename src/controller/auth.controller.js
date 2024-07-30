@@ -173,7 +173,7 @@ export const resetPassword = async (req, res) => {
         }
 
         // Actualizar la contraseña del usuario
-        user.contrasena = hashedPassword;
+        user.clave = hashedPassword;
 
         // Guardar los cambios en la base de datos
         await user.save();
