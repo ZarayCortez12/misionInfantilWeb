@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { MdOutlineRestartAlt } from "react-icons/md";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import { IoClose } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa";
@@ -13,6 +15,7 @@ import Modal from "react-modal";
 import * as Yup from "yup";
 
 import { VscEdit, VscTrash } from "react-icons/vsc";
+import "../../../components/styles/visualicerDocente.css";
 
 Modal.setAppElement("#root"); // Necesario para accesibilidad
 
@@ -134,6 +137,15 @@ function Teachers() {
   const [selectedRows, setSelectedRows] = useState({ selectedRows: [] });
   const [mostrarOpciones, setMostrarOpciones] = useState(null);
 
+  useEffect(() => {
+    const filtered = records.filter(record =>
+      record.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.apellido.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.identificacion.toString().includes(searchTerm)
+    );
+    setFilteredRecords(filtered);
+  }, [searchTerm, records]);
+
   const columns = [
     {
       name: "Identificación",
@@ -218,15 +230,36 @@ function Teachers() {
     <>
       <div className="flex flex-col items-center mt-2 gap-4 min-h-screen">
         {/*tabla de estudiantes*/}
+        <br />
         <div className="mb-6">
           <h1 className="text-[38px] text-center font-bold">
             {" "}
             Docentes Registrados
           </h1>
         </div>
+        <div className="search-bar-jugadores">
+          <FontAwesomeIcon
+            icon={faSearch}
+            size="xl"
+            className="search-icon-jugadores"
+          />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input-jugadores border rounded-lg border-gray-300 bg-gray-100 p-2 text-gray-700"
+          />
+          <div
+            className="clear-search-jugadores-circle"
+            onClick={() => setSearchTerm("")}
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </div>
+        </div>
         <div className="flex flex-col items-center mt-2 gap-4 min-h-screen p-5 h-auto w-full max-w-axl">
           {mostrarOpciones && (
-            <div className="flex justify-end items-end mb-4">
+            <div className="flex justify-end items-end mb-4 botones-acciones-docentes" style={{ marginBottom: "57px" }}>
               {/* Botón para editar */}
               <div
                 className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
@@ -256,7 +289,7 @@ function Teachers() {
             </div>
           )}
 
-          <div className="outer-wrapper p-5 h-auto">
+          <div className="outer-wrapper p-5 h-auto table-docentes-visualizer" style={{ marginTop: "-40px" }}>
             <div className=" overflow-x-auto max-w-full">
               <DataTable
                 columns={columns}
