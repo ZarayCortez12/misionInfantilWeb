@@ -111,14 +111,59 @@ function Teachers() {
 
   const columns = [
     {
-      name: "Documento",
+      name: "Identificación",
       selector: (row) => row.identificacion,
       sortable: true,
+      width: "185px",
+      cell: (row) => (
+        <div style={{ fontSize: "13px" }}>{row.identificacion}</div>
+      ),
     },
-    { name: "Nombre", selector: (row) => row.nombre, sortable: true },
-    { name: "Apellido", selector: (row) => row.apellido, sortable: true },
-    { name: "Correo", selector: (row) => row.correo, sortable: true },
-    { name: "Estado", selector: (row) => row.estado, sortable: true },
+    {
+      name: "Nombre",
+      selector: (row) => row.nombre,
+      sortable: true,
+      width: "180px",
+      cell: (row) => <div style={{ fontSize: "13px" }}>{row.nombre}</div>,
+    },
+    {
+      name: "Apellido",
+      selector: (row) => row.apellido,
+      sortable: true,
+      width: "180px",
+      cell: (row) => <div style={{ fontSize: "13px" }}>{row.apellido}</div>,
+    },
+    {
+      name: "Correo",
+      selector: (row) => row.correo,
+      sortable: true,
+      width: "250px",
+      cell: (row) => <div style={{ fontSize: "13px" }}>{row.correo}</div>,
+    },
+    {
+      name: "Teléfono",
+      selector: (row) => row.telefono,
+      sortable: true,
+      width: "150px",
+      cell: (row) => <div style={{ fontSize: "13px" }}>{row.telefono}</div>,
+    },
+    {
+      name: "Estado",
+      selector: (row) => row.estado,
+      sortable: true,
+      width: "150px",
+      cell: (row) => (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: "13px",
+            color: row.estado === "ACTIVO" ? "green" : "red",
+          }}
+        >
+          {row.estado}
+        </div>
+      ),
+    },
   ];
 
   const customStyles = {
@@ -138,25 +183,24 @@ function Teachers() {
         borderRadius: "15px",
         overflow: "hidden",
         width: 1100, // Ajusta el ancho de la tabla
+        maxWidth: "1100px",
       },
     },
   };
 
   return (
     <>
-      <div className="mt-2 flex grow flex-col gap-4 md:flex-row static">
+      <div className="flex flex-col items-center mt-2 gap-4 min-h-screen">
         {/*tabla de estudiantes*/}
-
-        <div className="p-5  h-auto w-screen relative">
-          <div className="mb-6">
-            <h1 className="text-[38px] poppins text-center poppins bold-text">
-              {" "}
-              Docentes Registrados
-            </h1>
-          </div>
-
+        <div className="mb-6">
+          <h1 className="text-[38px] text-center font-bold">
+            {" "}
+            Docentes Registrados
+          </h1>
+        </div>
+        <div className="flex flex-col items-center mt-2 gap-4 min-h-screen p-5 h-auto w-full max-w-axl">
           {mostrarOpciones && (
-            <div className="flex grow justify-end items-end mt-20 mr-20 w-auto md:mt-0">
+            <div className="flex justify-end items-end mb-4">
               <div
                 className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
                 onClick={() => {
@@ -175,7 +219,7 @@ function Teachers() {
           )}
 
           <div className="outer-wrapper p-5 h-auto">
-            <div className=" overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
+            <div className=" overflow-x-auto max-w-full">
               <DataTable
                 columns={columns}
                 data={filteredRecords}

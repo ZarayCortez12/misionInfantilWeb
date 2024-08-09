@@ -71,6 +71,10 @@ export const login = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Usuario no registrado en el sistema" });
+    if (userFound.estado !== "ACTIVO")
+      return res
+        .status(400)
+        .json({ message: "Usuario no activo en el sistema" });
     if (userFound.rol !== option)
       return res
         .status(400)
@@ -106,6 +110,11 @@ export const sendEmail = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Usuario no registrado en el sistema" });
+
+    if (userFound.estado !== "ACTIVO")
+      return res
+        .status(400)
+        .json({ message: "Usuario no activo en el sistema" });
 
     const token = jwt.sign({ id: user._id }, "jwt-secret-key", {
       expiresIn: "1h",
