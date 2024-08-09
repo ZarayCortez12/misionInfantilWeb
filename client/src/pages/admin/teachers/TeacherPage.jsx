@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import { MdOutlineRestartAlt } from "react-icons/md";
 
 import { IoClose } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa";
@@ -158,6 +159,7 @@ function Teachers() {
             textAlign: "center",
             fontSize: "13px",
             color: row.estado === "ACTIVO" ? "green" : "red",
+            fontWeight: "bold",
           }}
         >
           {row.estado}
@@ -201,6 +203,7 @@ function Teachers() {
         <div className="flex flex-col items-center mt-2 gap-4 min-h-screen p-5 h-auto w-full max-w-axl">
           {mostrarOpciones && (
             <div className="flex justify-end items-end mb-4">
+              {/* Botón para editar */}
               <div
                 className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
                 onClick={() => {
@@ -209,12 +212,23 @@ function Teachers() {
               >
                 <VscEdit size="30px" className="w-5 md:w-6" />
               </div>
-              <div
-                className="flex items-center bg-red-500 hover:bg-red-700 text-white text-sm py-2 px-3 rounded cursor-pointer"
-                onClick={() => handleEliminarClick()}
-              >
-                <VscTrash size="30px" className="w-5 md:w-6" />
-              </div>
+
+              {/* Verificar el estado del docente para mostrar el botón adecuado */}
+              {mostrarOpciones.estado === "ACTIVO" ? (
+                <div
+                  className="flex items-center bg-red-500 hover:bg-red-700 text-white text-sm py-2 px-3 rounded cursor-pointer"
+                  onClick={() => handleEliminarClick()}
+                >
+                  <VscTrash size="30px" className="w-5 md:w-6" />
+                </div>
+              ) : (
+                <div
+                  className="flex items-center bg-blue-500 hover:bg-blue-700 text-white text-sm py-2 px-3 rounded cursor-pointer"
+                  onClick={() => handleReactivarClick(mostrarOpciones._id)}
+                >
+                  <MdOutlineRestartAlt size="30px" className="w-5 md:w-6" />
+                </div>
+              )}
             </div>
           )}
 
@@ -237,14 +251,14 @@ function Teachers() {
               />
             </div>
           </div>
-
+          <br />
           <div className=" flex justify-center mt-6 ">
             {" "}
             <button
               className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500  poppins  items-center w-96"
               onClick={() => handleClick()}
             >
-              <div className="flex justify-center text-white carrois-gothicSC">
+              <div className="flex justify-center text-white carrois-gothicSC text-xl">
                 {" "}
                 <PlusCircleIcon className="w-6 mr-2" /> Ingresar Docente{" "}
               </div>
