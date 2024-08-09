@@ -77,6 +77,24 @@ export const deleteProfesor  = async (req, res) => {
       }
 }
 
+export const reloadPorfesor = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { estado: 'ACTIVO' },
+          { new: true }
+        );
+    
+        if (!updatedUser) {
+          return res.status(404).json({ message: 'Profesor no encontrado' });
+        }
+        res.status(200).json({ message: 'Profesor desactivado correctamente', user: updatedUser });
+      } catch (error) {
+        res.status(500).json({ message: 'Error al desactivar el Profesor', error });
+      }
+}
+
   export const updateProfesor = async (req, res) => {
     try {
       const { nombre, apellido, telefono } = req.body;

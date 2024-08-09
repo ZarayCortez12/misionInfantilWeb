@@ -17,7 +17,7 @@ import { VscEdit, VscTrash } from "react-icons/vsc";
 Modal.setAppElement("#root"); // Necesario para accesibilidad
 
 function Teachers() {
-  const { getDocentes, deleteDocente } = useDocente();
+  const { getDocentes, deleteDocente, reloadDocente } = useDocente();
 
   useEffect(() => {
     getDocentes();
@@ -27,6 +27,7 @@ function Teachers() {
   const [showDiv, setShowDiv] = useState(false);
 
   const [showEliminarAviso, setShowEliminarAviso] = useState(false);
+  const [showReloadAviso, setShowReloadAviso] = useState(false);
 
   const handleDeleteStudent = async (id) => {
     try {
@@ -40,6 +41,18 @@ function Teachers() {
     }
   };
 
+  const handleReloadDocente = async (id) => {
+    try {
+      await reloadDocente(id);
+      setShowReloadAviso(false);
+      console.log("Docente habilitado exitosamente");
+      // Realizar cualquier acción adicional después de habilitar el docente
+    } catch (error) {
+      console.error("Error al habilitar al Docente", error);
+      // Manejar el error apropiadamente
+    }
+  };
+
   const handleEliminarClick = () => {
     if (selectedRows.selectedRows.length === 0) {
       alert("Por favor, seleccione un docente para Inhabilitar");
@@ -48,6 +61,17 @@ function Teachers() {
       const sector = records.find((record) => record._id === P1);
       setSelectedStudens(sector);
       setShowEliminarAviso(true);
+    }
+  };
+
+  const handleReloadClick = () => {
+    if (selectedRows.selectedRows.length === 0) {
+      alert("Por favor, seleccione un docente para habilitar");
+    } else {
+      const P1 = selectedRows.selectedRows[0]._id;
+      const sector = records.find((record) => record._id === P1);
+      setSelectedStudens(sector);
+      setShowReloadAviso(true);
     }
   };
 
@@ -224,7 +248,7 @@ function Teachers() {
               ) : (
                 <div
                   className="flex items-center bg-blue-500 hover:bg-blue-700 text-white text-sm py-2 px-3 rounded cursor-pointer"
-                  onClick={() => handleReactivarClick(mostrarOpciones._id)}
+                  onClick={() => handleReloadClick(mostrarOpciones._id)}
                 >
                   <MdOutlineRestartAlt size="30px" className="w-5 md:w-6" />
                 </div>
@@ -274,7 +298,10 @@ function Teachers() {
           className="absolute  top-1/4 left-1/2"
           overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         >
-          <div className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96">
+          <div
+            className="absolute bg-blue-900 z-50 rounded-lg flex flex-col justify-center items-center p-6 w-96"
+            style={{ marginLeft: "-90px", marginTop: "70px" }}
+          >
             <div className="mb-8 text-white text-center poppins text-[25px] m-6">
               <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
                 ¿Estás seguro que deseas inhabilitar?
@@ -291,6 +318,46 @@ function Teachers() {
               >
                 <FaCheck className="w-6 mr-2" />
                 Si, inhabilitar
+              </button>
+              <button
+                className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-900 text-white flex items-center"
+                onClick={() => setShowEliminarAviso(false)}
+              >
+                <IoClose className="w-6 mr-2" />
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </Modal>
+
+        {/* Aviso de Resubir*/}
+        <Modal
+          isOpen={showReloadAviso}
+          onRequestClose={() => setShowReloadAviso(false)}
+          contentLabel="Eliminar Estudiante"
+          className="absolute top-1/4 left-1/2"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
+          <div
+            className="absolute bg-blue-900 z-50 rounded-lg flex flex-col justify-center items-center p-6 w-96"
+            style={{ marginLeft: "-90px", marginTop: "70px" }}
+          >
+            <div className="mb-8 text-white text-center poppins text-[25px] m-6">
+              <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
+                ¿Estás seguro que deseas habilitar?
+              </h2>
+            </div>
+            <div className="flex justify-center space-x-4">
+              <button
+                className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
+                onClick={() => {
+                  handleReloadDocente(selectedStudents._id);
+                  setShowReloadAviso(false);
+                  location.reload();
+                }}
+              >
+                <FaCheck className="w-6 mr-2" />
+                Si, habilitar
               </button>
               <button
                 className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-900 text-white flex items-center"

@@ -29,3 +29,5 @@ export const editedDocenteRequest = async (id,user) => {
     });
 };
 export const deleteDocenteRequest = (id) => axios.delete(`/docentes/${id}`);
+
+export const reloadDocenteRequest = (id) => axios.put(`/docentes/${id}/reload`);

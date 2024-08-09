@@ -5,6 +5,7 @@ import {
     registerDocenteRequest,
     editedDocenteRequest,
     deleteDocenteRequest,
+    reloadDocenteRequest,
 } from "../api/docente.js";
 
 const DocenteContext = createContext();
@@ -59,6 +60,15 @@ export const DocenteProvider = ({ children }) => {
         }
     };
 
+    const reloadDocente = async (id) => {
+        try {
+            const res = await reloadDocenteRequest(id);
+            return res.data;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const updateDocente = async (id, user) => {
         try {
             await editedDocenteRequest(id, user);
@@ -85,6 +95,7 @@ export const DocenteProvider = ({ children }) => {
                 getDocentes,
                 deleteDocente,
                 updateDocente,
+                reloadDocente,
                 errors,
             }}
         >

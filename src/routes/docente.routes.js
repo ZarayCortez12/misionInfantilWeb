@@ -5,7 +5,8 @@ import {
     getProfesor, 
     createProfesor, 
     updateProfesor , 
-    deleteProfesor
+    deleteProfesor,
+    reloadPorfesor,
 } from '../controller/teacher.controller.js'
 
 
@@ -20,5 +21,6 @@ router.post(
 );
 router.delete('/docentes/:id', deleteProfesor)
 router.put('/docentes/:id',  updateProfesor)
+router.put('/docentes/:id/reload', reloadPorfesor)
 
 export default router;
