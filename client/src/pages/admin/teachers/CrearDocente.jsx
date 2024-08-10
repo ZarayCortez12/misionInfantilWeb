@@ -12,22 +12,20 @@ import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import axios from "axios";
 import { FaCheck } from "react-icons/fa";
-
+import { MdOutlineGroups2 } from "react-icons/md";
 
 Modal.setAppElement("#root"); // Necesario para accesibilidad
 
 function CrearDocente() {
   const navigate = useNavigate();
   const [imagen, setImagen] = useState(null);
-  const [showAviso ,setShowAviso] = useState(false);
+  const [showAviso, setShowAviso] = useState(false);
 
   const handleClick = () => {
     navigate("/administrador/docentes");
   };
 
-  const {
-    registerDocente,
-  } = useDocente();
+  const { registerDocente } = useDocente();
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
@@ -64,10 +62,9 @@ function CrearDocente() {
       return usuarioEncontrado;
     } catch (error) {
       console.error("Error al verificar el documento:", error);
-      return false; 
+      return false;
     }
   };
-
 
   const handleClickImagen = () => {
     document.getElementById("imagen").click();
@@ -117,10 +114,9 @@ function CrearDocente() {
   return (
     <>
       <div className="">
-        <h1 className="text-[38px] poppins text-center poppins bold-text mb-4">
-          {" "}
-          Agregar Docente
-        </h1>
+        <br />
+        <h1 className="text-[38px] text-center font-bold"> Agregar Docente</h1>
+        <br />
         <Formik
           initialValues={{
             identificacion: "",
@@ -154,7 +150,14 @@ function CrearDocente() {
             values,
           }) => (
             <Form onSubmit={handleSubmit}>
-              <div className="bg-yellow-900 bg-opacity-70  p-6 rounded-md flex justify-center">
+              <div
+                className="p-6 rounded-md flex justify-center"
+                style={{
+                  backgroundColor: "rgba(140, 100, 40, 0.73)",
+                  width: "1000px",
+                  marginLeft: "200px",
+                }}
+              >
                 <div className="justify-center m-6">
                   <div
                     className={`flex m-4 items-center ${
@@ -163,16 +166,27 @@ function CrearDocente() {
                   >
                     <FaRegIdCard
                       className="text-white mr-2"
-                      style={{ fontSize: "2.5rem" }}
+                      style={{ fontSize: "2rem" }}
                     />
-
-                    <input
-                      type="text"
-                      placeholder="Documento"
-                      className="ml-2 bg-gray-700 text-white h-12 rounded-lg w-64 pl-4"
-                      name="identificacion"
-                      onChange={handleChange}
-                    />
+                    <div className="flex">
+                      <select
+                        name="tipoIdentificacion"
+                        className="bg-gray-700 text-white h-12 rounded-lg w-32 pl-4 pr-2"
+                        onChange={handleChange}
+                        value="CC" // Establece el valor inicial
+                        disabled // Deshabilita el select
+                      >
+                        <option value="CC">CC</option>
+                        <option value="TI">TI</option>
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="Documento"
+                        className="ml-2 bg-gray-700 text-white h-12 rounded-lg w-64 pl-4"
+                        name="identificacion"
+                        onChange={handleChange}
+                      />
+                    </div>
                   </div>
                   {errors.identificacion && touched.identificacion && (
                     <div className="text-red-500 justify-center text-center">
@@ -270,7 +284,38 @@ function CrearDocente() {
                   )}
                 </div>
                 <div className="justify-center m-6 items-center">
-                  <div className="flex items-center justify-center rounded-lg bg-gray-700 h-60 w-64 relative ml-14 mt-6 ">
+                  <div
+                    style={{ marginLeft: "-25px", marginTop: "11px" }}
+                    className={`flex m-4 items-center ${
+                      errors.identificacion ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <MdOutlineGroups2
+                      className="text-white"
+                      style={{ fontSize: "2rem" }}
+                    />
+
+                    <select
+                      name="tipoIdentificacion"
+                      className="m-2 ml-3 bg-gray-700 h-12 rounded-lg text-white pl-4"
+                      style={{ width: "370px" }}
+                      onChange={handleChange}
+                    >
+                      <option value="" disabled selected>
+                        Género
+                      </option>
+                      <option value="Femenino">Femenino</option>
+                      <option value="Masculino">Masculino</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
+                  {errors.identificacion && touched.identificacion && (
+                    <div className="text-red-500 justify-center text-center">
+                      {errors.identificacion}
+                    </div>
+                  )}
+                  <div className="flex items-center justify-center rounded-lg bg-gray-700 h-60 w-64 relative ml-14 mt-6"
+                    style={{ marginTop: "5px" }}>
                     {imagen ? (
                       <img
                         src={URL.createObjectURL(imagen)}
@@ -303,12 +348,13 @@ function CrearDocente() {
                       }}
                     />
                   </div>
-                  {errors.image && touched.image  && (
+                  {errors.image && touched.image && (
                     <div className="text-red-500 justify-center text-center">
                       {errors.image}
                     </div>
                   )}
-                  <div className="flex justify-center space-x-4 m-5 ">
+                  <div className="flex justify-center space-x-4 m-5" 
+                  style={{ marginLeft: "-50px" }}>
                     <button
                       type="submit"
                       className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
@@ -325,8 +371,7 @@ function CrearDocente() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleClick()
-                      }
+                      onClick={() => handleClick()}
                       className="bg-red-700 py-2 px-4 rounded-lg hover:bg-red-600 text-white flex items-center"
                     >
                       <IoClose className="w-6 mr-2" />
@@ -340,7 +385,7 @@ function CrearDocente() {
         </Formik>
       </div>
 
- {/* Aviso de Creacion Alumno*/}
+      {/* Aviso de Creacion Alumno*/}
       <Modal
         isOpen={showAviso}
         onRequestClose={() => setShowAviso(false)}
@@ -351,7 +396,7 @@ function CrearDocente() {
         <div className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96">
           <div className="mb-8 text-white text-center poppins text-[25px] m-6">
             <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
-            Docente creado con éxito.
+              Docente creado con éxito.
             </h2>
           </div>
           <div className="flex justify-center space-x-4">

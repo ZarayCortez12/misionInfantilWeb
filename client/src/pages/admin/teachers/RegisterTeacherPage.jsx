@@ -87,7 +87,7 @@ function RegisterDocentePage() {
             <div className="flex flex-col items-center justify-center mt-0">
                 <div>
                 
-                <h1 className='text-2xl font-bold my-2 text-blue-700 text-center'>Agregar Docente</h1>
+                <h1 className="text-[38px] text-center font-bold">Agregar Docente</h1>
                 <br></br>
                 {Array.isArray(registerErrors) && registerErrors.map((error, i) => (
                         <div className="bg-red-500 p-2 text-white text-center" key={i}>

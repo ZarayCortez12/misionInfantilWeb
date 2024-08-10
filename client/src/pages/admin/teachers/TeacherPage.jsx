@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import { IoClose } from "react-icons/io5";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaEye } from "react-icons/fa";
 import DataTable from "react-data-table-component";
 import Modal from "react-modal";
 import * as Yup from "yup";
@@ -138,10 +138,11 @@ function Teachers() {
   const [mostrarOpciones, setMostrarOpciones] = useState(null);
 
   useEffect(() => {
-    const filtered = records.filter(record =>
-      record.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.apellido.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.identificacion.toString().includes(searchTerm)
+    const filtered = records.filter(
+      (record) =>
+        record.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.apellido.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.identificacion.toString().includes(searchTerm)
     );
     setFilteredRecords(filtered);
   }, [searchTerm, records]);
@@ -259,7 +260,10 @@ function Teachers() {
         </div>
         <div className="flex flex-col items-center mt-2 gap-4 min-h-screen p-5 h-auto w-full max-w-axl">
           {mostrarOpciones && (
-            <div className="flex justify-end items-end mb-4 botones-acciones-docentes" style={{ marginBottom: "57px" }}>
+            <div
+              className="flex justify-end items-end mb-4 botones-acciones-docentes"
+              style={{ marginBottom: "57px" }}
+            >
               {/* Botón para editar */}
               <div
                 className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
@@ -268,6 +272,16 @@ function Teachers() {
                 }}
               >
                 <VscEdit size="30px" className="w-5 md:w-6" />
+              </div>
+
+              {/* Botón para visualizar */}
+              <div
+                className="flex items-center bg-yellow-600 hover:bg-yellow-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
+                onClick={() => {
+                  handleEditarClick();
+                }}
+              >
+                <FaEye size="30px" className="w-5 md:w-6" />
               </div>
 
               {/* Verificar el estado del docente para mostrar el botón adecuado */}
@@ -289,7 +303,10 @@ function Teachers() {
             </div>
           )}
 
-          <div className="outer-wrapper p-5 h-auto table-docentes-visualizer" style={{ marginTop: "-40px" }}>
+          <div
+            className="outer-wrapper p-5 h-auto table-docentes-visualizer"
+            style={{ marginTop: "-40px" }}
+          >
             <div className=" overflow-x-auto max-w-full">
               <DataTable
                 columns={columns}
