@@ -242,6 +242,7 @@ export const getUsuarios = async (req, res) => {
   try {
     const usuarios = await User.find();
     res.json(usuarios);
+    console.log("estos son los usuarios: ", usuarios);
   } catch (error) {
     return res.status(404).json({ message: "Usuario no Encontrado" });
   }

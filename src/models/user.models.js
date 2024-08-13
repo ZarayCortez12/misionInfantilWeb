@@ -50,6 +50,10 @@ const userSchema = new mongoose.Schema(
       url: String,
       public_id: String,
     },
+    tipoIdentificacion: {
+      type: String,
+      require: true,
+    },
   },
   {
     timestamps: true,

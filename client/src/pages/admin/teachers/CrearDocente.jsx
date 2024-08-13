@@ -147,6 +147,7 @@ function CrearDocente() {
         <br />
         <Formik
           initialValues={{
+            tipoIdentificacion: "CC", // Valor por defecto
             identificacion: "",
             nombre: "",
             apellido: "",

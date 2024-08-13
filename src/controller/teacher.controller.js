@@ -17,8 +17,16 @@ const __dirname = path.dirname(__filename);
 
 export const createProfesor = async (req, res) => {
   try {
-    const { identificacion, nombre, apellido, telefono, correo, genero } =
-      req.body;
+    const {
+      identificacion,
+      nombre,
+      apellido,
+      telefono,
+      correo,
+      genero,
+      tipoIdentificacion,
+    } = req.body;
+    console.log(tipoIdentificacion);
     console.log(genero);
     let image;
     console.log(req.files.image);
@@ -45,6 +53,7 @@ export const createProfesor = async (req, res) => {
       image,
       genero: genero,
       username: `${identificacion}`,
+      tipoIdentificacion: tipoIdentificacion,
     });
     console.log(newUser);
     const userSave = await newUser.save();
@@ -188,7 +197,6 @@ export const updateProfesor = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, {
       new: true,
     });
-    sendWhatsapp();
     res.json(updatedUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
