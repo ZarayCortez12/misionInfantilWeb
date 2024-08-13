@@ -325,7 +325,6 @@ function Teachers() {
               />
             </div>
           </div>
-          <br />
           <div className=" flex justify-center mt-6 ">
             {" "}
             <button

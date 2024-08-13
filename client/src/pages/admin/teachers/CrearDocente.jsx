@@ -66,6 +66,20 @@ function CrearDocente() {
     }
   };
 
+  const telefonoRegistrado = async (telefono) => {
+    try {
+      const response = await axios.get("http://localhost:4000/api/docentes");
+      const usuarios = response.data;
+      const usuarioEncontrado = usuarios.some(
+        (usuario) => String(usuario.telefono) === String(telefono)
+      );
+      return usuarioEncontrado;
+    } catch (error) {
+      console.error("Error al verificar el teléfono:", error);
+      return false;
+    }
+  };
+
   const handleClickImagen = () => {
     document.getElementById("imagen").click();
   };
@@ -74,15 +88,15 @@ function CrearDocente() {
     identificacion: Yup.string()
       .matches(
         /^\+?[0-9]{8,10}$/,
-        "La cedula debe tener entre 8 y 10 dígitos numéricos"
+        "La cédula debe tener entre 8 y 10 dígitos numéricos"
       )
       .required("El documento es requerido")
       .test(
         "check-duplicado",
-        "Documento registrado",
+        "Documento ya registrado en el sistema",
         async (identificacion) => {
-          const Duplicado = await documentoRegistrado(identificacion);
-          return !Duplicado;
+          const duplicado = await documentoRegistrado(identificacion);
+          return !duplicado;
         }
       ),
     nombre: Yup.string()
@@ -95,20 +109,34 @@ function CrearDocente() {
       .required("El apellido es requerido"),
     telefono: Yup.string()
       .matches(/^\+?[0-9]{10}$/, "El teléfono debe tener 10 dígitos numéricos")
-      .required("El teléfono es requerido"),
+      .required("El teléfono es requerido")
+      .test(
+        "check-duplicado",
+        "Teléfono ya registrado en el sistema",
+        async (telefono) => {
+          const duplicado = await telefonoRegistrado(telefono);
+          return !duplicado;
+        }
+      ),
     correo: Yup.string()
       .max(125, "El correo no puede tener más de 125 caracteres")
       .email("Formato de correo electrónico inválido")
       .required("El Correo es requerido")
       .test(
         "check-duplicado",
-        "El Correo ya esta registrado",
+        "El Correo ya está registrado en el sistema",
         async (correo) => {
-          const Duplicado = await correoRegistrado(correo);
-          return !Duplicado;
+          const duplicado = await correoRegistrado(correo);
+          return !duplicado;
         }
       ),
     image: Yup.mixed().required("Debe seleccionar una imagen"),
+    genero: Yup.string()
+      .required("El género es requerido")
+      .oneOf(
+        ["Femenino", "Masculino", "Otro"],
+        "Debe seleccionar un género válido"
+      ),
   });
 
   return (
@@ -125,6 +153,7 @@ function CrearDocente() {
             telefono: "",
             correo: "",
             image: null,
+            genero: "",
           }}
           enableReinitialize={true}
           validationSchema={validationSchema}
@@ -135,7 +164,14 @@ function CrearDocente() {
               setImagen(null);
               resetForm();
             } catch (error) {
-              console.error("Error al crear el docentes:", error);
+              if (error.response && error.response.data) {
+                console.error(
+                  "Error al crear el docente:",
+                  error.response.data.message
+                );
+              } else {
+                console.error("Error al crear el docente:", error);
+              }
             }
             setSubmitting(false);
           }}
@@ -189,7 +225,13 @@ function CrearDocente() {
                     </div>
                   </div>
                   {errors.identificacion && touched.identificacion && (
-                    <div className="text-red-500 justify-center text-center">
+                    <div
+                      className={`justify-center text-center ${
+                        errors.identificacion.includes("ya registrado")
+                          ? "text-white"
+                          : "text-red-500"
+                      }`}
+                    >
                       {errors.identificacion}
                     </div>
                   )}
@@ -256,7 +298,13 @@ function CrearDocente() {
                     />
                   </div>
                   {errors.telefono && touched.telefono && (
-                    <div className="text-red-500 justify-center text-center">
+                    <div
+                      className={`text-center ${
+                        errors.telefono.includes("ya registrado")
+                          ? "text-white"
+                          : "text-red-500"
+                      }`}
+                    >
                       {errors.telefono}
                     </div>
                   )}
@@ -278,7 +326,13 @@ function CrearDocente() {
                     />
                   </div>
                   {errors.correo && touched.correo && (
-                    <div className="text-red-500 justify-center text-center">
+                    <div
+                      className={`text-center ${
+                        errors.correo.includes("ya está registrado")
+                          ? "text-white"
+                          : "text-red-500"
+                      }`}
+                    >
                       {errors.correo}
                     </div>
                   )}
@@ -287,7 +341,7 @@ function CrearDocente() {
                   <div
                     style={{ marginLeft: "-25px", marginTop: "11px" }}
                     className={`flex m-4 items-center ${
-                      errors.identificacion ? "mb-0" : "mb-4"
+                      errors.genero ? "mb-0" : "mb-4"
                     }`}
                   >
                     <MdOutlineGroups2
@@ -296,7 +350,7 @@ function CrearDocente() {
                     />
 
                     <select
-                      name="tipoIdentificacion"
+                      name="genero"
                       className="m-2 ml-3 bg-gray-700 h-12 rounded-lg text-white pl-4"
                       style={{ width: "370px" }}
                       onChange={handleChange}
@@ -309,13 +363,15 @@ function CrearDocente() {
                       <option value="Otro">Otro</option>
                     </select>
                   </div>
-                  {errors.identificacion && touched.identificacion && (
+                  {errors.genero && touched.genero && (
                     <div className="text-red-500 justify-center text-center">
-                      {errors.identificacion}
+                      {errors.genero}
                     </div>
                   )}
-                  <div className="flex items-center justify-center rounded-lg bg-gray-700 h-60 w-64 relative ml-14 mt-6"
-                    style={{ marginTop: "5px" }}>
+                  <div
+                    className="flex items-center justify-center rounded-lg bg-gray-700 h-60 w-64 relative ml-14 mt-6"
+                    style={{ marginTop: "5px" }}
+                  >
                     {imagen ? (
                       <img
                         src={URL.createObjectURL(imagen)}
@@ -353,8 +409,10 @@ function CrearDocente() {
                       {errors.image}
                     </div>
                   )}
-                  <div className="flex justify-center space-x-4 m-5" 
-                  style={{ marginLeft: "-50px" }}>
+                  <div
+                    className="flex justify-center space-x-4 m-5"
+                    style={{ marginLeft: "-50px" }}
+                  >
                     <button
                       type="submit"
                       className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
@@ -393,7 +451,10 @@ function CrearDocente() {
         className="absolute  top-1/4 left-1/2"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       >
-        <div className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96">
+        <div
+          className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96"
+          style={{ marginLeft: "-90px", marginTop: "70px" }}
+        >
           <div className="mb-8 text-white text-center poppins text-[25px] m-6">
             <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
               Docente creado con éxito.

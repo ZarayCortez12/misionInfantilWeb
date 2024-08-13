@@ -111,7 +111,7 @@ export const sendEmail = async (req, res) => {
         .status(400)
         .json({ message: "Usuario no registrado en el sistema" });
 
-    if (userFound.estado !== "ACTIVO")
+    if (user.estado !== "ACTIVO")
       return res
         .status(400)
         .json({ message: "Usuario no activo en el sistema" });

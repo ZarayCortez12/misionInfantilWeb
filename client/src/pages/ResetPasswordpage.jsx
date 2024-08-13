@@ -29,7 +29,7 @@ function ResetPasswordPage() {
       if (response.successMessage === "Contraseña actualizada correctamente") {
         setTimeout(() => {
           navigate("/login"); // Redirigir al usuario a la página de inicio de sesión
-        }, 6000); // 5 segundos
+        }, 6000); // 6 segundos
       }
     } catch (error) {
       console.error("Error al restablecer la contraseña:", error);
@@ -50,7 +50,7 @@ function ResetPasswordPage() {
         <h1 className="text-2xl font-bold my-2 text-white text-center">
           Crea una nueva contraseña
         </h1>
-        <br></br>
+        <br />
         <style jsx>{`
           .smaller-text {
             font-size: 15px;
@@ -74,8 +74,23 @@ function ResetPasswordPage() {
 
             <input
               type={showPassword ? "text" : "password"}
-              {...register("clave", { required: true })}
-              className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2 pr-10" // Añadido pr-10 para espacio para el icono
+              {...register("clave", {
+                required: "La contraseña es obligatoria",
+                minLength: {
+                  value: 8,
+                  message: "La contraseña debe tener al menos 8 caracteres",
+                },
+                maxLength: {
+                  value: 15,
+                  message: "La contraseña no puede tener más de 15 caracteres",
+                },
+                pattern: {
+                  value: /^(?=.*[A-Z])(?=.*\d).+$/,
+                  message:
+                    "La contraseña debe contener al menos una letra mayúscula y un número",
+                },
+              })}
+              className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2 pr-10"
               placeholder="Contraseña"
             />
             <div
@@ -89,11 +104,28 @@ function ResetPasswordPage() {
               )}
             </div>
           </div>
-          {errors.clave && (
-            <p className="text-red-500">Contraseña es requerida</p>
+          {/* Mostrar mensajes de error específicos */}
+          {errors.clave?.type === "required" && (
+            <p className="text-red-500">La contraseña es obligatoria</p>
           )}
-          <br></br>
-
+          {errors.clave?.type === "minLength" && (
+            <p className="text-red-500">
+              La contraseña debe tener al menos 8 caracteres
+            </p>
+          )}
+          {errors.clave?.type === "maxLength" && (
+            <p className="text-red-500">
+              La contraseña no puede tener más de 15 caracteres
+            </p>
+          )}
+          {errors.clave?.type === "pattern" && (
+            <p className="text-red-500">
+              La contraseña debe contener al menos una letra mayúscula y un
+              número
+            </p>
+          )}
+          <br />
+          {/* Mensajes de error de inicio de sesión */}
           {signinErrors.map((error, i) => (
             <div className="bg-red-500 p-2 text-white text-center" key={i}>
               {error}
@@ -121,7 +153,7 @@ function ResetPasswordPage() {
           alt="Logo de la organización"
           className="w-86 h-64 mx-auto image-ipuc"
         />
-        <br></br>
+        <br />
 
         <h1 className="text-4xl font-bold text-blue-800 mt-4 mb-4">
           ¡ Bienvenidos !
