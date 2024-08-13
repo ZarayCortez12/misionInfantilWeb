@@ -38,7 +38,7 @@ function CrearDocente() {
 
   const correoRegistrado = async (correo) => {
     try {
-      const response = await axios.get("http://localhost:4000/api/docentes");
+      const response = await axios.get("http://localhost:4000/api/usuarios");
       const usuarios = response.data;
 
       // Verificar si el correo está en la lista de usuarios
@@ -54,7 +54,7 @@ function CrearDocente() {
 
   const documentoRegistrado = async (identificacion) => {
     try {
-      const response = await axios.get("http://localhost:4000/api/docentes");
+      const response = await axios.get("http://localhost:4000/api/usuarios");
       const usuarios = response.data;
       const usuarioEncontrado = usuarios.some(
         (usuario) => String(usuario.identificacion) === String(identificacion)
@@ -68,7 +68,7 @@ function CrearDocente() {
 
   const telefonoRegistrado = async (telefono) => {
     try {
-      const response = await axios.get("http://localhost:4000/api/docentes");
+      const response = await axios.get("http://localhost:4000/api/usuarios");
       const usuarios = response.data;
       const usuarioEncontrado = usuarios.some(
         (usuario) => String(usuario.telefono) === String(telefono)
@@ -143,7 +143,7 @@ function CrearDocente() {
     <>
       <div className="">
         <br />
-        <h1 className="text-[38px] text-center font-bold"> Agregar Docente</h1>
+        <h1 className="text-[38px] text-center font-bold"> Agregar Docente </h1>
         <br />
         <Formik
           initialValues={{

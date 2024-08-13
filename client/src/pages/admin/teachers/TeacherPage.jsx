@@ -277,9 +277,7 @@ function Teachers() {
               {/* Botón para visualizar */}
               <div
                 className="flex items-center bg-yellow-600 hover:bg-yellow-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
-                onClick={() => {
-                  handleEditarClick();
-                }}
+                onClick={() => {}}
               >
                 <FaEye size="30px" className="w-5 md:w-6" />
               </div>
