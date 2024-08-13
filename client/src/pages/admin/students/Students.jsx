@@ -31,7 +31,6 @@ function Students() {
   const [showEliminarAviso, setShowEliminarAviso] = useState(false);
   const [showReloadAviso, setShowReloadAviso] = useState(false);
 
-
   const handleDeleteStudent = async (id) => {
     try {
       await deleteStudent(id);
@@ -323,19 +322,6 @@ function Students() {
                 customStyles={customStyles}
               />
             </div>
-          </div>
-
-          <div className=" flex justify-center mt-6 ">
-            {" "}
-            <button
-              className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500  poppins  items-center w-96"
-              onClick={() => handleClick()}
-            >
-              <div className="flex justify-center text-white carrois-gothicSC">
-                {" "}
-                <PlusCircleIcon className="w-6 mr-2" /> Ingresar Estudiante{" "}
-              </div>
-            </button>{" "}
           </div>
         </div>
 

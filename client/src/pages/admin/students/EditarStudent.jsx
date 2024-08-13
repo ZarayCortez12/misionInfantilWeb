@@ -1,6 +1,5 @@
 import { Form, Formik } from "formik";
 import { useStudent } from "../../../context/StudentContext";
-import {editedStudentRequest} from "../../../api/student";
 import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
@@ -13,6 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Modal from "react-modal";
 import axios from "axios";
 import { FaCheck } from "react-icons/fa";
+import { MdOutlineGroups2 } from "react-icons/md";
 
 Modal.setAppElement("#root"); // Necesario para accesibilidad
 
@@ -21,7 +21,6 @@ function EditarStudent() {
   const navigate = useNavigate();
   const [showAviso, setShowAviso] = useState(false);
   const [estudiante, setEstudiante] = useState({
-
     documento: "",
     nombre: "",
     apellido: "",
@@ -29,12 +28,10 @@ function EditarStudent() {
     telefono: "",
     estado: "",
     image: null,
+    genero: "",
   });
 
-  const { 
-    updateStudent
-   } =
-  useStudent();
+  const { updateStudent } = useStudent();
 
   const handleClick = () => {
     navigate("/administrador/estudiantes");
@@ -47,6 +44,7 @@ function EditarStudent() {
         if (ced) {
           const estudianteData = await getStudent(ced);
           setEstudiante({
+            tipoIdentificacion: estudianteData.tipoIdentificacion,
             identificacion: estudianteData.identificacion,
             nombre: estudianteData.nombre,
             apellido: estudianteData.apellido,
@@ -54,6 +52,7 @@ function EditarStudent() {
             telefono: estudianteData.telefono,
             estado: estudianteData.estado,
             image: estudianteData.image,
+            genero: estudianteData.genero,
           });
         }
       } catch (error) {
@@ -61,38 +60,50 @@ function EditarStudent() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
   const { getStudent } = useStudent();
 
-  const correoRegistrado = async (correo) => {
+  const correoRegistrado = async (correo, identificacionActual) => {
     try {
-      const response = await axios.get("http://localhost:4000/api/estudiantes");
+      // Hacer la solicitud para obtener todos los docentes
+      const response = await axios.get("http://localhost:4000/api/usuarios");
       const usuarios = response.data;
 
-      // Verificar si el correo está en la lista de usuarios
-      const usuarioEncontrado = usuarios.some(
+      console.log("estos son los usuarios: ", usuarios);
+
+      // Buscar si hay algún usuario con el correo especificado
+      const usuarioEncontrado = usuarios.find(
         (usuario) => String(usuario.correo) === String(correo)
       );
-      return usuarioEncontrado;
+      console.log(usuarioEncontrado);
+      // Verificar si el usuario encontrado tiene una identificación diferente a la del usuario que se está editando
+      if (usuarioEncontrado) {
+        return usuarioEncontrado._id !== ced;
+      }
+
+      return false; // El correo no está registrado
     } catch (error) {
       console.error("Error al verificar el correo:", error);
       return false;
     }
   };
 
-  const documentoRegistrado = async (identificacion) => {
+  const telefonoRegistrado = async (telefono) => {
     try {
-      const response = await axios.get("http://localhost:4000/api/estudiantes");
+      const response = await axios.get("http://localhost:4000/api/usuarios");
       const usuarios = response.data;
-      const usuarioEncontrado = usuarios.some(
-        (usuario) => String(usuario.identificacion) === String(identificacion)
+      const usuarioEncontrado = usuarios.find(
+        (usuario) => String(usuario.telefono) === String(telefono)
       );
-      return usuarioEncontrado;
+      if (usuarioEncontrado) {
+        return usuarioEncontrado._id !== ced;
+      }
+
+      return false;
     } catch (error) {
-      console.error("Error al verificar el documento:", error);
+      console.error("Error al verificar el teléfono:", error);
       return false;
     }
   };
@@ -108,10 +119,30 @@ function EditarStudent() {
       .required("El apellido es requerido"),
     telefono: Yup.string()
       .matches(/^\+?[0-9]{10}$/, "El teléfono debe tener 10 dígitos numéricos")
-      .required("El teléfono es requerido"),
-   
+      .required("El teléfono es requerido")
+      .test(
+        "check-duplicado",
+        "Teléfono ya registrado en el sistema",
+        async (telefono) => {
+          const duplicado = await telefonoRegistrado(telefono);
+          return !duplicado;
+        }
+      ),
+    correo: Yup.string()
+      .max(125, "El correo no puede tener más de 125 caracteres")
+      .email("Formato de correo electrónico inválido")
+      .required("El Correo es requerido")
+      .test(
+        "check-duplicado",
+        "El Correo ya está registrado en el sistema",
+        async (correo) => {
+          const duplicado = await correoRegistrado(correo);
+          return !duplicado;
+        }
+      ),
     image: Yup.mixed().required("Debe seleccionar una imagen"),
   });
+
   const [imagen, setImagen] = useState(null);
   const [imagenURL, setImagenURL] = useState(null);
 
@@ -133,31 +164,40 @@ function EditarStudent() {
   return (
     <>
       <div className="">
-        <h1 className="text-[38px] poppins text-center poppins bold-text mb-4">
+        <h1 className="text-[38px] text-center font-bold">
           {" "}
           Actualizar Estudiante
         </h1>
+        <br />
         <Formik
           initialValues={{
-            identificacion: estudiante?.identificacion || "",
+            tipoIdentificacion: estudiante?.tipoIdentificacion || "",
+            identificacion: estudiante.identificacion || "",
             nombre: estudiante?.nombre || "",
             apellido: estudiante?.apellido || "",
             telefono: estudiante?.telefono || "",
             correo: estudiante?.correo || "",
-            image: estudiante?.image|| "",
+            image: estudiante?.image || "",
+            genero: estudiante?.genero || "",
           }}
           enableReinitialize={true}
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
-            try {       
-              await updateStudent(ced,values);
+            try {
+              await updateStudent(ced, values);
               setShowAviso(true);
               setImagen(null);
               resetForm();
             } catch (error) {
-              console.error("Error al Editar el estudiante:", error);
+              if (error.response && error.response.data) {
+                console.error(
+                  "Error al editar el estudiante:",
+                  error.response.data.message
+                );
+              } else {
+                console.error("Error al editar el estudiante:", error);
+              }
             }
-
             setSubmitting(false);
           }}
         >
@@ -171,7 +211,14 @@ function EditarStudent() {
             values,
           }) => (
             <Form onSubmit={handleSubmit}>
-              <div className="bg-yellow-900 bg-opacity-70  p-6 rounded-md flex justify-center">
+              <div
+                className="p-6 rounded-md flex justify-center"
+                style={{
+                  backgroundColor: "rgba(140, 100, 40, 0.73)",
+                  width: "1000px",
+                  marginLeft: "200px",
+                }}
+              >
                 <div className="justify-center m-6">
                   <div
                     className={`flex m-4 items-center ${
@@ -180,18 +227,30 @@ function EditarStudent() {
                   >
                     <FaRegIdCard
                       className="text-white mr-2"
-                      style={{ fontSize: "2.5rem" }}
+                      style={{ fontSize: "2rem" }}
                     />
-
-                    <input
-                      type="text"
-                      placeholder="Documento"
-                      className="ml-2 bg-gray-700 text-white h-12 rounded-lg w-64 pl-4"
-                      name="identificacion"
-                      value={values.identificacion}
-                      onChange={handleChange}
-                     disabled
-                    />
+                    <div className="flex">
+                      <select
+                        name="tipoIdentificacion"
+                        className="bg-gray-700 text-white h-12 rounded-lg w-32 pl-4 pr-2"
+                        onChange={(e) => {
+                          setFieldValue("tipoIdentificacion", e.target.value);
+                        }}
+                        value={values.tipoIdentificacion}
+                      >
+                        <option value="CC">CC</option>
+                        <option value="TI">TI</option>
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="Documento"
+                        className="ml-2 bg-gray-700 text-white h-12 rounded-lg w-64 pl-4"
+                        name="identificacion"
+                        value={values.identificacion}
+                        onChange={handleChange}
+                        disabled
+                      />
+                    </div>
                   </div>
 
                   <div
@@ -200,7 +259,7 @@ function EditarStudent() {
                     }`}
                   >
                     <FaUser
-                      className="text-white "
+                      className="text-white"
                       style={{ fontSize: "1.5rem" }}
                     />
                     <input
@@ -259,7 +318,13 @@ function EditarStudent() {
                     />
                   </div>
                   {errors.telefono && touched.telefono && (
-                    <div className="text-red-500 justify-center text-center">
+                    <div
+                      className={`text-center ${
+                        errors.telefono.includes("ya registrado")
+                          ? "text-white"
+                          : "text-red-500"
+                      }`}
+                    >
                       {errors.telefono}
                     </div>
                   )}
@@ -279,51 +344,94 @@ function EditarStudent() {
                       name="correo"
                       value={values.correo}
                       onChange={handleChange}
-                      disabled
                     />
                   </div>
+                  {errors.correo && touched.correo && (
+                    <div
+                      className={`text-center ${
+                        errors.correo.includes("ya está registrado")
+                          ? "text-white"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {errors.correo}
+                    </div>
+                  )}
                 </div>
                 <div className="justify-center m-6 items-center">
-                  <div className="flex items-center justify-center rounded-lg bg-gray-700 h-60 w-64 relative ml-14 mt-6 ">
-                  
+                  <div
+                    style={{ marginLeft: "-25px", marginTop: "11px" }}
+                    className={`flex m-4 items-center ${
+                      errors.genero ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <MdOutlineGroups2
+                      className="text-white"
+                      style={{ fontSize: "2rem" }}
+                    />
 
-                  {imagenURL ? (
-                    <img
-                      src={imagenURL}
-                      alt="Imagen seleccionada"
-                      className="h-full w-full object-cover rounded-lg cursor-pointer"
-                      onClick={handleClickImagen}
-                    />
-                  ) : estudiante.image ? (
-                    <img
-                      src={estudiante.image.url}
-                      alt="Imagen seleccionada"
-                      className="h-full w-full object-cover rounded-lg cursor-pointer"
-                      onClick={handleClickImagen}
-                    />
-                  ) : (
-                    <label
-                      htmlFor="image"
-                      className="cursor-pointer flex flex-col justify-center items-center"
-                      onClick={handleClickImagen}
+                    <select
+                      name="genero"
+                      className="m-2 ml-3 bg-gray-700 h-12 rounded-lg text-white pl-4"
+                      style={{ width: "370px" }}
+                      onChange={handleChange}
+                      value={values.genero} // Aquí estableces el valor seleccionado dinámicamente
                     >
-                      <FaFileImage
-                        className="text-white"
-                        style={{ fontSize: "8rem" }}
-                      />
-                      <h1 className="text-white">Subir imagen</h1>
-                    </label>
+                      <option value="" disabled>
+                        Selecciona un género
+                      </option>
+                      <option value="Femenino">Femenino</option>
+                      <option value="Masculino">Masculino</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
+                  {errors.genero && touched.genero && (
+                    <div className="text-red-500 justify-center text-center">
+                      {errors.genero}
+                    </div>
                   )}
-                  <input
-                    type="file"
-                    id="imagen"
-                    className="hidden"
-                    name="image"
-                    accept="image/*"
-                    onChange={(e) => {
-                      setFieldValue("image", e.target.files[0]);
-                      handleImagenChange(e);
-                    }}
+                  <div
+                    className="flex items-center justify-center rounded-lg bg-gray-700 h-60 w-64 relative ml-14 mt-6"
+                    style={{ marginTop: "5px" }}
+                  >
+                    {" "}
+                    {imagenURL ? (
+                      <img
+                        src={imagenURL}
+                        alt="Imagen seleccionada"
+                        className="h-full w-full object-cover rounded-lg cursor-pointer"
+                        onClick={handleClickImagen}
+                      />
+                    ) : estudiante.image ? (
+                      <img
+                        src={estudiante.image.url}
+                        alt="Imagen seleccionada"
+                        className="h-full w-full object-cover rounded-lg cursor-pointer"
+                        onClick={handleClickImagen}
+                      />
+                    ) : (
+                      <label
+                        htmlFor="image"
+                        className="cursor-pointer flex flex-col justify-center items-center"
+                        onClick={handleClickImagen}
+                      >
+                        <FaFileImage
+                          className="text-white"
+                          style={{ fontSize: "8rem" }}
+                        />
+                        <h1 className="text-white">Subir imagen</h1>
+                      </label>
+                    )}
+                    <input
+                      type="file"
+                      id="imagen"
+                      className="hidden"
+                      name="image"
+                      accept="image/*"
+                      onChange={(e) => {
+                        setFieldValue("image", e.target.files[0]);
+                        handleImagenChange(e);
+                      }}
                     />
                   </div>
                   {errors.image && touched.image && (
