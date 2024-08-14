@@ -346,7 +346,7 @@ function SectorPage() {
               className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500  poppins  items-center w-96"
               onClick={() => setShowCrearAviso(true)}
             >
-              <div className="flex justify-center text-white carrois-gothicSC">
+              <div className="flex justify-center text-white carrois-gothicSC text-xl">
                 {" "}
                 <PlusCircleIcon className="w-6 mr-2" /> Ingresar Sector{" "}
               </div>

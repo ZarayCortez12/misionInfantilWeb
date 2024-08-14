@@ -6,6 +6,10 @@ const cursoSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    descripcion: {
+        type: String,
+        required: true,
+    },
     docentes: {
         type: [String], // Define docentes como un array de strings
         required: true,

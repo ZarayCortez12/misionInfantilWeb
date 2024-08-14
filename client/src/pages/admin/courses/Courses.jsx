@@ -12,10 +12,13 @@ import * as Yup from "yup";
 import { MdSaveAlt } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { FaSignature } from "react-icons/fa6";
+import icono from "../../../../public/2000860-removebg-preview.png";
+import { VscCalendar, VscEdit } from "react-icons/vsc";
 
 Modal.setAppElement("#root"); // Necesario para accesibilidad
 
 const Courses = () => {
+  const [showAviso, setShowAviso] = useState(false);
   const [showDiv, setShowDiv] = useState(false);
   const [cursosE, setCursos] = useState([]);
   const { getCursos, deleteCurso, createCurso } = useCursos();
@@ -35,7 +38,10 @@ const Courses = () => {
       console.error("Error al eliminar el curso:", error);
     }
   };
-  
+
+  const handleClick = () => {
+    navigate("/administrador/cursos");
+  };
 
   const [docenteSeleccionado, setDocenteSeleccionado] = useState([]);
 
@@ -77,46 +83,85 @@ const Courses = () => {
       .max(50, "El nombre no puede tener más de 50 caracteres")
       .matches(/^[A-Za-z ]+$/, "Solo letras permitidas")
       .required("El nombre es requerido"),
+    descripcion: Yup.string()
+      .max(150, "La descripción no puede tener más de 150 caracteres")
+      .required("La descripción es requerida"),
   });
 
+  const handleDocenteChange = (setFieldValue, selectedDocente, isFirst) => {
+    setFieldValue(isFirst ? "docente1" : "docente2", selectedDocente);
+  };
+
   // Componente para la tarjeta de curso
-  const CursoCard = ({ curso }) => (
-    <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between">
-      <div className="flex justify-end space-x-2 mt-2">
-        <button className="text-green-500 mr-4">
-          <FaEye style={{ fontSize: "24px" }} />
-        </button>
-        <button
-          className="text-red-500"
-          onClick={() => {
-            setCursoToDelete(curso._id); // Almacenar ID del curso a eliminar
-            setShowDiv(true); // Mostrar modal de confirmación
-          }}
-        >
-          <FaTrash style={{ fontSize: "24px" }} />
-        </button>
+  const CursoCard = ({ curso }) => {
+    // Encuentra los nombres de los docentes para el curso actual
+    const docentes = docenteSeleccionado.filter((docente) =>
+      curso.docentes.includes(docente._id)
+    );
+    console.log("Docentes del curso actual:", docentes);
+
+    return (
+      <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between transition-all duration-300 ease-in-out hover:border-red-500 hover:shadow-lg">        <div className="flex justify-end space-x-2">
+          <button className="text-green-500 mr-4">
+            <FaEye style={{ fontSize: "24px" }} />
+          </button>
+          <button className="text-yellow-500" style={{ marginLeft: "-5px"}}>
+            <VscEdit style={{ fontSize: "24px" }} />
+          </button>
+          <button
+            className="text-red-500"
+            onClick={() => {
+              setCursoToDelete(curso._id); // Almacenar ID del curso a eliminar
+              setShowDiv(true); // Mostrar modal de confirmación
+            }}
+          >
+            <FaTrash style={{ fontSize: "22px" }} />
+          </button>
+          
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex-grow" style={{ marginTop: "-20px"}}>
+            <h2 className="text-lg font-bold">{curso.nombre}</h2>
+            <p className="text-sm">Fecha Creación: {curso.fecha}</p>
+            <div className="mt-4">
+              <h3 className="text-md font-semibold">Dirigido por:</h3>
+              {docentes.length > 0 ? (
+                <ul>
+                  {docentes.map((docente) => (
+                    <li key={docente._id}>
+                      {docente.nombre} {docente.apellido}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No asignado</p>
+              )}
+            </div>
+          </div>
+          <div className="flex-shrink-0"
+          style={{ marginRight: "40px"}}
+          >
+            <img src={icono} alt="Icono" className="w-16 h-16"  />
+          </div>
+        </div>
       </div>
-      <h2 className="text-lg font-bold">{curso.nombre}</h2>
-      <p className="text-sm">Fecha Creación: {curso.fecha}</p>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="container mx-auto p-16 m-5">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Cursos Registrados
-      </h1>
+      <h1 className="text-[38px] text-center font-bold">Cursos Registrados</h1>
+      <br />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-  {cursosE.length > 0 ? (
-    cursosE.map((curso) => (
-      <CursoCard key={curso._id} curso={curso} />
-    ))
-  ) : (
-    <div className="col-span-3 text-center">
-      No hay cursos registrados
-    </div>
-  )}
-</div>
+        {cursosE.length > 0 ? (
+          cursosE.map((curso) => <CursoCard key={curso._id} curso={curso} />)
+        ) : (
+          <div className="col-span-3 text-center">
+            No hay cursos registrados
+          </div>
+        )}
+      </div>
+
       <div className="flex justify-center mt-6">
         <button
           className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500 poppins items-center w-96"
@@ -124,7 +169,7 @@ const Courses = () => {
             setShowCrearAviso(true); // Mostrar modal de creacion
           }}
         >
-          <div className="flex justify-center text-white carrois-gothicSC">
+          <div className="flex justify-center text-white carrois-gothicSC text-xl">
             <FaPlus className="w-6 mr-2" /> Crear Curso
           </div>
         </button>
@@ -175,7 +220,14 @@ const Courses = () => {
         className="  top-50 left-1/2"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       >
-        <div className=" bg-yellow-800  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96">
+        <div
+          className="z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96"
+          style={{
+            backgroundColor: "#8c6428", // Color sin opacidad
+            width: "600px",
+            marginTop: "20px",
+          }}
+        >
           <div className=" text-white text-center poppins text-[25px] ">
             <h2 className=" text-white text-center poppins text-[25px] m-6">
               INGRESAR CURSO
@@ -185,22 +237,29 @@ const Courses = () => {
           <Formik
             initialValues={{
               nombre: "",
-              docentes: [],
-              inscritos: [],
+              docente1: "",
+              docente2: "",
+              descripcion: "",
             }}
             enableReinitialize={true}
             validationSchema={validationSchema}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
               try {
-                values.nombre =
-                  values.nombre.charAt(0).toUpperCase() +
-                  values.nombre.slice(1);
-                await createCurso(values);
+                const cursoData = {
+                  nombre:
+                    values.nombre.charAt(0).toUpperCase() +
+                    values.nombre.slice(1),
+                  descripcion: values.descripcion,
+                  docente1: values.docente1,
+                  docente2: values.docente2 || null, // Opción para segundo docente
+                };
+                console.log("Datos del curso a crear:", cursoData);
+                await createCurso(cursoData);
+                setShowAviso(true);
                 resetForm();
-                setShowCrearAviso(false);
-                location.reload();
+                setShowCrearAviso(false); // Actualizar la página después de crear
               } catch (error) {
-                console.error("Error al crear el entrenador:", error);
+                console.error("Error al crear el curso:", error);
               }
               setSubmitting(false);
             }}
@@ -215,7 +274,7 @@ const Courses = () => {
               values,
             }) => (
               <Form onSubmit={handleSubmit}>
-                <div className="justify-center m-2">
+                <div className="justify-center m-2" style={{ width: "500px" }}>
                   <div
                     className={`flex m-4 items-center ${
                       errors.nombre ? "mb-0" : "mb-4"
@@ -240,7 +299,7 @@ const Courses = () => {
                   )}
                   <div
                     className={`flex m-4 items-center ${
-                      errors.docentes ? "mb-0" : "mb-4"
+                      errors.docente1 ? "mb-0" : "mb-4"
                     }`}
                   >
                     <FaUser
@@ -248,31 +307,83 @@ const Courses = () => {
                       style={{ fontSize: "1.5rem" }}
                     />
                     <select
-                      className="m-2 h-12 ml-3 rounded-lg bg-gray-700 text-white w-full pl-4"
-                      value={values.docentes}
-                      onChange={(e) => {
-                        setFieldValue("docentes", [e.target.value]); // Establecer el campo `docentes` como un array con un solo valor
-                      }}
+                      name="docente1"
+                      onChange={(e) =>
+                        handleDocenteChange(setFieldValue, e.target.value, true)
+                      }
+                      className="m-2 ml-3 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
                     >
-                      <option value="" disabled>
-                        Docente
-                      </option>
+                      <option value="">Seleccionar docente 1</option>
                       {docenteSeleccionado.map((docente) => (
-                        <option
-                          key={docente._id}
-                          value={`${docente.nombre} ${docente.apellido}`}
-                        >
+                        <option key={docente._id} value={docente._id}>
                           {docente.nombre} {docente.apellido}
                         </option>
                       ))}
                     </select>
                   </div>
-                  {errors.docentes && touched.docentes && (
+                  {errors.docente1 && touched.docente1 && (
                     <div className="text-red-500 justify-center text-center">
-                      {errors.docentes}
+                      {errors.docente1}
                     </div>
                   )}
-
+                  <div
+                    className={`flex m-4 items-center ${
+                      errors.docente2 ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <FaUser
+                      className="text-white"
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                    <select
+                      name="docente2"
+                      onChange={(e) =>
+                        handleDocenteChange(
+                          setFieldValue,
+                          e.target.value,
+                          false
+                        )
+                      }
+                      className="m-2 ml-3 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                      disabled={!values.docente1} // Deshabilitar hasta que se seleccione docente1
+                    >
+                      <option value="">Seleccionar docente 2</option>
+                      {docenteSeleccionado
+                        .filter((docente) => docente._id !== values.docente1) // Filtrar para excluir el docente1
+                        .map((docente) => (
+                          <option key={docente._id} value={docente._id}>
+                            {docente.nombre} {docente.apellido}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  {errors.docente2 && touched.docente2 && (
+                    <div className="text-red-500 justify-center text-center">
+                      {errors.docente2}
+                    </div>
+                  )}
+                  <div
+                    className={`flex m-4 items-center ${
+                      errors.descripcion ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <FaSignature
+                      className="text-white "
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                    <textarea
+                      placeholder="Descripción"
+                      className="m-2 ml-3 h-32 rounded-lg bg-gray-700 text-white w-full pl-4 pt-2"
+                      name="descripcion"
+                      onChange={handleChange}
+                      rows="5" // Puedes ajustar este valor según el tamaño que desees
+                    />
+                  </div>
+                  {errors.descripcion && touched.descripcion && (
+                    <div className="text-red-500 justify-center text-center">
+                      {errors.descripcion}
+                    </div>
+                  )}
                   <div className="flex justify-center space-x-4 m-5 ">
                     <button
                       type="submit"
@@ -301,6 +412,37 @@ const Courses = () => {
               </Form>
             )}
           </Formik>
+        </div>
+      </Modal>
+      {/* Aviso de Creacion Alumno*/}
+      <Modal
+        isOpen={showAviso}
+        onRequestClose={() => setShowAviso(false)}
+        contentLabel="Notificacion Aviso  Estudiante"
+        className="absolute  top-1/4 left-1/2"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div
+          className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96"
+          style={{ marginLeft: "-90px", marginTop: "70px" }}
+        >
+          <div className="mb-8 text-white text-center poppins text-[25px] m-6">
+            <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
+              Curso creado con éxito.
+            </h2>
+          </div>
+          <div className="flex justify-center space-x-4">
+            <button
+              className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
+              onClick={() => {
+                setShowCrearAviso(false);
+                location.reload();
+              }}
+            >
+              <FaCheck className="w-6 mr-2" />
+              Aceptar
+            </button>
+          </div>
         </div>
       </Modal>
     </div>
