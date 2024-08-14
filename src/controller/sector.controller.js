@@ -13,17 +13,27 @@ export const createSector = async (req, res) => {
     try {
         const { numero, nombre, direccion, barrio } = req.body;
 
+        // Verifica si ya existe un sector con la misma dirección y barrio
+        const existingSector = await Sector.findOne({ direccion, barrio });
+
+        if (existingSector) {
+            return res.status(400).json({ message: 'Ya existe un sector con esta dirección y barrio' });
+        }
+
+        // Crea el nuevo sector si no existe uno duplicado
         const newSector = new Sector({
-            numero, 
+            numero,
             nombre,
             direccion,
-            barrio,
+            barrio
         });
 
-        const saveSector = await newSector.save();
-        res.json(saveSector);
+        const savedSector = await newSector.save();
+        res.json(savedSector);
+
     } catch (error) {
-        res.status(500).json({ message: "No se permiten datos duplicados"});
+        console.error('Error al guardar el sector:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
     }
 }
 

@@ -5,15 +5,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { MdOutlineEdit } from "react-icons/md";
-import { FaRegEye } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaEye } from "react-icons/fa";
 import DataTable from "react-data-table-component";
 import Modal from "react-modal";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import { VscEdit, VscTrash } from "react-icons/vsc";
 
@@ -42,7 +41,7 @@ function SectorPage() {
       await deleteSector(id);
       setShowEliminarAviso(false);
       console.log("Sector eliminado exitosamente");
-      // Realizar cualquier acción adicional después de eliminar el sector
+      // Actualiza la lista de sectores
     } catch (error) {
       console.error("Error al eliminar el sector:", error);
       // Manejar el error apropiadamente
@@ -107,6 +106,16 @@ function SectorPage() {
   const [selectedRows, setSelectedRows] = useState({ selectedRows: [] });
   const [mostrarOpciones, setMostrarOpciones] = useState(null);
 
+  useEffect(() => {
+    const filtered = records.filter(
+      (record) =>
+        record.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.barrio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.direccion.toString().includes(searchTerm)
+    );
+    setFilteredRecords(filtered);
+  }, [searchTerm, records]);
+
   const columns = [
     { name: "N° Sector", selector: (row) => row.numero, sortable: true },
     { name: "Nombre", selector: (row) => row.nombre, sortable: true },
@@ -128,7 +137,6 @@ function SectorPage() {
     },
     table: {
       style: {
-        
         borderRadius: "10px",
         overflow: "hidden",
         width: 1100, // Ajusta el ancho de la tabla
@@ -167,85 +175,171 @@ function SectorPage() {
     }
   };
 
+  const sectorExistenteDireccionBarrio = async (direccion, barrio, id) => {
+    try {
+      const response = await axios.get("http://localhost:4000/api/sectores");
+      const sectores = response.data;
+  
+      // Verificar si existe un sector con la misma dirección y barrio, excluyendo el sector actual si el ID no es null
+      const coincidenciaExacta = sectores.some(
+        (sector) =>
+          sector.direccion.toLowerCase() === direccion.toLowerCase() &&
+          sector.barrio.toLowerCase() === barrio.toLowerCase() &&
+          (id ? sector._id !== id : true) // Excluir el sector actual solo si ID no es null
+      );
+  
+      return { coincidenciaExacta };
+    } catch (error) {
+      console.error("Error al verificar el sector existente:", error);
+      return { coincidenciaExacta: false };
+    }
+  };
+
+  // Esquema de validación
+  const validationSchemaEditar = Yup.object().shape({
+    barrio: Yup.string()
+      .max(50, "El barrio no puede tener más de 50 caracteres")
+      .matches(/^[A-Za-z ]+$/, "Solo letras permitidas")
+      .required("El barrio es requerido"),
+  
+    direccion: Yup.string()
+      .required("La dirección es requerida")
+      .test(
+        "check-duplicado-direccion-barrio",
+        "Esta combinación de dirección y barrio ya está asignada a otro sector",
+        async function (direccion) {
+          const { barrio } = this.parent;
+  
+          // Verifica si la dirección o barrio han cambiado
+          if (
+            selectedSectors.direccion.toLowerCase() === direccion.toLowerCase() &&
+            selectedSectors.barrio.toLowerCase() === barrio.toLowerCase()
+          ) {
+            return true; // No es necesario verificar si no hay cambios
+          }
+  
+          const { coincidenciaExacta } = await sectorExistenteDireccionBarrio(
+            direccion,
+            barrio,
+            selectedSectors._id // Asegúrate de pasar el ID para excluir el registro actual
+          );
+          return !coincidenciaExacta;
+        }
+      ),
+  });
+
   const validationSchema = Yup.object().shape({
     numero: Yup.string()
-      .required("El numero es requerido")
-      .test("check-duplicado", "N° Sector Existente", async (numero) => {
-        const Duplicado = await sectorExistenteNumero(numero);
-        return !Duplicado;
+      .required("El número es requerido")
+      .test("check-duplicado", "Número de Sector Existente", async (numero) => {
+        const response = await axios.get("http://localhost:4000/api/sectores");
+        return !response.data.some((sector) => sector.numero === numero);
       }),
     nombre: Yup.string()
       .max(50, "El nombre no puede tener más de 50 caracteres")
       .matches(/^[A-Za-z ]+$/, "Solo letras permitidas")
       .required("El nombre es requerido")
       .test("check-duplicado", "Nombre Existente", async (nombre) => {
-        const Duplicado = await sectorExistenteNombre(nombre);
-        return !Duplicado;
+        const response = await axios.get("http://localhost:4000/api/sectores");
+        return !response.data.some((sector) => sector.nombre.toLowerCase() === nombre.toLowerCase());
       }),
     barrio: Yup.string()
       .max(50, "El barrio no puede tener más de 50 caracteres")
       .matches(/^[A-Za-z ]+$/, "Solo letras permitidas")
-      .required("El apellido es requerido"),
-    direccion: Yup.string().required("La direcion es requerida"),
+      .required("El barrio es requerido"),
+    direccion: Yup.string()
+      .required("La dirección es requerida")
+      .test("check-duplicado-direccion-barrio", "Esta combinación de barrio y dirección ya existe", async function (direccion) {
+        const { barrio } = this.parent;
+        console.log(barrio)
+        const response = await axios.get("http://localhost:4000/api/sectores");
+        const exists = response.data.some((sector) =>
+          sector.direccion.toLowerCase() === direccion.toLowerCase() &&
+          sector.barrio.toLowerCase() === barrio.toLowerCase() &&
+          sector._id !== (selectedSectors ? selectedSectors._id : null)
+        );
+        return !exists;
+      }),
   });
-  const validationSchemaEditar = Yup.object().shape({
-    barrio: Yup.string()
-      .max(50, "El barrio no puede tener más de 50 caracteres")
-      .matches(/^[A-Za-z ]+$/, "Solo letras permitidas")
-      .required("El apellido es requerido"),
-    direccion: Yup.string().required("La direcion es requerida"),
-  });
+
   return (
     <>
-      <div className="mt-2 flex grow flex-col gap-4 md:flex-row static">
+      <div className="flex flex-col items-center mt-2 gap-4 min-h-screen">
         {/*tabla de sectores*/}
-
-        <div className="p-5  h-auto w-screen relative">
-          <div className="mb-6">
-            <h1 className="text-[38px] poppins text-center poppins bold-text">
-              {" "}
-              Sectores Registrados
-            </h1>
-          </div>
-
-          {mostrarOpciones && (
-        <div className="flex grow justify-end items-end mt-20 mr-20 w-auto md:mt-0">
+        <br />
+        <div className="mb-6">
+          <h1 className="text-[38px] text-center font-bold">
+            {" "}
+            Sectores Registrados
+          </h1>
+        </div>
+        <div className="search-bar-jugadores">
+          <FontAwesomeIcon
+            icon={faSearch}
+            size="xl"
+            className="search-icon-jugadores"
+          />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input-jugadores border rounded-lg border-gray-300 bg-gray-100 p-2 text-gray-700"
+          />
           <div
-            className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5"
-            onClick={() => handleEditarClick()}
+            className="clear-search-jugadores-circle"
+            onClick={() => setSearchTerm("")}
           >
-            <VscEdit size="30px" className="w-5 md:w-6" />
-          </div>
-          <div
-            className="flex items-center bg-red-500 hover:bg-red-700 text-white text-sm py-2 px-3 rounded"
-            onClick={() => handleEliminarClick()}
-          >
-            <VscTrash size="30px" className="w-5 md:w-6" />
+            <FontAwesomeIcon icon={faTimes} />
           </div>
         </div>
-      )}
+        <div className="flex flex-col items-center mt-2 gap-4 min-h-screen p-5 h-auto w-full max-w-axl">
+          {mostrarOpciones && (
+            <div
+              className="flex justify-end items-end mb-4 botones-acciones-docentes"
+              style={{ marginBottom: "57px" }}
+            >
+              <div
+                className="flex items-center bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3 rounded mr-5"
+                onClick={() => handleEditarClick()}
+              >
+                <VscEdit size="30px" className="w-5 md:w-6" />
+              </div>
+              <div
+                className="flex items-center bg-yellow-600 hover:bg-yellow-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
+                onClick={() => {}}
+              >
+                <FaEye size="30px" className="w-5 md:w-6" />
+              </div>
+              <div
+                className="flex items-center bg-red-500 hover:bg-red-700 text-white text-sm py-2 px-3 rounded"
+                onClick={() => handleEliminarClick()}
+              >
+                <VscTrash size="30px" className="w-5 md:w-6" />
+              </div>
+            </div>
+          )}
 
           <div className="outer-wrapper p-5 h-auto">
-        <div className=" overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
-        <DataTable
-              columns={columns}
-              data={filteredRecords}
-              selectableRows
-              selectableRowsSingle
-              pagination
-              paginationPerPage={5}
-              onSelectedRowsChange={(state) => {setSelectedRows(state);
-                setMostrarOpciones(state.selectedRows[0]);
-              }
+            <div className=" overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
+              <DataTable
+                columns={columns}
+                data={filteredRecords}
+                selectableRows
+                selectableRowsSingle
+                pagination
+                paginationPerPage={5}
+                onSelectedRowsChange={(state) => {
+                  setSelectedRows(state);
+                  setMostrarOpciones(state.selectedRows[0]);
+                }}
+                fixedHeader
+                progressPending={loading}
+                customStyles={customStyles}
+              />
+            </div>
+          </div>
 
-              }
-              fixedHeader
-              progressPending={loading}
-              customStyles={customStyles}
-            />
-           </div>
-      </div>
-          
           <div className=" flex justify-center mt-6 ">
             {" "}
             <button
@@ -268,8 +362,10 @@ function SectorPage() {
           className="absolute  top-1/4 left-1/2"
           overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         >
-          <div className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96">
-            <div className="mb-8 text-white text-center poppins text-[25px] m-6">
+<div
+            className="absolute bg-blue-900 z-50 rounded-lg flex flex-col justify-center items-center p-6 w-96"
+            style={{ marginLeft: "-90px", marginTop: "70px" }}
+          >            <div className="mb-8 text-white text-center poppins text-[25px] m-6">
               <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
                 ¿Estás seguro que deseas eliminar el sector?
               </h2>
@@ -280,6 +376,7 @@ function SectorPage() {
                 onClick={() => {
                   handleDeleteSector(selectedSectors._id);
                   setShowEliminarAviso(false);
+                  location.reload();
                 }}
               >
                 <FaCheck className="w-6 mr-2" />
@@ -478,12 +575,13 @@ function SectorPage() {
               validationSchema={validationSchemaEditar}
               onSubmit={async (values, { setSubmitting, resetForm }) => {
                 try {
+                  console.log("Valores finales antes de enviar:", values);
                   await updateSector(selectedSectors._id, values);
                   setEditarAviso(false);
                   resetForm();
-                  location.reload();
+                  location.reload(); // Refresca la lista de sectores
                 } catch (error) {
-                  console.error("Error al crear el entrenador:", error);
+                  console.error("Error al actualizar el sector:", error);
                 }
                 setSubmitting(false);
               }}
