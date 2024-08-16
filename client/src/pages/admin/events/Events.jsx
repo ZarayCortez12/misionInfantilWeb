@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaEye, FaTrash } from "react-icons/fa";
+import { FaEye, FaTrash, FaSpinner } from "react-icons/fa";
 import axios from "axios";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import Modal from "react-modal";
@@ -7,69 +7,49 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { MdSaveAlt } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
-
+import Slider from "react-slick";
+import EventoCarousel from "../../../components/admin/EventoCarousel"
 
 Modal.setAppElement("#root");
 
-const EventCard = ({ id, title, date, deleteEvent }) => (
-  <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between">
-    <h2 className="text-lg font-bold">{title}</h2>
-    <p className="text-sm">
-      Fecha Creación: {new Date(date).toLocaleDateString()}
-    </p>
-    <div className="flex justify-end space-x-2 mt-2">
-      <button className="text-green-500">
-        <FaEye />
-      </button>
-      <button className="text-red-500" onClick={() => deleteEvent(id)}>
-        <FaTrash />
-      </button>
-    </div>
-  </div>
-);
-
-const EventCarousel = ({ title, events, deleteEvent }) => (
-  <div className="my-8">
-    <h3 className="text-xl font-semibold mb-4">{title}</h3>
-    <div className="flex items-center space-x-4 justify-center">
-      <button className="text-3xl">&lt;</button>
-      <div className="flex space-x-4 overflow-x-auto">
-        {events.map((event, index) => (
-          <EventCard
-            key={index}
-            id={event._id}
-            title={event.nombre_curso}
-            date={event.fecha}
-            deleteEvent={deleteEvent}
-          />
-        ))}
-      </div>
-      <button className="text-3xl">&gt;</button>
-    </div>
-  </div>
-);
-
 const Events = () => {
-  const [eventosPasados, setEventosPasados] = useState([]);
-  const [eventosProximos, setEventosProximos] = useState([]);
+  const [events, setEvents] = useState([]);
   const [showCrearAviso, setShowCrearAviso] = useState(false);
   const [sectores, setSectores] = useState([]);
+  const [cursos, setCursos] = useState([]); // Nuevo estado para los cursos
+  const [eventosPasados, setEventosPasados] = useState([]);
+  const [eventosProximos, setEventosProximos] = useState([]);
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 2,
+    slidesToScroll: 2,
+  };
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await axios.get("http://localhost:4000/api/eventos");
-        const events = response.data;
-        const currentDate = new Date();
-        const pastEvents = events.filter(
-          (event) => new Date(event.fecha) < currentDate
+        const fetchedEvents = response.data;
+        console.log("Eventos obtenidos:", fetchedEvents); // Verifica si los eventos están llegando
+
+        setEvents(fetchedEvents);
+
+        const today = new Date();
+        const pastEvents = fetchedEvents.filter(
+          (event) => new Date(event.fecha) < today
         );
-        const upcomingEvents = events.filter(
-          (event) => new Date(event.fecha) >= currentDate
+        const upcomingEvents = fetchedEvents.filter(
+          (event) => new Date(event.fecha) >= today
         );
 
         setEventosPasados(pastEvents);
         setEventosProximos(upcomingEvents);
+
+        console.log("Eventos pasados:", pastEvents);
+        console.log("Eventos próximos:", upcomingEvents);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -84,8 +64,19 @@ const Events = () => {
       }
     };
 
+    const fetchCursos = async () => {
+      // Nuevo efecto para obtener los cursos
+      try {
+        const response = await axios.get("http://localhost:4000/api/cursos");
+        setCursos(response.data);
+      } catch (error) {
+        console.error("Error fetching cursos:", error);
+      }
+    };
+
     fetchEvents();
     fetchSectores();
+    fetchCursos(); // Obtener cursos al cargar el componente
   }, []);
 
   const deleteEvent = async (id) => {
@@ -104,6 +95,16 @@ const Events = () => {
 
   const createEvent = async (values) => {
     try {
+      // Ajusta el nombre del evento si el tipo es curso
+      if (values.tipoEvento === "curso" && values.idCurso) {
+        const selectedCourse = cursos.find(
+          (curso) => curso._id === values.idCurso
+        );
+        if (selectedCourse) {
+          values.nombre = `Evento Curso ${selectedCourse.nombre}`;
+        }
+      }
+
       console.log("estos son los valores", values);
       await axios.post("http://localhost:4000/api/eventos", values);
       location.reload();
@@ -112,27 +113,58 @@ const Events = () => {
     }
   };
 
-  const validationSchema = Yup.object({
-    nombre: Yup.string().required("Nombre es requerido"),
-    fecha: Yup.date()
-      .min(new Date().toISOString().split("T")[0], "La fecha no puede ser anterior a hoy")
-      .required("Fecha es requerida"),
-    hora: Yup.string().required("Hora es requerida"),
-    lugar: Yup.string().required("Lugar es requerido"),
-    descripcion: Yup.string().required("Descripción es requerida"),
-  });
+  const validateEventForm = (values) => {
+    const errors = {};
+    const today = new Date().toISOString().split("T")[0];
+    console.log(values);
+
+    if (!values.tipoEvento) {
+      errors.tipoEvento = "Tipo de evento es requerido";
+    }
+
+    if (values.tipoEvento === "plantel") {
+      if (!values.nombre) {
+        errors.nombre = "Nombre es requerido";
+      }
+    }
+
+    if (!values.fecha) {
+      errors.fecha = "Fecha es requerida";
+    } else if (new Date(values.fecha) < new Date(today)) {
+      errors.fecha = "La fecha no puede ser anterior a hoy";
+    }
+
+    if (!values.hora) {
+      errors.hora = "Hora es requerida";
+    }
+
+    if (!values.lugar) {
+      errors.lugar = "Lugar es requerido";
+    }
+
+    if (values.tipoEvento === "curso") {
+      if (!values.idCurso) {
+        errors.idCurso = "Curso es requerido";
+      }
+    }
+
+    return errors;
+  };
+
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="container mx-auto p-4 ">
       <h1 className="text-3xl font-bold text-center mb-8">
         Eventos Registrados
       </h1>
-      <EventCarousel
+      <EventoCarousel
         title="Eventos Pasados"
         events={eventosPasados}
         deleteEvent={deleteEvent}
       />
-      <EventCarousel
+      <br />
+      <EventoCarousel
         title="Eventos Próximos"
         events={eventosProximos}
         deleteEvent={deleteEvent}
@@ -161,17 +193,21 @@ const Events = () => {
           </h2>
           <Formik
             initialValues={{
+              tipoEvento: "", // nuevo campo
               nombre: "",
               fecha: "",
               hora: "",
               lugar: "",
               descripcion: "",
+              idCurso: "", // nuevo campo para eventos de curso
             }}
-            validationSchema={validationSchema}
+            validate={validateEventForm}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
+              console.log("Valores enviados al servidor:", values);
               await createEvent(values);
               resetForm();
               setShowCrearAviso(false);
+              setSubmitting(false);
             }}
           >
             {({
@@ -185,100 +221,212 @@ const Events = () => {
             }) => (
               <Form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <input
-                    type="text"
-                    placeholder="Nombre"
-                    name="nombre"
-                    className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
-                    onChange={handleChange}
-                  />
-                  {errors.nombre && touched.nombre && (
-                    <div className="text-red-500 text-center">
-                      {errors.nombre}
-                    </div>
-                  )}
-                </div>
-                <div className="mb-4">
-                  <input
-                    type="date"
-                    name="fecha"
-                    className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
-                    onChange={handleChange}
-                  />
-                  {errors.fecha && touched.fecha && (
-                    <div className="text-red-500 text-center">
-                      {errors.fecha}
-                    </div>
-                  )}
-                </div>
-                <div className="mb-4">
-                  <input
-                    type="time"
-                    name="hora"
-                    className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
-                    onChange={handleChange}
-                  />
-                  {errors.hora && touched.hora && (
-                    <div className="text-red-500 text-center">
-                      {errors.hora}
-                    </div>
-                  )}
-                </div>
-                <div className="mb-4">
                   <select
-                    name="lugar"
+                    name="tipoEvento"
                     className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
-                    onChange={handleChange}
-                    value={values.lugar}
+                    onChange={(e) => {
+                      handleChange(e);
+                      console.log(
+                        "Tipo de evento seleccionado:",
+                        e.target.value
+                      ); // Log del nuevo valor
+
+                      setFieldValue("tipoEvento", e.target.value);
+                      console.log(values.tipoEvento);
+                    }}
+                    value={values.tipoEvento}
                   >
-                    <option value="" label="Selecciona un lugar" />
-                    {sectores.map((sector) => (
-                      <option key={sector._id} value={sector.nombre}>
-                        {sector.nombre}
-                      </option>
-                    ))}
+                    <option value="" label="Selecciona el tipo de evento" />
+                    <option value="plantel">
+                      Evento para integrantes del plantel
+                    </option>
+                    <option value="curso">Evento de curso</option>
                   </select>
-                  {errors.lugar && touched.lugar && (
+                  {errors.tipoEvento && touched.tipoEvento && (
                     <div className="text-red-500 text-center">
-                      {errors.lugar}
+                      {errors.tipoEvento}
                     </div>
                   )}
                 </div>
-                <div className="mb-4">
-                  <textarea
-                    name="descripcion"
-                    placeholder="Descripción"
-                    className="m-2 h-24 rounded-lg bg-gray-700 text-white w-full pl-4"
-                    onChange={handleChange}
-                  />
-                  {errors.descripcion && touched.descripcion && (
-                    <div className="text-red-500 text-center">
-                      {errors.descripcion}
+                {/* Campos específicos para eventos dirigidos al plantel */}
+                {values.tipoEvento === "plantel" && (
+                  <>
+                    <div className="mb-4">
+                      <input
+                        type="text"
+                        placeholder="Nombre"
+                        name="nombre"
+                        className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                        onChange={handleChange}
+                      />
+                      {errors.nombre && touched.nombre && (
+                        <div className="text-red-500 text-center">
+                          {errors.nombre}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className="flex justify-center space-x-4 m-5">
-                  <button
-                    type="submit"
-                    className="bg-blue-900 py-2 px-4 rounded-lg hover:bg-blue-700 text-white flex items-center"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      "Cargando..."
-                    ) : (
-                      <div className="flex items-center">
-                        <MdSaveAlt className="w-6 mr-2" />
-                        <span>Guardar</span>
-                      </div>
-                    )}
-                  </button>
+                    <div className="mb-4">
+                      <input
+                        type="date"
+                        name="fecha"
+                        min={today} // Añadido para restringir la selección de fechas
+                        className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                        onChange={handleChange}
+                      />
+                      {errors.fecha && touched.fecha && (
+                        <div className="text-red-500 text-center">
+                          {errors.fecha}
+                        </div>
+                      )}
+                    </div>
+                    <div className="mb-4">
+                      <input
+                        type="time"
+                        name="hora"
+                        className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                        onChange={handleChange}
+                      />
+                      {errors.hora && touched.hora && (
+                        <div className="text-red-500 text-center">
+                          {errors.hora}
+                        </div>
+                      )}
+                    </div>
+                    <div className="mb-4">
+                      <select
+                        name="lugar"
+                        className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                        onChange={handleChange}
+                        value={values.lugar}
+                      >
+                        <option value="" label="Selecciona un lugar" />
+                        {sectores.map((sector) => (
+                          <option key={sector._id} value={sector.nombre}>
+                            {sector.nombre}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.lugar && touched.lugar && (
+                        <div className="text-red-500 text-center">
+                          {errors.lugar}
+                        </div>
+                      )}
+                    </div>
+                    <div className="mb-4">
+                      <textarea
+                        name="descripcion"
+                        placeholder="Descripción"
+                        className="m-2 h-24 rounded-lg bg-gray-700 text-white w-full pl-4"
+                        onChange={handleChange}
+                      />
+                      {errors.descripcion && touched.descripcion && (
+                        <div className="text-red-500 text-center">
+                          {errors.descripcion}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+                {/* Campos específicos para eventos de curso */}
+                {values.tipoEvento === "curso" && (
+                  <>
+                    <div className="mb-4">
+                      <select
+                        name="idCurso"
+                        className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                        onChange={(e) => {
+                          setFieldValue("idCurso", e.target.value);
+                          console.log(
+                            "Nuevo valor de idCurso:",
+                            e.target.value
+                          );
+                        }}
+                        value={values.idCurso}
+                      >
+                        <option value="" label="Selecciona un curso" />
+                        {cursos.map((curso) => (
+                          <option key={curso._id} value={curso._id}>
+                            {curso.nombre}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.idCurso && touched.idCurso && (
+                        <div className="text-red-500 text-center">
+                          {errors.idCurso}
+                        </div>
+                      )}
+                    </div>
+                    <div className="mb-4">
+                      <input
+                        type="date"
+                        name="fecha"
+                        min={today}
+                        className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                        onChange={handleChange}
+                      />
+                      {errors.fecha && touched.fecha && (
+                        <div className="text-red-500 text-center">
+                          {errors.fecha}
+                        </div>
+                      )}
+                    </div>
+                    <div className="mb-4">
+                      <input
+                        type="time"
+                        name="hora"
+                        className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                        onChange={handleChange}
+                      />
+                      {errors.hora && touched.hora && (
+                        <div className="text-red-500 text-center">
+                          {errors.hora}
+                        </div>
+                      )}
+                    </div>
+                    <div className="mb-4">
+                      <select
+                        name="lugar"
+                        className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                        onChange={handleChange}
+                        value={values.lugar}
+                      >
+                        <option value="" label="Selecciona un lugar" />
+                        {sectores.map((sector) => (
+                          <option key={sector._id} value={sector.nombre}>
+                            {sector.nombre}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.lugar && touched.lugar && (
+                        <div className="text-red-500 text-center">
+                          {errors.lugar}
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+                <div className="flex justify-between mt-6">
                   <button
                     type="button"
+                    className="bg-red-600 text-white py-2 px-4 rounded-lg"
                     onClick={() => setShowCrearAviso(false)}
-                    className="bg-red-700 py-2 px-4 rounded-lg hover:bg-red-600 text-white flex items-center"
                   >
-                    <IoClose className="w-6 mr-2" />
-                    <span>Cancelar</span>
+                    <IoClose className="inline-block w-5 h-5" />
+                    Cerrar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || values.tipoEvento === ""}
+                    className={`bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center ${
+                      values.tipoEvento === ""
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                  >
+                    {isSubmitting ? "Guardando..." : "Guardar"}
+                    {isSubmitting && (
+                      <FaSpinner className="ml-2 animate-spin" />
+                    )}
                   </button>
                 </div>
               </Form>
