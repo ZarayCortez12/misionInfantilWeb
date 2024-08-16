@@ -163,7 +163,6 @@ const Events = () => {
         events={eventosPasados}
         deleteEvent={deleteEvent}
       />
-      <br />
       <EventoCarousel
         title="Eventos Próximos"
         events={eventosProximos}
