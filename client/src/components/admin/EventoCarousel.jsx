@@ -83,7 +83,6 @@ const EventoCarousel = ({ title, events, deleteEvent }) => {
 
   const getAddress = (sectorNumber) => {
     const sector = sectores.find(sector => sector.numero === sectorNumber);
-    console.log(`Sector found for number ${sectorNumber}:`, sector); // Verificar el sector encontrado
     return sector ? `${sector.direccion}, ${sector.barrio}` : "No disponible";
   };
 

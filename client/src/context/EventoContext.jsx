@@ -37,9 +37,8 @@ export function EventoProvider({ children }) {
             console.log(res.data);
             setErrors([]);
         } catch (error) {
-            setErrors(error.response.data);
-            console.error(error);
-            throw error.response.data.message || "Error en el registro.";
+            setErrors(error.response.data.message ? [error.response.data.message] : ["Error desconocido"]);
+            console.error("este es el error", error);
         }
     };
 

@@ -8,7 +8,8 @@ import * as Yup from "yup";
 import { MdSaveAlt } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import Slider from "react-slick";
-import EventoCarousel from "../../../components/admin/EventoCarousel"
+import EventoCarousel from "../../../components/admin/EventoCarousel";
+import { useEventos } from "../../../context/EventoContext.jsx";
 
 Modal.setAppElement("#root");
 
@@ -19,14 +20,8 @@ const Events = () => {
   const [cursos, setCursos] = useState([]); // Nuevo estado para los cursos
   const [eventosPasados, setEventosPasados] = useState([]);
   const [eventosProximos, setEventosProximos] = useState([]);
-
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 2,
-    slidesToScroll: 2,
-  };
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [serverError, setServerError] = useState("");
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -95,7 +90,6 @@ const Events = () => {
 
   const createEvent = async (values) => {
     try {
-      // Ajusta el nombre del evento si el tipo es curso
       if (values.tipoEvento === "curso" && values.idCurso) {
         const selectedCourse = cursos.find(
           (curso) => curso._id === values.idCurso
@@ -104,12 +98,22 @@ const Events = () => {
           values.nombre = `Evento Curso ${selectedCourse.nombre}`;
         }
       }
-
-      console.log("estos son los valores", values);
-      await axios.post("http://localhost:4000/api/eventos", values);
-      location.reload();
+  
+      console.log("Estos son los valores", values);
+      const response = await axios.post("http://localhost:4000/api/eventos", values);
+  
+      // Mostrar mensaje de éxito si el backend lo proporciona
+      setServerError(""); // Limpiar el error en caso de éxito
+      setShowSuccessModal(response.data.message || "Evento creado exitosamente!"); // Mensaje del backend o predeterminado
     } catch (error) {
       console.error("Error creating event:", error);
+  
+      // Mostrar el mensaje de error del backend si está disponible
+      if (error.response && error.response.data && error.response.data.message) {
+        setServerError(error.response.data.message);
+      } else {
+        setServerError("Error al crear el evento. Por favor, verifica los datos ingresados.");
+      }
     }
   };
 
@@ -151,6 +155,15 @@ const Events = () => {
     return errors;
   };
 
+  useEffect(() => {
+    if (serverError) {
+      const timer = setTimeout(() => {
+        setServerError(""); // Limpiar el mensaje de error después de 5 segundos
+      }, 5000);
+      return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
+    }
+  }, [serverError]);
+
   const today = new Date().toISOString().split("T")[0];
 
   return (
@@ -163,6 +176,7 @@ const Events = () => {
         events={eventosPasados}
         deleteEvent={deleteEvent}
       />
+
       <EventoCarousel
         title="Eventos Próximos"
         events={eventosProximos}
@@ -205,7 +219,7 @@ const Events = () => {
               console.log("Valores enviados al servidor:", values);
               await createEvent(values);
               resetForm();
-              setShowCrearAviso(false);
+              
               setSubmitting(false);
             }}
           >
@@ -247,6 +261,7 @@ const Events = () => {
                     </div>
                   )}
                 </div>
+                
                 {/* Campos específicos para eventos dirigidos al plantel */}
                 {values.tipoEvento === "plantel" && (
                   <>
@@ -404,6 +419,7 @@ const Events = () => {
                     </div>
                   </>
                 )}
+                
                 <div className="flex justify-between mt-6">
                   <button
                     type="button"
@@ -431,8 +447,36 @@ const Events = () => {
               </Form>
             )}
           </Formik>
+          {serverError && (
+            <div className="text-red-500 mt-4">
+              {serverError}
+            </div>
+          )}
         </div>
       </Modal>
+
+      {/* Mensaje de éxito del modal */}
+      {showSuccessModal && (
+        <Modal
+          isOpen={showSuccessModal}
+          onRequestClose={() => setShowSuccessModal(false)}
+          contentLabel="Éxito"
+          className="top-50 left-1/2"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
+          <div className="bg-green-800 rounded-lg flex flex-col justify-center items-center p-6 w-96">
+            <h2 className="text-white text-center text-[25px] m-6">
+              {showSuccessModal}
+            </h2>
+            <button
+              className="bg-yellow-600 h-12 w-24 rounded-lg flex items-center justify-center text-white"
+              onClick={() => setShowSuccessModal(false)}
+            >
+              Cerrar
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
