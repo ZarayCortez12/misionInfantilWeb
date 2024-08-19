@@ -14,6 +14,7 @@ const EventCard = ({
   neighborhood,
   time,
   deleteEvent,
+  updateEvent,
 }) => {
   // Función para formatear la fecha
   const formatDate = (date) => {
@@ -53,7 +54,7 @@ const EventCard = ({
         <button className="text-green-500">
           <FaEye />
         </button>
-        <button className="text-yellow-500" onClick={() => deleteEvent(id)}>
+        <button className="text-yellow-500" onClick={() => updateEvent(id)}>
           <VscEdit />
         </button>
         <button className="text-red-500" onClick={() => deleteEvent(id)}>
@@ -65,7 +66,7 @@ const EventCard = ({
 };
 
 // Componente de carrusel de eventos
-const EventoCarousel = ({ title, events, deleteEvent }) => {
+const EventoCarousel = ({ title, events, deleteEvent, updateEvent }) => {
   const [sectores, setSectores] = useState([]);
 
   useEffect(() => {
@@ -82,7 +83,7 @@ const EventoCarousel = ({ title, events, deleteEvent }) => {
   }, []);
 
   const getAddress = (sectorNumber) => {
-    const sector = sectores.find(sector => sector.numero === sectorNumber);
+    const sector = sectores.find(sector => sector.nombre === sectorNumber);
     return sector ? `${sector.direccion}, ${sector.barrio}` : "No disponible";
   };
 
@@ -111,6 +112,7 @@ const EventoCarousel = ({ title, events, deleteEvent }) => {
             neighborhood={event.barrio} // Puedes eliminar este prop si `location` ya contiene la información completa
             time={event.hora}
             deleteEvent={deleteEvent}
+            updateEvent={updateEvent}
           />
         ))}
       </Slider>

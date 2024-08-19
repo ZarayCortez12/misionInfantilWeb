@@ -179,7 +179,7 @@ function SectorPage() {
     try {
       const response = await axios.get("http://localhost:4000/api/sectores");
       const sectores = response.data;
-  
+
       // Verificar si existe un sector con la misma dirección y barrio, excluyendo el sector actual si el ID no es null
       const coincidenciaExacta = sectores.some(
         (sector) =>
@@ -187,7 +187,7 @@ function SectorPage() {
           sector.barrio.toLowerCase() === barrio.toLowerCase() &&
           (id ? sector._id !== id : true) // Excluir el sector actual solo si ID no es null
       );
-  
+
       return { coincidenciaExacta };
     } catch (error) {
       console.error("Error al verificar el sector existente:", error);
@@ -201,7 +201,7 @@ function SectorPage() {
       .max(50, "El barrio no puede tener más de 50 caracteres")
       .matches(/^[A-Za-z ]+$/, "Solo letras permitidas")
       .required("El barrio es requerido"),
-  
+
     direccion: Yup.string()
       .required("La dirección es requerida")
       .test(
@@ -209,15 +209,16 @@ function SectorPage() {
         "Esta combinación de dirección y barrio ya está asignada a otro sector",
         async function (direccion) {
           const { barrio } = this.parent;
-  
+
           // Verifica si la dirección o barrio han cambiado
           if (
-            selectedSectors.direccion.toLowerCase() === direccion.toLowerCase() &&
+            selectedSectors.direccion.toLowerCase() ===
+              direccion.toLowerCase() &&
             selectedSectors.barrio.toLowerCase() === barrio.toLowerCase()
           ) {
             return true; // No es necesario verificar si no hay cambios
           }
-  
+
           const { coincidenciaExacta } = await sectorExistenteDireccionBarrio(
             direccion,
             barrio,
@@ -241,7 +242,9 @@ function SectorPage() {
       .required("El nombre es requerido")
       .test("check-duplicado", "Nombre Existente", async (nombre) => {
         const response = await axios.get("http://localhost:4000/api/sectores");
-        return !response.data.some((sector) => sector.nombre.toLowerCase() === nombre.toLowerCase());
+        return !response.data.some(
+          (sector) => sector.nombre.toLowerCase() === nombre.toLowerCase()
+        );
       }),
     barrio: Yup.string()
       .max(50, "El barrio no puede tener más de 50 caracteres")
@@ -249,17 +252,24 @@ function SectorPage() {
       .required("El barrio es requerido"),
     direccion: Yup.string()
       .required("La dirección es requerida")
-      .test("check-duplicado-direccion-barrio", "Esta combinación de barrio y dirección ya existe", async function (direccion) {
-        const { barrio } = this.parent;
-        console.log(barrio)
-        const response = await axios.get("http://localhost:4000/api/sectores");
-        const exists = response.data.some((sector) =>
-          sector.direccion.toLowerCase() === direccion.toLowerCase() &&
-          sector.barrio.toLowerCase() === barrio.toLowerCase() &&
-          sector._id !== (selectedSectors ? selectedSectors._id : null)
-        );
-        return !exists;
-      }),
+      .test(
+        "check-duplicado-direccion-barrio",
+        "Esta combinación de barrio y dirección ya existe",
+        async function (direccion) {
+          const { barrio } = this.parent;
+          console.log(barrio);
+          const response = await axios.get(
+            "http://localhost:4000/api/sectores"
+          );
+          const exists = response.data.some(
+            (sector) =>
+              sector.direccion.toLowerCase() === direccion.toLowerCase() &&
+              sector.barrio.toLowerCase() === barrio.toLowerCase() &&
+              sector._id !== (selectedSectors ? selectedSectors._id : null)
+          );
+          return !exists;
+        }
+      ),
   });
 
   return (
@@ -362,10 +372,12 @@ function SectorPage() {
           className="absolute  top-1/4 left-1/2"
           overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         >
-<div
+          <div
             className="absolute bg-blue-900 z-50 rounded-lg flex flex-col justify-center items-center p-6 w-96"
             style={{ marginLeft: "-90px", marginTop: "70px" }}
-          >            <div className="mb-8 text-white text-center poppins text-[25px] m-6">
+          >
+            {" "}
+            <div className="mb-8 text-white text-center poppins text-[25px] m-6">
               <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
                 ¿Estás seguro que deseas eliminar el sector?
               </h2>

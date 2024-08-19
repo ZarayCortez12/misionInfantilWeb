@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaEye, FaTrash, FaSpinner } from "react-icons/fa";
+import { FaEye, FaTrash, FaSpinner, FaCheck } from "react-icons/fa";
 import axios from "axios";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import Modal from "react-modal";
@@ -16,12 +16,16 @@ Modal.setAppElement("#root");
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [showCrearAviso, setShowCrearAviso] = useState(false);
+  const [showEditarAviso, setShowEditarAviso] = useState(false);
   const [sectores, setSectores] = useState([]);
   const [cursos, setCursos] = useState([]); // Nuevo estado para los cursos
   const [eventosPasados, setEventosPasados] = useState([]);
   const [eventosProximos, setEventosProximos] = useState([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [eventToEdit, setEventToEdit] = useState(null);
+  const [showEliminarAviso, setShowEliminarAviso] = useState(false);
+  const [eventIdToDelete, setEventIdToDelete] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -74,17 +78,72 @@ const Events = () => {
     fetchCursos(); // Obtener cursos al cargar el componente
   }, []);
 
-  const deleteEvent = async (id) => {
+  const handleDeleteEvent = (id) => {
+    setEventIdToDelete(id); // Guardar el ID del evento a eliminar
+    setShowEliminarAviso(true); // Mostrar el modal de confirmación
+  };
+
+  const deleteEvent = async () => {
     try {
-      await axios.delete(`http://localhost:4000/api/eventos/${id}`);
+      await axios.delete(`http://localhost:4000/api/eventos/${eventIdToDelete}`);
       setEventosPasados((prevEvents) =>
-        prevEvents.filter((event) => event._id !== id)
+        prevEvents.filter((event) => event._id !== eventIdToDelete)
       );
       setEventosProximos((prevEvents) =>
-        prevEvents.filter((event) => event._id !== id)
+        prevEvents.filter((event) => event._id !== eventIdToDelete)
       );
+      setShowEliminarAviso(false); // Ocultar el modal de confirmación
+      setEventIdToDelete(null); // Limpiar el ID del evento
     } catch (error) {
       console.error("Error deleting event:", error);
+    }
+  };
+
+  const updatedEvent = async (id) => {
+    const response = await axios.get(`http://localhost:4000/api/eventos/${id}`);
+    const event = response.data;
+    // Formatear la fecha antes de establecer el estado
+    setEventToEdit({
+      ...event,
+      fecha: formatDateForInput(event.fecha), // Formatear la fecha
+    });
+    setShowEditarAviso(true);
+    console.log("Evento actualizado:", id);
+  };
+
+  const formatDateForInput = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0]; // Convertir a YYYY-MM-DD
+  };
+
+  const updateEvent = async (id, event) => {
+    try {
+      console.log("Datos del evento a actualizar:", event);
+      console.log("ID del evento a actualizar:", id);
+      const response = await axios.put(
+        `http://localhost:4000/api/eventos/${id}`,
+        event
+      );
+      setEvents((prevEvents) =>
+        prevEvents.map((e) => (e._id === id ? response.data : e))
+      );
+      setShowEditarAviso(false);
+      setShowSuccessModal("Evento actualizado exitosamente!");
+    } catch (error) {
+      console.error("Error creating event:", error);
+
+      // Mostrar el mensaje de error del backend si está disponible
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setServerError(error.response.data.message);
+      } else {
+        setServerError(
+          "Error al crear el evento. Por favor, verifica los datos ingresados."
+        );
+      }
     }
   };
 
@@ -98,21 +157,32 @@ const Events = () => {
           values.nombre = `Evento Curso ${selectedCourse.nombre}`;
         }
       }
-  
+
       console.log("Estos son los valores", values);
-      const response = await axios.post("http://localhost:4000/api/eventos", values);
-  
+      const response = await axios.post(
+        "http://localhost:4000/api/eventos",
+        values
+      );
+
       // Mostrar mensaje de éxito si el backend lo proporciona
       setServerError(""); // Limpiar el error en caso de éxito
-      setShowSuccessModal(response.data.message || "Evento creado exitosamente!"); // Mensaje del backend o predeterminado
+      setShowSuccessModal(
+        response.data.message || "Evento creado exitosamente!"
+      ); // Mensaje del backend o predeterminado
     } catch (error) {
       console.error("Error creating event:", error);
-  
+
       // Mostrar el mensaje de error del backend si está disponible
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         setServerError(error.response.data.message);
       } else {
-        setServerError("Error al crear el evento. Por favor, verifica los datos ingresados.");
+        setServerError(
+          "Error al crear el evento. Por favor, verifica los datos ingresados."
+        );
       }
     }
   };
@@ -120,7 +190,6 @@ const Events = () => {
   const validateEventForm = (values) => {
     const errors = {};
     const today = new Date().toISOString().split("T")[0];
-    console.log(values);
 
     if (!values.tipoEvento) {
       errors.tipoEvento = "Tipo de evento es requerido";
@@ -151,7 +220,29 @@ const Events = () => {
         errors.idCurso = "Curso es requerido";
       }
     }
+    console.log("Los errores del formulario son:", errors);
+    return errors;
+  };
 
+  const validateEditEventForm = (values) => {
+    const errors = {};
+    const today = new Date().toISOString().split("T")[0];
+
+    if (!values.fecha) {
+      errors.fecha = "Fecha es requerida";
+    } else if (new Date(values.fecha) < new Date(today)) {
+      errors.fecha = "La fecha no puede ser anterior a hoy";
+    }
+
+    if (!values.hora) {
+      errors.hora = "Hora es requerida";
+    }
+
+    if (!values.lugar) {
+      errors.lugar = "Lugar es requerido";
+    }
+
+    console.log("Los errores del formulario son:", errors);
     return errors;
   };
 
@@ -174,13 +265,15 @@ const Events = () => {
       <EventoCarousel
         title="Eventos Pasados"
         events={eventosPasados}
-        deleteEvent={deleteEvent}
+        deleteEvent={handleDeleteEvent}
+        updateEvent={updatedEvent}
       />
 
       <EventoCarousel
         title="Eventos Próximos"
         events={eventosProximos}
-        deleteEvent={deleteEvent}
+        deleteEvent={handleDeleteEvent}
+        updateEvent={updatedEvent}
       />
       <div className="flex justify-center mt-6">
         <button
@@ -193,6 +286,7 @@ const Events = () => {
           </div>
         </button>
       </div>
+      {/* Aviso de Creacion Aviso*/}
       <Modal
         isOpen={showCrearAviso}
         onRequestClose={() => setShowCrearAviso(false)}
@@ -219,7 +313,7 @@ const Events = () => {
               console.log("Valores enviados al servidor:", values);
               await createEvent(values);
               resetForm();
-              
+              location.reload();
               setSubmitting(false);
             }}
           >
@@ -261,7 +355,7 @@ const Events = () => {
                     </div>
                   )}
                 </div>
-                
+
                 {/* Campos específicos para eventos dirigidos al plantel */}
                 {values.tipoEvento === "plantel" && (
                   <>
@@ -419,7 +513,7 @@ const Events = () => {
                     </div>
                   </>
                 )}
-                
+
                 <div className="flex justify-between mt-6">
                   <button
                     type="button"
@@ -448,12 +542,187 @@ const Events = () => {
             )}
           </Formik>
           {serverError && (
-            <div className="text-red-500 mt-4">
-              {serverError}
-            </div>
+            <div className="text-red-500 mt-4">{serverError}</div>
           )}
         </div>
       </Modal>
+
+      {/* Aviso de Editar */}
+      <Modal
+        isOpen={showEditarAviso}
+        onRequestClose={() => setShowEditarAviso(false)}
+        contentLabel="Crear Evento"
+        className="top-50 left-1/2"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div className="bg-yellow-800 rounded-lg flex flex-col justify-center items-center p-6" style={{width: "496px"}}>
+          <h2 className="text-white text-center text-[25px] m-6">
+            EDITAR EVENTO
+          </h2>
+          <Formik
+            initialValues={{
+              nombre: eventToEdit ? eventToEdit.nombre_curso || "" : "",
+              fecha: eventToEdit ? eventToEdit.fecha || "" : "",
+              hora: eventToEdit ? eventToEdit.hora || "" : "",
+              lugar: eventToEdit ? eventToEdit.sector || "" : "",
+            }}
+            validate={validateEditEventForm}
+            onSubmit={async (values, { setSubmitting }) => {
+              if (eventToEdit && eventToEdit._id) {
+                await updateEvent(eventToEdit._id, values);
+              }
+              setSubmitting(false);
+            }}
+          >
+            {({
+              handleChange,
+              handleSubmit,
+              setFieldValue,
+              values,
+              errors,
+              touched,
+              isSubmitting,
+            }) => (
+              <Form onSubmit={handleSubmit}>
+                <div style={{width: "396px"}}>
+                  <div className="mb-4">
+                    <input
+                      type="text"
+                      placeholder="Nombre"
+                      name="nombre"
+                      className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                      onChange={handleChange}
+                      value={values.nombre}
+                      disabled
+                    />
+                    {errors.nombre && touched.nombre && (
+                      <div className="text-red-500 text-center">
+                        {errors.nombre}
+                      </div>
+                    )}
+                  </div>
+                  <div className="mb-4">
+                    <input
+                      type="date"
+                      name="fecha"
+                      min={today} // Añadido para restringir la selección de fechas
+                      className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                      onChange={handleChange}
+                      value={values.fecha}
+                    />
+                    {errors.fecha && touched.fecha && (
+                      <div className="text-red-500 text-center">
+                        {errors.fecha}
+                      </div>
+                    )}
+                  </div>
+                  <div className="mb-4">
+                    <input
+                      type="time"
+                      name="hora"
+                      className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                      onChange={handleChange}
+                      value={values.hora}
+                    />
+                    {errors.hora && touched.hora && (
+                      <div className="text-red-500 text-center">
+                        {errors.hora}
+                      </div>
+                    )}
+                  </div>
+                  <div className="mb-4">
+                    <select
+                      name="lugar"
+                      className="m-2 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                      onChange={handleChange}
+                      value={values.lugar}
+                    >
+                      <option value="" label="Selecciona un lugar" />
+                      {sectores.map((sector) => (
+                        <option key={sector._id} value={sector.nombre}>
+                          {sector.nombre}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.lugar && touched.lugar && (
+                      <div className="text-red-500 text-center">
+                        {errors.lugar}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-between mt-6">
+                  <button
+                    type="button"
+                    className="bg-red-600 text-white py-2 px-4 rounded-lg"
+                    onClick={() => setShowEditarAviso(false)}
+                  >
+                    <IoClose className="inline-block w-5 h-5" />
+                    Cerrar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || values.tipoEvento === ""}
+                    className={`bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center ${
+                      values.tipoEvento === ""
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    }`}
+                  >
+                    {isSubmitting ? "Guardando..." : "Guardar"}
+                    {isSubmitting && (
+                      <FaSpinner className="ml-2 animate-spin" />
+                    )}
+                  </button>
+                </div>
+              </Form>
+            )}
+            
+          </Formik>
+          {serverError && (
+            <div className="text-red-500 mt-4">{serverError}</div>
+          )}
+        </div>
+      </Modal>
+
+      {/* Aviso de Eliminacion*/}
+      <Modal
+          isOpen={showEliminarAviso}
+          onRequestClose={() => setShowEliminarAviso(false)}
+          contentLabel="Eliminar Sector"
+          className="absolute  top-1/4 left-1/2"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
+          <div
+            className="absolute bg-blue-900 z-50 rounded-lg flex flex-col justify-center items-center p-6 w-96"
+            style={{ marginLeft: "-90px", marginTop: "70px" }}
+          >
+            {" "}
+            <div className="mb-8 text-white text-center poppins text-[25px] m-6">
+              <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
+                ¿Estás seguro que deseas eliminar el evento?
+              </h2>
+            </div>
+            <div className="flex justify-center space-x-4">
+              <button
+                className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
+                onClick={() => {
+                  deleteEvent(eventIdToDelete);
+                }}
+              >
+                <FaCheck className="w-6 mr-2" />
+                Si, Eliminar
+              </button>
+              <button
+                className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-900 text-white flex items-center"
+                onClick={() => setShowEliminarAviso(false)}
+              >
+                <IoClose className="w-6 mr-2" />
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </Modal>
 
       {/* Mensaje de éxito del modal */}
       {showSuccessModal && (
