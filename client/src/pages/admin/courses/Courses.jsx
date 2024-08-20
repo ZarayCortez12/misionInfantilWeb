@@ -23,9 +23,11 @@ const Courses = () => {
   const [cursosE, setCursos] = useState([]);
   const { getCursos, deleteCurso, createCurso } = useCursos();
   const [showCrearAviso, setShowCrearAviso] = useState(false);
+  const [showEditarAviso, setShowEditarAviso] = useState(false);
   const [cursoToDelete, setCursoToDelete] = useState(null);
-
   const [docenteValue, setDocenteValue] = useState("");
+  const [cursoEditado, setCursoEditado] = useState(null);
+  const [serverError, setServerError] = useState("");
   // Función para eliminar un curso
   const handleDeleteCurso = async (cursoId) => {
     try {
@@ -36,6 +38,51 @@ const Courses = () => {
       setCursos(updatedCursos);
     } catch (error) {
       console.error("Error al eliminar el curso:", error);
+    }
+  };
+
+  const creatCurso = async (cursoData) => {
+    try {
+      const response = await axios.post("http://localhost:4000/api/cursos", cursoData);
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error("Error al crear el curso. Por favor, intenta de nuevo.");
+    }
+  };
+
+  const updateCurso = async (id, curso) => {
+    try {
+      console.log("Datos del curso a actualizar:", curso);
+      console.log("ID del curso a actualizar:", id);
+      const response = await axios.put(
+        `http://localhost:4000/api/cursos/${id}`,
+        curso
+      );
+      setCursos((prevCursos) =>
+        prevCursos.map((e) => (e._id === id ? response.data : e))
+      );
+
+      setShowEditarAviso(false);
+      setShowSuccessModal("Curso actualizado exitosamente!");
+      location.reload();
+    } catch (error) {
+      console.error("Error al actualizar el curso:", error);
+
+      // Mostrar el mensaje de error del backend si está disponible
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setServerError(error.response.data.message);
+      } else {
+        setServerError(
+          "Error al crear el curso. Por favor, verifica los datos ingresados."
+        );
+      }
     }
   };
 
@@ -78,6 +125,7 @@ const Courses = () => {
     fetchData();
   }, []);
 
+  // Actualizar el esquema de validación
   const validationSchema = Yup.object().shape({
     nombre: Yup.string()
       .max(50, "El nombre no puede tener más de 50 caracteres")
@@ -86,6 +134,12 @@ const Courses = () => {
     descripcion: Yup.string()
       .max(150, "La descripción no puede tener más de 150 caracteres")
       .required("La descripción es requerida"),
+    docente1: Yup.string()
+      .required("Debe seleccionar un primer docente")
+      .notOneOf([""], "Debe seleccionar un primer docente"),
+    docente2: Yup.string()
+      .required("Debe seleccionar un segundo docente")
+      .notOneOf([""], "Debe seleccionar un segundo docente"),
   });
 
   const handleDocenteChange = (setFieldValue, selectedDocente, isFirst) => {
@@ -101,11 +155,20 @@ const Courses = () => {
     console.log("Docentes del curso actual:", docentes);
 
     return (
-      <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between transition-all duration-300 ease-in-out hover:border-red-500 hover:shadow-lg">        <div className="flex justify-end space-x-2">
+      <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between transition-all duration-300 ease-in-out hover:border-red-500 hover:shadow-lg">
+        {" "}
+        <div className="flex justify-end space-x-2">
           <button className="text-green-500 mr-4">
             <FaEye style={{ fontSize: "24px" }} />
           </button>
-          <button className="text-yellow-500" style={{ marginLeft: "-5px"}}>
+          <button
+            className="text-yellow-500"
+            style={{ marginLeft: "-5px" }}
+            onClick={() => {
+              setCursoEditado(curso); // Cargar datos del curso en estado para editar
+              setShowEditarAviso(true); // Mostrar modal de edición
+            }}
+          >
             <VscEdit style={{ fontSize: "24px" }} />
           </button>
           <button
@@ -117,10 +180,9 @@ const Courses = () => {
           >
             <FaTrash style={{ fontSize: "22px" }} />
           </button>
-          
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex-grow" style={{ marginTop: "-20px"}}>
+          <div className="flex-grow" style={{ marginTop: "-20px" }}>
             <h2 className="text-lg font-bold">{curso.nombre}</h2>
             <p className="text-sm">Fecha Creación: {curso.fecha}</p>
             <div className="mt-4">
@@ -138,10 +200,8 @@ const Courses = () => {
               )}
             </div>
           </div>
-          <div className="flex-shrink-0"
-          style={{ marginRight: "40px"}}
-          >
-            <img src={icono} alt="Icono" className="w-16 h-16"  />
+          <div className="flex-shrink-0" style={{ marginRight: "40px" }}>
+            <img src={icono} alt="Icono" className="w-16 h-16" />
           </div>
         </div>
       </div>
@@ -183,7 +243,10 @@ const Courses = () => {
         className="absolute  top-1/4 left-1/2"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       >
-        <div className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96">
+        <div
+          className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96"
+          style={{ marginLeft: "-90px", marginTop: "70px" }}
+        >
           <div className="mb-8 text-white text-center poppins text-[25px] m-6">
             <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
               ¿Seguro de eliminar el registro?
@@ -254,12 +317,14 @@ const Courses = () => {
                   docente2: values.docente2 || null, // Opción para segundo docente
                 };
                 console.log("Datos del curso a crear:", cursoData);
-                await createCurso(cursoData);
+                const response = await creatCurso(cursoData);
+                setServerError(""); // Limpiar el error en caso de éxito
                 setShowAviso(true);
                 resetForm();
                 setShowCrearAviso(false); // Actualizar la página después de crear
               } catch (error) {
                 console.error("Error al crear el curso:", error);
+                setServerError(error.message || "Error al crear el curso. Por favor, verifica los datos ingresados.");
               }
               setSubmitting(false);
             }}
@@ -412,6 +477,9 @@ const Courses = () => {
               </Form>
             )}
           </Formik>
+          {serverError && (
+            <div className="text-red-500 mt-4">{serverError}</div>
+          )}
         </div>
       </Modal>
       {/* Aviso de Creacion Alumno*/}
@@ -443,6 +511,196 @@ const Courses = () => {
               Aceptar
             </button>
           </div>
+        </div>
+      </Modal>
+
+      {/*Aviso de Edicion*/}
+      <Modal
+        isOpen={showEditarAviso}
+        onRequestClose={() => setShowEditarAviso(false)}
+        contentLabel="Crear Sector"
+        className="top-50 left-1/2"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div
+          className="z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96"
+          style={{
+            backgroundColor: "#8c6428", // Color sin opacidad
+            width: "600px",
+            marginTop: "20px",
+          }}
+        >
+          <div className=" text-white text-center poppins text-[25px] ">
+            <h2 className=" text-white text-center poppins text-[25px] m-6">
+              EDITAR CURSO
+            </h2>
+          </div>
+
+          <Formik
+            initialValues={{
+              nombre: cursoEditado ? cursoEditado.nombre || "" : "",
+              descripcion: cursoEditado ? cursoEditado.descripcion || "" : "",
+              docente1: cursoEditado ? cursoEditado.docentes[0] || "" : "",
+              docente2: cursoEditado ? cursoEditado.docentes[1] || "" : "",
+            }}
+            validationSchema={validationSchema}
+            onSubmit={async (values) => {
+              await updateCurso(cursoEditado._id, values);
+            }}
+          >
+            {({
+              handleChange,
+              handleSubmit,
+              errors,
+              setFieldValue,
+              touched,
+              isSubmitting,
+              values,
+            }) => (
+              <Form onSubmit={handleSubmit}>
+                <div className="justify-center m-2" style={{ width: "500px" }}>
+                  <div
+                    className={`flex m-4 items-center ${
+                      errors.nombre ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <FaSignature
+                      className="text-white "
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Nombre"
+                      className="m-2 ml-3 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                      name="nombre"
+                      onChange={handleChange}
+                      value={values.nombre}
+                      disabled
+                    />
+                  </div>
+                  {errors.nombre && touched.nombre && (
+                    <div className="text-red-500 justify-center text-center">
+                      {errors.nombre}
+                    </div>
+                  )}
+                  <div
+                    className={`flex m-4 items-center ${
+                      errors.docente1 ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <FaUser
+                      className="text-white "
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                    <select
+                      name="docente1"
+                      value={values.docente1}
+                      onChange={(e) =>
+                        handleDocenteChange(setFieldValue, e.target.value, true)
+                      }
+                      className="m-2 ml-3 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                    >
+                      <option value="">Seleccionar docente 1</option>
+                      {docenteSeleccionado.map((docente) => (
+                        <option key={docente._id} value={docente._id}>
+                          {docente.nombre} {docente.apellido}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {errors.docente1 && touched.docente1 && (
+                    <div className="text-red-500 justify-center text-center">
+                      {errors.docente1}
+                    </div>
+                  )}
+                  <div
+                    className={`flex m-4 items-center ${
+                      errors.docente2 ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <FaUser
+                      className="text-white"
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                    <select
+                      name="docente2"
+                      value={values.docente2}
+                      onChange={(e) =>
+                        handleDocenteChange(
+                          setFieldValue,
+                          e.target.value,
+                          false
+                        )
+                      }
+                      className="m-2 ml-3 h-12 rounded-lg bg-gray-700 text-white w-full pl-4"
+                      disabled={!values.docente1} // Deshabilitar hasta que se seleccione docente1
+                    >
+                      <option value="">Seleccionar docente 2</option>
+                      {docenteSeleccionado
+                        .filter((docente) => docente._id !== values.docente1) // Filtrar para excluir el docente1
+                        .map((docente) => (
+                          <option key={docente._id} value={docente._id}>
+                            {docente.nombre} {docente.apellido}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  {errors.docente2 && touched.docente2 && (
+                    <div className="text-red-500 justify-center text-center">
+                      {errors.docente2}
+                    </div>
+                  )}
+                  <div
+                    className={`flex m-4 items-center ${
+                      errors.descripcion ? "mb-0" : "mb-4"
+                    }`}
+                  >
+                    <FaSignature
+                      className="text-white "
+                      style={{ fontSize: "1.5rem" }}
+                    />
+                    <textarea
+                      value={values.descripcion}
+                      placeholder="Descripción"
+                      className="m-2 ml-3 h-32 rounded-lg bg-gray-700 text-white w-full pl-4 pt-2"
+                      name="descripcion"
+                      onChange={handleChange}
+                      rows="5" // Puedes ajustar este valor según el tamaño que desees
+                    />
+                  </div>
+                  {errors.descripcion && touched.descripcion && (
+                    <div className="text-red-500 justify-center text-center">
+                      {errors.descripcion}
+                    </div>
+                  )}
+                  <div className="flex justify-center space-x-4 m-5 ">
+                    <button
+                      type="submit"
+                      className="bg-blue-900 py-2 px-4 rounded-lg hover:bg-blue-700 text-white flex items-center"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        "Cargando..."
+                      ) : (
+                        <div className="flex items-center">
+                          <MdSaveAlt className="w-6 mr-2" />
+                          <span className="">Guardar</span>
+                        </div>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowEditarAviso(false)}
+                      className="bg-red-700 py-2 px-4 rounded-lg hover:bg-red-600 text-white flex items-center"
+                    >
+                      <IoClose className="w-6 mr-2" />
+                      <span className="">Cancelar</span>
+                    </button>
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
         </div>
       </Modal>
     </div>
