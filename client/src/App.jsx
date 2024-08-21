@@ -25,6 +25,8 @@ import CrearStudent from "./pages/admin/students/CrearStudent";
 import EditarStudent from "./pages/admin/students/EditarStudent";
 import CrearDocente from "./pages/admin/teachers/CrearDocente";
 import EditarDocente from "./pages/admin/teachers/EditarDocente";
+import IndexDocente from "./pages/docente/IndexDocente";
+import DocenteLayout from "./pages/docente/Layout";
 
 function App() {
   return (
@@ -155,6 +157,14 @@ function App() {
                             {" "}
                             <EditarDocente />{" "}
                           </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente"
+                        element={
+                          <DocenteLayout>
+                            <IndexDocente />
+                          </DocenteLayout>
                         }
                       />
                     </Route>

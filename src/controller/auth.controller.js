@@ -90,7 +90,7 @@ export const login = async (req, res) => {
       nombre: userFound.nombre,
       apellido: userFound.apellido,
       rol: userFound.rol,
-      image: userFound.image.url,
+      image: userFound.image,
       identificacion: userFound.identificacion,
       correo: userFound.correo,
       telefono: userFound.telefono,
