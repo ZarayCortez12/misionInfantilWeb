@@ -7,6 +7,7 @@ import {
   getUsuarios,
   sendEmail,
   resetPassword,
+  updateMe,
 } from "../controller/auth.controller.js";
 
 import { authRequired } from "../middlewares/validateToken.js";
@@ -28,5 +29,7 @@ router.get("/usuarios", getUsuarios);
 router.post("/sendEmail", sendEmail);
 
 router.post("/reset-password/:cedula/:token", resetPassword);
+
+router.put("/update-me/:id", updateMe);
 
 export default router;

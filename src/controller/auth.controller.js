@@ -92,6 +92,8 @@ export const login = async (req, res) => {
       rol: userFound.rol,
       image: userFound.image.url,
       identificacion: userFound.identificacion,
+      correo: userFound.correo,
+      telefono: userFound.telefono,
     });
   } catch (error) {
     console.error("Error:", error);
@@ -245,5 +247,50 @@ export const getUsuarios = async (req, res) => {
     console.log("estos son los usuarios: ", usuarios);
   } catch (error) {
     return res.status(404).json({ message: "Usuario no Encontrado" });
+  }
+};
+
+export const updateMe = async (req, res) => {
+  try {
+    const { nombre, apellido, telefono, genero, correo, identificacion } = req.body;
+    const userId = req.params.id;
+
+    let updatedFields = { nombre, apellido, telefono, genero, correo, identificacion };
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    if (!req.files) {
+      // Actualiza sin cambiar la imagen
+      await User.findByIdAndUpdate(userId, updatedFields);
+    } else {
+      // Elimina la imagen antigua si existe
+      if (user.image && user.image.public_id) {
+        await deleteImage(user.image.public_id);
+      }
+
+      // Sube la nueva imagen
+      const result = await uploadImage(req.files.image.tempFilePath);
+      await fs.remove(req.files.image.tempFilePath);
+      const image = {
+        url: result.secure_url,
+        public_id: result.public_id,
+      };
+
+      updatedFields = { ...updatedFields, image };
+
+      // Actualizar el usuario con la nueva imagen
+      await User.findByIdAndUpdate(userId, updatedFields);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, {
+      new: true,
+    });
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

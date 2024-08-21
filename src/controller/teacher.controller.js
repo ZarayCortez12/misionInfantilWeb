@@ -160,10 +160,10 @@ export const reloadPorfesor = async (req, res) => {
 
 export const updateProfesor = async (req, res) => {
   try {
-    const { nombre, apellido, telefono } = req.body;
+    const { nombre, apellido, telefono, genero, correo } = req.body;
     const userId = req.params.id;
 
-    let updatedFields = { nombre, apellido, telefono };
+    let updatedFields = { nombre, apellido, telefono, genero, correo };
 
     const user = await User.findById(userId);
 

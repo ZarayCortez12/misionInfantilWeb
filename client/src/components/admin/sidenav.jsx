@@ -11,7 +11,7 @@ export default function SideNav() {
   //Para mantener la imagen se guarda en el localStorage
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('user')) || {}; 
-    setImage(data.image || ""); 
+    setImage(data.image.url || ""); 
   }, [isAuthenticated]);
   
   return (
