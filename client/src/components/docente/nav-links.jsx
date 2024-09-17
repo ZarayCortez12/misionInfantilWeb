@@ -7,6 +7,7 @@ import {
   BookOpenIcon,
   GlobeAmericasIcon,
   CalendarIcon,
+  IdentificationIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { usePathname } from "next/navigation";
@@ -17,7 +18,7 @@ const links = [
   {
     name: "INFORMACION",
     to: "/administrador/cursos",
-    icon: BookOpenIcon,
+    icon: IdentificationIcon,
   },
   {
     name: "CURSOS",
