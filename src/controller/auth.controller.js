@@ -94,6 +94,7 @@ export const login = async (req, res) => {
       identificacion: userFound.identificacion,
       correo: userFound.correo,
       telefono: userFound.telefono,
+      genero: userFound.genero,
     });
   } catch (error) {
     console.error("Error:", error);

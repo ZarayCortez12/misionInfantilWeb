@@ -17,7 +17,7 @@ const links = [
   { name: "INICIO", to: "/administrador", icon: HandRaisedIcon },
   {
     name: "INFORMACION",
-    to: "/administrador/cursos",
+    to: "/docente/informacion",
     icon: IdentificationIcon,
   },
   {
