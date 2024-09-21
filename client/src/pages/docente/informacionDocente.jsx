@@ -318,7 +318,7 @@ function informacionDocente() {
               };
 
               try {
-                await updateMe(docente._id, updatedValues);
+                await updateMe(docente.identificacion, updatedValues);
               } catch (error) {
                 console.error("Error al editar el docente:", error);
               }

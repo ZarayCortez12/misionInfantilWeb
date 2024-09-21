@@ -229,7 +229,7 @@ export const updateMe = async (req, res) => {
 
     let updatedFields = { telefono, correo };
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({ identificacion: userId });
 
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
@@ -237,7 +237,7 @@ export const updateMe = async (req, res) => {
 
     if (!req.files) {
       // Actualiza sin cambiar la imagen
-      await User.findByIdAndUpdate(userId, updatedFields);
+      await User.findOneAndUpdate({ identificacion: userId }, updatedFields);
     } else {
       // Elimina la imagen antigua si existe
       if (user.image && user.image.public_id) {
@@ -255,10 +255,10 @@ export const updateMe = async (req, res) => {
       updatedFields = { ...updatedFields, image };
 
       // Actualizar el usuario con la nueva imagen
-      await User.findByIdAndUpdate(userId, updatedFields);
+      await User.findOneAndUpdate({ identificacion: userId }, updatedFields);
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, {
+    const updatedUser = await User.findOneAndUpdate({ identificacion: userId }, updatedFields, {
       new: true,
     });
     res.json(updatedUser);
