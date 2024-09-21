@@ -11,6 +11,7 @@ import path from "path";
 import url from "url";
 import handlebars from "handlebars";
 import jwt from "jsonwebtoken";
+import Curso from "../models/cursos.model.js";
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -266,3 +267,15 @@ export const updateMe = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getCursosDocente = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findOne({ identificacion: userId });
+    const cursos = await Curso.find({ docentes: user._id });
+    res.json(cursos);
+  } catch (error) {
+    return res.status(404).json({ message: "Usuario no Encontrado" });
+  }
+};
+

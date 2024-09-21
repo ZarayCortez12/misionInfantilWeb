@@ -22,7 +22,7 @@ const links = [
   },
   {
     name: "CURSOS",
-    to: "/administrador/cursos",
+    to: "/docente/cursos",
     icon: BookOpenIcon,
   },
   {

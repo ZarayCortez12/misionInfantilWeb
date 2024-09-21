@@ -28,6 +28,7 @@ import EditarDocente from "./pages/admin/teachers/EditarDocente";
 import IndexDocente from "./pages/docente/IndexDocente";
 import DocenteLayout from "./pages/docente/Layout";
 import InformacionDocente from "./pages/docente/informacionDocente";
+import CursosDocente from "./pages/docente/courses/Courses";
 
 function App() {
   return (
@@ -173,6 +174,14 @@ function App() {
                         element={
                           <DocenteLayout>
                             <InformacionDocente />
+                          </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente/cursos"
+                        element={
+                          <DocenteLayout>
+                            <CursosDocente />
                           </DocenteLayout>
                         }
                       />
