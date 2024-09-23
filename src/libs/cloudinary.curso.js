@@ -1,4 +1,4 @@
-import {v2 as cloudinary} from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
   cloud_name: "dngdztc0m",
@@ -8,14 +8,14 @@ cloudinary.config({
 
 export const uploadFile = async (filePath) => {
   return await cloudinary.uploader.upload(filePath, {
-    folder: "Cursos",          // Carpeta de destino en Cloudinary
-    resource_type: "raw",           // Permite subir archivos no multimedia como PDFs o Word
+    folder: "Cursos",           // Carpeta de destino en Cloudinary
+    resource_type: "raw",       // Asegurarse de que los archivos se suben como documentos no multimedia
   });
 };
 
 export const deleteFile = async (public_id) => {
   return await cloudinary.uploader.destroy(public_id, {
-    resource_type: "raw"            // Asegurarse de que se está eliminando un archivo "raw"
+    resource_type: "raw",       // Asegurarse de que se está eliminando un archivo "raw"
   });
 };
 
@@ -23,6 +23,6 @@ export const updateFile = async (filePath, public_id) => {
   await cloudinary.uploader.destroy(public_id, { resource_type: "raw" });
   return await cloudinary.uploader.upload(filePath, {
     folder: "Cursos",
-    resource_type: "raw",
+    resource_type: "raw",       // Asegurarse de que los archivos se suben como documentos no multimedia
   });
 };

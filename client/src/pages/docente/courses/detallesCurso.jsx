@@ -8,8 +8,12 @@ import {
   FaUser,
   FaTimes,
   FaCloudUploadAlt,
+  FaEye,
+  FaTrash,
+  FaDownload,
 } from "react-icons/fa"; // Importa los iconos de react-icons
 import logoOrganizacion from "../../../assets/logoOrganizacion.png";
+import { IoMdDocument } from "react-icons/io";
 
 function DetallesCurso() {
   const { id } = useParams(); // Obtiene el ID de la URL
@@ -19,30 +23,48 @@ function DetallesCurso() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null); // Estado para manejar el archivo seleccionado
   const [filePreview, setFilePreview] = useState(null); // Estado para la vista previa
+  const [documentos, setDocumentos] = useState([]);
 
   useEffect(() => {
     const fetchCurso = async () => {
       try {
-        // Obtener el curso por ID
         const response = await axios.get(
           `http://localhost:4000/api/cursos/${id}`
         );
         setCurso(response.data);
         console.log("Curso obtenido:", response.data);
-
+  
         // Obtener la lista de todos los docentes
         const responseD = await axios.get("http://localhost:4000/api/docentes");
         const docentesData = responseD.data.map((item) => ({
           _id: item._id,
           nombre: item.nombre,
           apellido: item.apellido,
-          imagen: item.image.url, // Asegúrate de que el campo 'imagen' esté disponible en tu API
+          imagen: item.image.url,
         }));
         setDocenteSeleccionado(docentesData);
+  
+        // Mover esta función aquí y comprobar si el curso tiene un ID
+        if (response.data._id) {
+          fetchDocumentos(response.data._id);
+        }
       } catch (error) {
         console.error("Error fetching course data:", error);
       }
     };
+  
+    const fetchDocumentos = async (id) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/cursos/${id}/documentos`
+        );
+        setDocumentos(response.data);
+        console.log("Documentos obtenidos:", response.data);
+      } catch (error) {
+        console.error("Error fetching documents:", error);
+      }
+    };
+  
     fetchCurso();
   }, [id]);
 
@@ -64,23 +86,46 @@ function DetallesCurso() {
       alert("Por favor seleccione un archivo");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("file", selectedFile);
-  
+
     try {
-      const response = await axios.post(`http://localhost:4000/api/cursos/${id}/documentos`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `http://localhost:4000/api/cursos/${id}/documentos`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setShowSuccessModal(true); // Muestra el modal de éxito
       setShowModal(false); // Cierra el modal de subir documento
       handleRemoveFile(); // Elimina el archivo seleccionado // Cierra el modal después de subir
       // Puedes agregar lógica para actualizar la lista de documentos si es necesario
+      // Llama a fetchDocumentos para actualizar la lista
+    await fetchDocumentos(curso._id); 
     } catch (error) {
       console.error("Error al subir el documento:", error);
       alert("Error al subir el documento");
+    }
+  };
+
+  const handleViewDocument = (documento) => {
+    const extension = documento.nombre.split('.').pop().toLowerCase();
+    
+    // Verifica si el archivo es PDF
+    if (extension === 'pdf') {
+      window.open(documento.url, '_blank'); // Abre en una nueva pestaña
+    } 
+    // Otras extensiones como Word (puedes ajustar según tu necesidad)
+    else if (extension === 'doc' || extension === 'docx') {
+      window.open(documento.url, '_blank'); // Abre en una nueva pestaña (soportado por algunos navegadores)
+    } 
+    // Puedes agregar más condiciones para otros tipos de archivo si es necesario
+    else {
+      alert('Formato no soportado para previsualización.');
     }
   };
 
@@ -97,6 +142,27 @@ function DetallesCurso() {
   const docentesDelCurso = docenteSeleccionado.filter((docente) =>
     curso.docentes.includes(docente._id)
   );
+
+  const handleDeleteDocument = async (documentId) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/cursos/${id}/documentos/${documentId}`);
+      setDocumentos(documentos.filter(doc => doc._id !== documentId));
+      alert("Documento eliminado exitosamente");
+    } catch (error) {
+      console.error("Error al eliminar el documento:", error);
+      alert("Error al eliminar el documento");
+    }
+  };
+
+  const buttonStyle = {
+    backgroundColor: "#2a4a7b",
+    color: "white",
+    padding: "10px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  };
 
   return (
     <>
@@ -213,7 +279,42 @@ function DetallesCurso() {
             <p>No hay docentes asignados a este curso.</p>
           )}
         </div>
+        <div style={{ marginTop: "40px", color: "white" }}>
+          <h3 style={{ marginBottom: "20px", marginLeft: "30px" }}>Documentos del Curso:</h3>
+          {documentos.length > 0 ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginLeft: "30px" }}>
+              {documentos.map((documento) => (
+                <div
+                  key={documento._id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    padding: "10px",
+                    borderRadius: "10px",
+                  }}
+                >
+                  <IoMdDocument size={30}/>
+                  <p style={{ color: "white" }}>{documento.nombre}</p>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <button onClick={() => handleViewDocument(documento)} style={buttonStyle}>
+                      <FaDownload />
+                    </button>
+                    <button onClick={() => handleDeleteDocument(documento._id)} style={buttonStyle}>
+                      <FaTrash />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No hay documentos disponibles para este curso.</p>
+          )}
+        </div>
       </div>
+
+
 
       {/* Sección de botones debajo del contenedor */}
       <div
@@ -340,7 +441,11 @@ function DetallesCurso() {
                 }}
               >
                 <label htmlFor="fileInput">
-                  <FaCloudUploadAlt size={50} style={{ marginLeft: "120px"}} color="#ccc" />
+                  <FaCloudUploadAlt
+                    size={50}
+                    style={{ marginLeft: "120px" }}
+                    color="#ccc"
+                  />
                   <p>Seleccionar archivo</p>
                 </label>
                 <input
@@ -371,8 +476,14 @@ function DetallesCurso() {
                 <p>Archivo seleccionado: {filePreview}</p>
               </div>
             )}
-
-            <div style={{ display: "flex", justifyContent: "space-around", marginTop: "20px" }}>
+            <p>*Recuerda subir documentos con nombres de archivo válidos</p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                marginTop: "20px",
+              }}
+            >
               <button
                 onClick={handleUpload}
                 style={{

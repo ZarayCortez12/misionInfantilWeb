@@ -127,3 +127,39 @@ export const uploadDocumento = async (req, res) => {
     return res.status(500).json({ message: "Error al subir el documento" });
   }
 };
+
+export const getDocumentos = async (req, res) => {
+  try {
+    const cursoId = req.params.id;
+    const curso = await Curso.findById(cursoId);
+    if (!curso) {
+      return res.status(404).json({ message: "Curso no encontrado" });
+    }
+    res.json(curso.documentos);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error al obtener los documentos" });
+  }
+};
+
+export const deleteDocumento = async (req, res) => {
+  try {
+    console.log(req.params);
+    const documentoId = req.params.documentoId;
+    const cursoId = req.params.id;
+
+    const curso = await Curso.findById(cursoId);
+    if (!curso) {
+      return res.status(404).json({ message: "Curso no encontrado" });
+    }
+
+    // Convertir documentoId a ObjectId o usar el método `equals` para comparar
+    curso.documentos = curso.documentos.filter((documento) => !documento._id.equals(documentoId));
+    
+    await curso.save();
+    res.json({ message: "Documento eliminado correctamente" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error al eliminar el documento" });
+  }
+};
