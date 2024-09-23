@@ -1,4 +1,6 @@
 import Curso from "../models/cursos.model.js";
+import { updateFile, deleteFile, uploadFile } from "../libs/cloudinary.curso.js";
+import fs from 'fs-extra';
 
 export const getCursos = async (req, res) => {
   try {
@@ -93,5 +95,35 @@ export const updateCurso = async (req, res) => {
   } catch (error) {
     console.error("Error al actualizar el curso:", error);
     return res.status(500).json({ message: "Error al actualizar el curso" });
+  }
+};
+
+export const uploadDocumento = async (req, res) => {
+  try {
+    let documento;
+    console.log("Datos del archivo subido:", req.files);
+    if (req.files) {
+      console.log("Archivo subido:", req.files.file.name);
+      const result = await uploadFile(req.files.file.tempFilePath);
+      console.log("Resultado del archivo subido:", result);
+      await fs.remove(req.files.file.tempFilePath);
+      documento = {
+        url: result.secure_url,
+        nombre: req.files.file.name,
+        public_id: result.public_id,
+      };
+
+      // Agregar el documento al curso correspondiente
+      const cursoId = req.params.id;
+      await Curso.findByIdAndUpdate(cursoId, {
+        $push: { documentos: documento },
+      });
+
+      return res.status(200).json({ message: "Documento subido correctamente", documento });
+    }
+    return res.status(400).json({ message: "No se ha subido ningún archivo" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error al subir el documento" });
   }
 };

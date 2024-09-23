@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaEye, FaTrash, FaPlus } from "react-icons/fa";
 import { useCursos } from "../../../context/CursoContext.jsx";
-
+import { useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa";
 import Modal from "react-modal";
@@ -14,8 +14,6 @@ import { FaUser } from "react-icons/fa";
 import { FaSignature } from "react-icons/fa6";
 import icono from "../../../../public/2000860-removebg-preview.png";
 import { VscCalendar, VscEdit } from "react-icons/vsc";
-
-Modal.setAppElement("#root"); // Necesario para accesibilidad
 
 const Courses = () => {
   const [showAviso, setShowAviso] = useState(false);
@@ -31,6 +29,10 @@ const Courses = () => {
 
   const [docenteSeleccionado, setDocenteSeleccionado] = useState([]);
   const [docente, setDocente] = useState(null);
+
+  const navigate = useNavigate();
+  // Función para manejar la navegación al hacer clic en el botón
+  
 
   // Cargar el usuario desde localStorage
   useEffect(() => {
@@ -86,13 +88,18 @@ const Courses = () => {
     const docentes = docenteSeleccionado.filter((docente) =>
       curso.docentes.includes(docente._id)
     );
+
+    const handleViewCourse = () => {
+      navigate(`/docente/cursos/${curso._id}`); // Redirige a la página de detalles del curso con su ID
+    };
+
     console.log("Docentes del curso actual:", docentes);
 
     return (
       <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between transition-all duration-300 ease-in-out hover:border-red-500 hover:shadow-lg">
         {" "}
         <div className="flex justify-end space-x-2">
-          <button className="text-green-500 mr-4">
+          <button className="text-green-500 mr-4" onClick={handleViewCourse}>
             <FaEye style={{ fontSize: "24px" }} />
           </button>
         </div>

@@ -29,6 +29,7 @@ import IndexDocente from "./pages/docente/IndexDocente";
 import DocenteLayout from "./pages/docente/Layout";
 import InformacionDocente from "./pages/docente/informacionDocente";
 import CursosDocente from "./pages/docente/courses/Courses";
+import DetallesCurso from "./pages/docente/courses/detallesCurso";
 
 function App() {
   return (
@@ -182,6 +183,14 @@ function App() {
                         element={
                           <DocenteLayout>
                             <CursosDocente />
+                          </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente/cursos/:id"
+                        element={
+                          <DocenteLayout>
+                            <DetallesCurso />
                           </DocenteLayout>
                         }
                       />
