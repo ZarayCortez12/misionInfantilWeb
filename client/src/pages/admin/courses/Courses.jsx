@@ -209,8 +209,8 @@ const Courses = () => {
   };
 
   return (
-    <div className="container mx-auto p-16 m-5">
-      <h1 className="text-[38px] text-center font-bold">Cursos Registrados</h1>
+    <div className="container flex flex-col items-center mt-2 gap-4 min-h-screen bg-green-200">
+      <h1 className="text-[38px] text-center font-bold mt-10">Cursos Registrados</h1>
       <br />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {cursosE.length > 0 ? (

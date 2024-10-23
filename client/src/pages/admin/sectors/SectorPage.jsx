@@ -274,7 +274,7 @@ function SectorPage() {
 
   return (
     <>
-      <div className="flex flex-col items-center mt-2 gap-4 min-h-screen">
+      <div className="flex flex-col max-h-full max-w-full items-center mt-2 gap-4 bg-green-100">
         {/*tabla de sectores*/}
         <br />
         <div className="mb-6">

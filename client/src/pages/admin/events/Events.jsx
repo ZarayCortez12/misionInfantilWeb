@@ -258,8 +258,8 @@ const Events = () => {
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div className="container mx-auto p-4 ">
-      <h1 className="text-3xl font-bold text-center mb-8">
+    <div className="container flex-col mt-2 gap-4 min-h-screen bg-green-200">
+      <h1 className="text-[38px] text-center font-bold pt-10 bg-yellow-100">
         Eventos Registrados
       </h1>
       <EventoCarousel
@@ -267,17 +267,15 @@ const Events = () => {
         events={eventosPasados}
         deleteEvent={handleDeleteEvent}
         updateEvent={updatedEvent}
-      />
-
-      <EventoCarousel
+      /><EventoCarousel
         title="Eventos Próximos"
         events={eventosProximos}
         deleteEvent={handleDeleteEvent}
         updateEvent={updatedEvent}
       />
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-6 bg-yellow-100">
         <button
-          className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500 items-center w-96"
+          className="bg-yellow-900 py-4 p-screen rounded-lg hover:bg-yellow-500 items-center w-96"
           onClick={() => setShowCrearAviso(true)}
         >
           <div className="flex justify-center text-white">

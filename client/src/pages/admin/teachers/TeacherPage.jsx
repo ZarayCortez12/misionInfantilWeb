@@ -147,43 +147,90 @@ function Teachers() {
     setFilteredRecords(filtered);
   }, [searchTerm, records]);
 
+  const customStyles = {
+    headCells: {
+      style: {
+        fontSize: "14px", //tamanio del texto titulos de la tabla
+        fontWeight: "bold",
+        paddingLeft: "20px",
+        paddingRight: "8px",
+        justifyContent: "flex-start",
+        textAlign: "left",
+        height: "50px",
+      },
+    },
+    cells: {
+      style: {
+        justifyContent: "flex-start",
+        textAlign: "left",
+        paddingLeft: "20px",
+        paddingRight: "8px",
+        height: "30px",
+      },
+    },
+    rows: {
+      style: {
+        fontSize: "12px", //tamanio del texto en las celdas q no son el titulo
+        minHeight: "50px",
+        paddingRight: "8px"
+      },
+    },
+    table: {
+      style: {
+        borderRadius: "15px",
+        overflow: "hidden",
+        width: "95%",
+        margin: "0 auto"
+    },
+  },
+};
+
   const columns = [
     {
       name: "Identificación",
       selector: (row) => row.identificacion,
       sortable: true,
-      width: "185px",
+      width: "145px",
+      minWidth: "10px",
+      grow: 1,
       cell: (row) => (
-        <div style={{ fontSize: "13px" }}>{row.identificacion}</div>
+        <div>{row.identificacion}</div>
       ),
     },
     {
       name: "Nombre",
       selector: (row) => row.nombre,
       sortable: true,
-      width: "180px",
-      cell: (row) => <div style={{ fontSize: "13px" }}>{row.nombre}</div>,
+      width: "145px",
+      minWidth: "10px",
+      grow: 1,
+      cell: (row) => <div>{row.nombre}</div>,
     },
     {
       name: "Apellido",
       selector: (row) => row.apellido,
       sortable: true,
-      width: "180px",
-      cell: (row) => <div style={{ fontSize: "13px" }}>{row.apellido}</div>,
+      width: "145px",
+      minWidth: "10px",
+      grow: 1,
+      cell: (row) => <div>{row.apellido}</div>,
     },
     {
       name: "Correo",
       selector: (row) => row.correo,
       sortable: true,
       width: "250px",
-      cell: (row) => <div style={{ fontSize: "13px" }}>{row.correo}</div>,
+      minWidth: "10px",
+      grow: 2,
+      cell: (row) => <div>{row.correo}</div>,
     },
     {
       name: "Teléfono",
       selector: (row) => row.telefono,
       sortable: true,
-      width: "150px",
-      cell: (row) => <div style={{ fontSize: "13px" }}>{row.telefono}</div>,
+      width: "120px",
+      minWidth: "20px",
+      cell: (row) => <div>{row.telefono}</div>,
     },
     {
       name: "Estado",
@@ -193,8 +240,6 @@ function Teachers() {
       cell: (row) => (
         <div
           style={{
-            textAlign: "center",
-            fontSize: "13px",
             color: row.estado === "ACTIVO" ? "green" : "red",
             fontWeight: "bold",
           }}
@@ -205,40 +250,18 @@ function Teachers() {
     },
   ];
 
-  const customStyles = {
-    headCells: {
-      style: {
-        fontSize: "18px",
-        fontWeight: "bold",
-      },
-    },
-    rows: {
-      style: {
-        fontSize: "12px",
-      },
-    },
-    table: {
-      style: {
-        borderRadius: "15px",
-        overflow: "hidden",
-        width: 1100, // Ajusta el ancho de la tabla
-        maxWidth: "1100px",
-      },
-    },
-  };
-
   return (
     <>
-      <div className="flex flex-col items-center mt-2 gap-4 min-h-screen">
-        {/*tabla de estudiantes*/}
+      <div className="flex flex-col max-h-full max-w-full items-center gap-4 bg-red-100">
         <br />
-        <div className="mb-6">
-          <h1 className="text-[38px] text-center font-bold">
+        <div className="mb-0">
+          <h1 className="text-[33px] text-center font-bold">
             {" "}
             Docentes Registrados
           </h1>
         </div>
-        <div className="search-bar-jugadores">
+
+        <div className="ml-40 w-96 search-bar-jugadores">
           <FontAwesomeIcon
             icon={faSearch}
             size="xl"
@@ -258,7 +281,8 @@ function Teachers() {
             <FontAwesomeIcon icon={faTimes} />
           </div>
         </div>
-        <div className="flex flex-col items-center mt-2 gap-4 min-h-screen p-5 h-auto w-full max-w-axl">
+        
+        <div className="flex flex-col items-center gap-4 max-h-screen p-5 max-w-screen">
           {mostrarOpciones && (
             <div
               className="flex justify-end items-end mb-4 botones-acciones-docentes"
@@ -300,19 +324,20 @@ function Teachers() {
               )}
             </div>
           )}
-
+      
+          {/*tabla de docentes*/}
           <div
-            className="outer-wrapper p-5 h-auto table-docentes-visualizer"
+            className="outer-wrapper p-3 h-auto table-docentes-visualizer"
             style={{ marginTop: "-40px" }}
           >
-            <div className=" overflow-x-auto max-w-full">
-              <DataTable
+            <div className="overflow-x-auto max-w-full">
+              <DataTable 
                 columns={columns}
                 data={filteredRecords}
                 selectableRows
                 selectableRowsSingle
                 pagination
-                paginationPerPage={5}
+                paginationPerPage={3}
                 onSelectedRowsChange={(state) => {
                   setSelectedRows(state);
                   setMostrarOpciones(state.selectedRows[0]);
@@ -323,10 +348,10 @@ function Teachers() {
               />
             </div>
           </div>
-          <div className=" flex justify-center mt-6 ">
+          <div className="flex justify-center mt-0">
             {" "}
             <button
-              className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500  poppins  items-center w-96"
+              className="bg-yellow-900 py-3 px-6 rounded-lg hover:bg-yellow-500 poppins items-center w-96"
               onClick={() => handleClick()}
             >
               <div className="flex justify-center text-white carrois-gothicSC text-xl">
