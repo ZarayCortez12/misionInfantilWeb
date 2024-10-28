@@ -117,32 +117,78 @@ function SectorPage() {
   }, [searchTerm, records]);
 
   const columns = [
-    { name: "N° Sector", selector: (row) => row.numero, sortable: true },
-    { name: "Nombre", selector: (row) => row.nombre, sortable: true },
-    { name: "Barrio", selector: (row) => row.barrio, sortable: true },
-    { name: "Direccion", selector: (row) => row.direccion, sortable: true },
+    { 
+      name: "N° Sector", 
+      selector: (row) => row.numero, 
+      sortable: true,
+      width: "130px",
+      minWidth: "20px",
+      cell: (row) => <div>{row.numero}</div>,
+    },
+    { name: "Nombre", 
+      selector: (row) => row.nombre, 
+      sortable: true,
+      width: "150px",
+      minWidth: "20px",
+      grow: 3,
+      cell: (row) => <div>{row.nombre}</div>, 
+    },
+    { 
+      name: "Barrio", 
+      selector: (row) => row.barrio, 
+      sortable: true,
+      width: "200px",
+      minWidth: "20px",
+      grow: 3,
+      cell: (row) => <div>{row.barrio}</div>,
+    },
+    { name: "Direccion", 
+      selector: (row) => row.direccion, 
+      sortable: true,
+      width: "200px",
+      grow: 3,
+      cell: (row) => <div>{row.direccion}</div>,
+    },
   ];
 
   const customStyles = {
     headCells: {
       style: {
-        fontSize: "20px",
+        fontSize: "14px", //tamanio del texto titulos de la tabla
         fontWeight: "bold",
+        paddingLeft: "20px",
+        paddingRight: "8px",
+        justifyContent: "flex-start",
+        textAlign: "left",
+        height: "50px",
+      },
+    },
+    cells: {
+      style: {
+        justifyContent: "flex-start",
+        textAlign: "left",
+        paddingLeft: "20px",
+        paddingRight: "8px",
+        height: "30px",
       },
     },
     rows: {
       style: {
-        fontSize: "14px",
+        fontSize: "12px", //tamanio del texto en las celdas q no son el titulo
+        minHeight: "50px",
+        paddingRight: "8px"
       },
     },
     table: {
       style: {
-        borderRadius: "10px",
+        borderRadius: "15px",
         overflow: "hidden",
-        width: 1100, // Ajusta el ancho de la tabla
-      },
+        width: "95%",
+        margin: "0 auto"
     },
-  };
+  },
+};
+
   const sectorExistenteNumero = async (numero) => {
     try {
       const response = await axios.get("http://localhost:4000/api/sectores");
@@ -274,16 +320,16 @@ function SectorPage() {
 
   return (
     <>
-      <div className="flex flex-col max-h-full max-w-full items-center mt-2 gap-4 bg-green-100">
+      <div className="flex flex-col max-h-full max-w-full items-center gap-4">
         {/*tabla de sectores*/}
         <br />
-        <div className="mb-6">
-          <h1 className="text-[38px] text-center font-bold">
+        <div className="mb-0">
+          <h1 className="text-[33px] text-center font-bold">
             {" "}
             Sectores Registrados
           </h1>
         </div>
-        <div className="search-bar-jugadores">
+        <div className="ml-40 w-96 search-bar-jugadores">
           <FontAwesomeIcon
             icon={faSearch}
             size="xl"
@@ -330,15 +376,17 @@ function SectorPage() {
             </div>
           )}
 
-          <div className="outer-wrapper p-5 h-auto">
-            <div className=" overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
+          <div className="outer-wrapper p-3 h-auto"
+               style={{ marginTop: "-60px" }}
+          >
+            <div className=" overflow-x-auto max-w-full">
               <DataTable
                 columns={columns}
                 data={filteredRecords}
                 selectableRows
                 selectableRowsSingle
                 pagination
-                paginationPerPage={5}
+                paginationPerPage={3}
                 onSelectedRowsChange={(state) => {
                   setSelectedRows(state);
                   setMostrarOpciones(state.selectedRows[0]);
@@ -350,10 +398,10 @@ function SectorPage() {
             </div>
           </div>
 
-          <div className=" flex justify-center mt-6 ">
+          <div className=" flex justify-center mt-0">
             {" "}
             <button
-              className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500  poppins  items-center w-96"
+              className="bg-yellow-900 py-3 px-6 rounded-lg hover:bg-yellow-500 poppins items-center w-96"
               onClick={() => setShowCrearAviso(true)}
             >
               <div className="flex justify-center text-white carrois-gothicSC text-xl">
@@ -410,7 +458,7 @@ function SectorPage() {
           isOpen={showCrearAviso}
           onRequestClose={() => setShowCrearAviso(false)}
           contentLabel="Crear Sector"
-          className="  top-50 left-1/2"
+          className="top-50 left-1/2"
           overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
         >
           <div className=" bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96">

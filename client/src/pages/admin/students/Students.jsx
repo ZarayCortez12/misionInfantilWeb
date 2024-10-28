@@ -253,7 +253,7 @@ function Students() {
 
   return (
     <>
-      <div className="flex flex-col max-h-full max-w-full items-center gap-4 bg-red-100">
+      <div className="flex flex-col max-h-full max-w-full items-center gap-4">
         {/*tabla de estudiantes*/}
         <br />
         <div className="mb-0">

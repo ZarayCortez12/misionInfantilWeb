@@ -99,7 +99,7 @@ const EventoCarousel = ({ title, events, deleteEvent, updateEvent }) => {
   };
 
   return (
-    <div className="my-8 carousel-container bg-red-200">
+    <div className="my-8 carousel-container">
       <h3 className="text-xl font-semibold mb-4">{title}</h3>
       <Slider {...settings}>
         {events.map((event, index) => (

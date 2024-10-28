@@ -188,7 +188,7 @@ function IndexAdmin() {
 
   return (
     <div
-      className="flex flex-col h-full gap-3 md:flex-row bg-green-100"
+      className="flex flex-col h-full pt-10 gap-3 md:flex-row"
     >
       {/*Bienvenida*/}
       <div className="flex flex-col gap-4 mt-4 md:mt-0">

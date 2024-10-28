@@ -155,7 +155,7 @@ const Courses = () => {
     console.log("Docentes del curso actual:", docentes);
 
     return (
-      <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between transition-all duration-300 ease-in-out hover:border-red-500 hover:shadow-lg">
+      <div className="flex flex-col border border-blue-500 rounded-lg p-4 justify-between transition-all duration-300 ease-in-out hover:border-red-500 hover:shadow-lg">
         {" "}
         <div className="flex justify-end space-x-2">
           <button className="text-green-500 mr-4">
@@ -209,8 +209,8 @@ const Courses = () => {
   };
 
   return (
-    <div className="container flex flex-col items-center mt-2 gap-4 min-h-screen bg-green-200">
-      <h1 className="text-[38px] text-center font-bold mt-10">Cursos Registrados</h1>
+    <div className="container flex flex-col items-center gap-4 flex h-screen">
+      <h1 className="text-[33px] text-center font-bold mt-9">Cursos Registrados</h1>
       <br />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {cursosE.length > 0 ? (
