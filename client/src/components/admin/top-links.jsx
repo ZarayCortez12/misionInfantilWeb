@@ -9,7 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 const links = [
   { 
     name: 'notificaciones', 
-    href: '/admin/notificaciones', 
+    href: '/admin/notificaciones',  // arreglar esto...
     icon: BellIcon 
   },
   {

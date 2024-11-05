@@ -13,20 +13,20 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
 const links = [
-  { name: "INICIO", to: "/administrador", icon: HandRaisedIcon },
+  { name: "INICIO", to: "/docente", icon: HandRaisedIcon },
   {
     name: "INFORMACION",
-    to: "/administrador/cursos",
+    to: "/docente/informacion",
     icon: BookOpenIcon,
   },
   {
     name: "CURSOS",
-    to: "/administrador/cursos",
+    to: "/docente/cursos",
     icon: BookOpenIcon,
   },
   {
     name: "EVENTOS",
-    to: "/administrador/eventos",
+    to: "/docente/eventos",
     icon: CalendarIcon,
   },
 ];

@@ -27,6 +27,7 @@ import CrearDocente from "./pages/admin/teachers/CrearDocente";
 import EditarDocente from "./pages/admin/teachers/EditarDocente";
 import IndexDocente from "./pages/docente/IndexDocente";
 import DocenteLayout from "./pages/docente/Layout";
+import DocenteEventos from "./pages/docente/eventos";
 
 function App() {
   return (
@@ -168,6 +169,14 @@ function App() {
                         }
                       />
                     </Route>
+                    <Route
+                        path="/docente/eventos"
+                        element={
+                          <DocenteLayout>
+                           <DocenteEventos/>
+                          </DocenteLayout>
+                        }
+                      />                 
                   </Routes>
                 </BrowserRouter>
               </StudentProvider>
