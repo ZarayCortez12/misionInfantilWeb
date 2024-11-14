@@ -28,11 +28,14 @@ import EditarDocente from "./pages/admin/teachers/EditarDocente";
 import IndexDocente from "./pages/docente/IndexDocente";
 import DocenteLayout from "./pages/docente/Layout";
 import DocenteEventos from "./pages/docente/eventos";
+import InformacionDocente from "./pages/docente/informacionDocente";
+import CursosDocente from "./pages/docente/courses/Courses";
+import DetallesCurso from "./pages/docente/courses/detallesCurso";
 
 function App() {
   return (
     <AuthProvider>
-      <DocenteProvider>
+      <DocenteProvider> 
         <CursoProvider>
           <EventoProvider>
             <SectorProvider>
@@ -165,6 +168,30 @@ function App() {
                         element={
                           <DocenteLayout>
                             <IndexDocente />
+                          </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente/informacion"
+                        element={
+                          <DocenteLayout>
+                            <InformacionDocente />
+                          </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente/cursos"
+                        element={
+                          <DocenteLayout>
+                            <CursosDocente />
+                          </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente/cursos/:id"
+                        element={
+                          <DocenteLayout>
+                            <DetallesCurso />
                           </DocenteLayout>
                         }
                       />

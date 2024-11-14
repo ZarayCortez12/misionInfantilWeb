@@ -5,7 +5,10 @@ import {
     getCurso, 
     createCurso, 
     updateCurso, 
-    deleteCurso
+    deleteCurso,
+    uploadDocumento,
+    getDocumentos,
+    deleteDocumento
 } from '../controller/cursos.controller.js'
 
 
@@ -19,5 +22,8 @@ router.post(
 );
 router.delete('/cursos/:id', deleteCurso)
 router.put('/cursos/:id',  updateCurso)
+router.post('/cursos/:id/documentos', uploadDocumento)
+router.get('/cursos/:id/documentos', getDocumentos)
+router.delete('/cursos/:id/documentos/:documentoId', deleteDocumento)
 
 export default router;

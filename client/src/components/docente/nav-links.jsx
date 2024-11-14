@@ -7,12 +7,13 @@ import {
   BookOpenIcon,
   GlobeAmericasIcon,
   CalendarIcon,
+  IdentificationIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
-const links = [
+const links = [ 
   { name: "INICIO", to: "/docente", icon: HandRaisedIcon },
   {
     name: "INFORMACION",

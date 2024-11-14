@@ -7,6 +7,8 @@ import {
     updateProfesor , 
     deleteProfesor,
     reloadPorfesor,
+    updateMe,
+    getCursosDocente,
 } from '../controller/teacher.controller.js'
 
 
@@ -22,5 +24,7 @@ router.post(
 router.delete('/docentes/:id', deleteProfesor)
 router.put('/docentes/:id',  updateProfesor)
 router.put('/docentes/:id/reload', reloadPorfesor)
+router.put('/docentes/:id/update-me', updateMe)
+router.get('/docentes/:id/cursos', getCursosDocente)
 
 export default router;
