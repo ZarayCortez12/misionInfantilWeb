@@ -142,7 +142,6 @@ function CrearDocente() {
   return (
     <>
       <div className="">
-        <br />
         <h1 className="text-[38px] text-center font-bold"> Agregar Docente </h1>
         <br />
         <Formik
@@ -192,7 +191,7 @@ function CrearDocente() {
                 style={{
                   backgroundColor: "rgba(140, 100, 40, 0.73)",
                   width: "1000px",
-                  marginLeft: "200px",
+                  marginLeft: "130px",
                 }}
               >
                 <div className="justify-center m-6">

@@ -195,17 +195,16 @@ function IndexAdmin() {
       <div className="flex flex-col gap-4 px-5 mt-4 md:mt-0 md:w-100 md:px-10">
         <p className="py-3 text-xl md:text-2xl font-semibold">¡Hola!</p>
         <strong className="px-10 py-0 text-4xl md:text-5xl">
-          Adminsitrador
+          Administrador
         </strong>
 
         <div className="flex flex-col gap-5 px-10 py-10">
           <Link
             className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-            href="/login"
-            to="/" //ruta a la que lleva
+            to="/administrador/estudiantes" //ruta a la que lleva
           >
             <PlusCircleIcon className="w-6" />{" "}
-            <span>REALIZAR NUEVO EVENTO</span>
+            <span>VISUALIZAR ESTUDIANTES</span>
           </Link>
 
           <Link
