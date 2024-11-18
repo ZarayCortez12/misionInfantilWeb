@@ -39,10 +39,9 @@ function IndexAdmin() {
       const usuarioEncontrado = usuarios.find(
         (usuario) => String(usuario.correo) === String(correo)
       );
-      console.log(usuarioEncontrado);
-      // Verificar si el usuario encontrado tiene una identificación diferente a la del usuario que se está editando
+
       if (usuarioEncontrado) {
-        return usuarioEncontrado._id !== administrador._id;
+        return usuarioEncontrado.identificacion !== administrador.identificacion;
       }
 
       return false; // El correo no está registrado
@@ -60,7 +59,7 @@ function IndexAdmin() {
         (usuario) => String(usuario.telefono) === String(telefono)
       );
       if (usuarioEncontrado) {
-        return usuarioEncontrado._id !== administrador._id;
+        return usuarioEncontrado.identificacion !== administrador.identificacion;
       }
 
       return false;
@@ -106,6 +105,7 @@ function IndexAdmin() {
   });
 
   const updateMe = async (id, me) => {
+    console.log(id);
     try {
       const response = await axios.put(
         `http://localhost:4000/api/update-me/${id}`,
@@ -309,7 +309,8 @@ function IndexAdmin() {
             validationSchema={validationSchema}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
               try {
-                await updateMe(administrador._id, values);
+                console.log(administrador);
+                await updateMe(administrador.identificacion, values);
                 setShowAviso(true);
                 setImagen(null);
                 resetForm();
@@ -618,7 +619,7 @@ function IndexAdmin() {
               className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
               onClick={() => {
                 setShowEditarAviso(false);
-                location.reload();
+                setShowAviso(false);
               }}
             >
               <FaCheck className="w-6 mr-2" />
