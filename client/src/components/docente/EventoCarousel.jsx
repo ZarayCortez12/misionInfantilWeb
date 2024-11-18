@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Slider from "react-slick";
 import { FaEye } from "react-icons/fa";
-import "../admin/EventoCarousel";
+import { useNavigate } from 'react-router-dom';
 
 const EventCard = ({ id, title, date, location, time }) => {
+  const navigate = useNavigate();
   const formatDate = (date) => {
     const d = new Date(date);
     return isNaN(d.getTime()) ? "Fecha inválida" : d.toLocaleDateString();
@@ -27,6 +28,11 @@ const EventCard = ({ id, title, date, location, time }) => {
     return "Hora inválida";
   };
 
+  const handleViewEvent = () => {
+    // Navigate to the event details page with the event ID
+    navigate(`/docente/vereventos/${id}`);
+  };
+
   return (
     <div
       className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between mx-4"
@@ -37,7 +43,7 @@ const EventCard = ({ id, title, date, location, time }) => {
       <p className="text-sm">Lugar: {location}</p>
       <p className="text-sm">Hora: {formatTime(time)}</p>
       <div className="flex justify-end space-x-2 mt-2">
-        <button className="text-green-500">
+        <button className="text-green-500" onClick={handleViewEvent}>
           <FaEye />
         </button>
       </div>
@@ -62,9 +68,7 @@ const EventoCarousel = ({ title }) => {
         const cursosResponse = await axios.get("http://localhost:4000/api/cursos");
         const eventos = eventosResponse.data;
         const cursos = cursosResponse.data;
-
-        console.log("Eventos:", eventos);  // Imprime los eventos obtenidos
-        console.log("Cursos:", cursos);    // Imprime los cursos obtenidos
+    
 
         const today = new Date();
         const filtered = eventos.filter((event) => {
@@ -73,7 +77,6 @@ const EventoCarousel = ({ title }) => {
           return curso && curso.docentes.includes(docenteId);
         });
 
-        console.log("Eventos Filtrados por Docente:", filtered);  // Imprime los eventos filtrados por docente
 
         setFilteredEvents({
           upcoming: filtered.filter((event) => new Date(event.fecha) >= today),
@@ -114,7 +117,6 @@ const EventoCarousel = ({ title }) => {
     nextArrow: <div className="slick-arrow slick-next">Siguiente</div>,
     prevArrow: <div className="slick-arrow slick-prev">Anterior</div>,
   };
-  console.log("Filtered Events (upcoming & past):", filteredEvents);  // Imprime los eventos filtrados en cada renderizado
 
   return (
     <div className="my-8 carousel-container">

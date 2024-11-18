@@ -28,6 +28,7 @@ import EditarDocente from "./pages/admin/teachers/EditarDocente";
 import IndexDocente from "./pages/docente/IndexDocente";
 import DocenteLayout from "./pages/docente/Layout";
 import DocenteEventos from "./pages/docente/eventos";
+import DetallesEventos from "./pages/docente/verEventos"; //cambio
 import InformacionDocente from "./pages/docente/informacionDocente";
 import CursosDocente from "./pages/docente/courses/Courses";
 import DetallesCurso from "./pages/docente/courses/detallesCurso";
@@ -203,7 +204,15 @@ function App() {
                            <DocenteEventos/>
                           </DocenteLayout>
                         }
-                      />                 
+                      /> 
+                      <Route
+                        path="/docente/vereventos/:id"
+                        element={
+                          <DocenteLayout>
+                            <DetallesEventos />
+                          </DocenteLayout>
+                        }
+                      />                
                   </Routes>
                 </BrowserRouter>
               </StudentProvider>
