@@ -276,14 +276,13 @@ function SectorPage() {
     <>
       <div className="flex flex-col items-center mt-2 gap-4 min-h-screen">
         {/*tabla de sectores*/}
-        <br />
         <div className="mb-6">
           <h1 className="text-[38px] text-center font-bold">
             {" "}
             Sectores Registrados
           </h1>
         </div>
-        <div className="search-bar-jugadores">
+        <div className="search-bar-jugadores" style={{ marginTop: "-20px" }}>
           <FontAwesomeIcon
             icon={faSearch}
             size="xl"
@@ -295,6 +294,7 @@ function SectorPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input-jugadores border rounded-lg border-gray-300 bg-gray-100 p-2 text-gray-700"
+
           />
           <div
             className="clear-search-jugadores-circle"
@@ -330,15 +330,15 @@ function SectorPage() {
             </div>
           )}
 
-          <div className="outer-wrapper p-5 h-auto">
-            <div className=" overflow-x-auto overflow-y-auto max-h-screen rounded-lg">
+          <div className="outer-wrapper p-5 h-auto" style={{ marginTop: "-40px" }}>
+            <div className="overflow-x-auto overflow-y-auto rounded-lg">
               <DataTable
                 columns={columns}
                 data={filteredRecords}
                 selectableRows
                 selectableRowsSingle
                 pagination
-                paginationPerPage={5}
+                paginationPerPage={4}
                 onSelectedRowsChange={(state) => {
                   setSelectedRows(state);
                   setMostrarOpciones(state.selectedRows[0]);
@@ -350,8 +350,7 @@ function SectorPage() {
             </div>
           </div>
 
-          <div className=" flex justify-center mt-6 ">
-            {" "}
+          <div className=" flex justify-center">
             <button
               className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500  poppins  items-center w-96"
               onClick={() => setShowCrearAviso(true)}

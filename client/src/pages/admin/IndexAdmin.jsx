@@ -119,7 +119,7 @@ function IndexAdmin() {
       localStorage.setItem("user", JSON.stringify(response.data));
 
       setShowEditarAviso(false);
-       // Recargar la página si es necesario (aunque esto no siempre es ideal)
+      // Recargar la página si es necesario (aunque esto no siempre es ideal)
     } catch (error) {
       console.error("Error al actualizar el administrador:", error);
 
@@ -217,18 +217,10 @@ function IndexAdmin() {
 
           <Link
             className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-            to="/administrador/sectores/register" //ruta a la que lleva
+            to="/administrador/sectores" //ruta a la que lleva
           >
             <PlusCircleIcon className="w-6" />
-            <span>INGRESAR SECTOR</span>
-          </Link>
-
-          <Link
-            className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-            href="/login"
-            to="/" //ruta a la que lleva
-          >
-            <PlusCircleIcon className="w-6" /> <span>CREAR CURSO</span>
+            <span>VISUALIZAR SECTORES</span>
           </Link>
         </div>
       </div>
