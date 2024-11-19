@@ -15,6 +15,7 @@ import {
 import logoOrganizacion from "../../../assets/logoOrganizacion.png";
 import { IoMdDocument } from "react-icons/io";
 
+
 function DetallesCurso() {
   const { id } = useParams(); // Obtiene el ID de la URL
   const [curso, setCurso] = useState(null);

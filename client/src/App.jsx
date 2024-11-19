@@ -30,6 +30,7 @@ import DocenteLayout from "./pages/docente/Layout";
 import InformacionDocente from "./pages/docente/informacionDocente";
 import CursosDocente from "./pages/docente/courses/Courses";
 import DetallesCurso from "./pages/docente/courses/detallesCurso";
+import DetallesDocente from "./pages/admin/teachers/docenteDetalles";
 
 function App() {
   return (
@@ -105,6 +106,15 @@ function App() {
                           <AdminLayout>
                             {" "}
                             <CrearDocente />{" "}
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/administrador/docentes/:id"
+                        element={
+                          <AdminLayout>
+                            {" "}
+                            <DetallesDocente />{" "}
                           </AdminLayout>
                         }
                       />

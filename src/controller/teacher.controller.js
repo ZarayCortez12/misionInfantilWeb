@@ -11,7 +11,8 @@ import path from "path";
 import url from "url";
 import handlebars from "handlebars";
 import jwt from "jsonwebtoken";
-import Curso from "../models/cursos.model.js";
+import Curso from "../models/cursos.model.js"; // Asegúrate de importar el modelo de Curso.
+import Evento from "../models/eventos.model.js"; // Asegúrate de importar el modelo de Evento.
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -120,6 +121,40 @@ export const getProfesores = async (req, res) => {
 export const deleteProfesor = async (req, res) => {
   try {
     const userId = req.params.id;
+
+    // Buscar los cursos asociados al docente
+    const cursosDocente = await Curso.find({ docentes: userId });
+    console.log("cursos docente", cursosDocente);
+    
+    // Verificar si hay cursos activos
+    const cursoActivo = cursosDocente.some((curso) => curso.estado === "ACTIVO");
+    console.log("hay curso activo", cursoActivo);
+
+    // Si hay algún curso activo, no se puede desactivar al docente
+    if (cursoActivo) {
+      return res.status(400).json({
+        message:
+          "No se puede desactivar el profesor porque hay cursos activos asignados a él.",
+      });
+    }
+
+    // Buscar los eventos asociados a los cursos del docente
+    const eventosDocente = await Evento.find({ curso: { $in: cursosDocente.map(curso => curso._id) } });
+    console.log("eventos asociados a los cursos", eventosDocente);
+
+    // Verificar que todos los eventos relacionados hayan pasado
+    const eventosPendientes = eventosDocente.some((evento) => new Date(evento.fecha) >= new Date());
+    console.log("hay eventos pendientes", eventosPendientes);
+
+    // Si hay eventos pendientes, no se puede desactivar al docente
+    if (eventosPendientes) {
+      return res.status(400).json({
+        message:
+          "No se puede desactivar el profesor porque hay eventos pendientes relacionados con los cursos asignados.",
+      });
+    }
+
+    // Si todos los cursos están inactivos y todos los eventos ya pasaron, desactivar al docente
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { estado: "INACTIVO" },
@@ -129,6 +164,7 @@ export const deleteProfesor = async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({ message: "Profesor no encontrado" });
     }
+
     res.status(200).json({
       message: "Profesor desactivado correctamente",
       user: updatedUser,
@@ -259,9 +295,13 @@ export const updateMe = async (req, res) => {
       await User.findOneAndUpdate({ identificacion: userId }, updatedFields);
     }
 
-    const updatedUser = await User.findOneAndUpdate({ identificacion: userId }, updatedFields, {
-      new: true,
-    });
+    const updatedUser = await User.findOneAndUpdate(
+      { identificacion: userId },
+      updatedFields,
+      {
+        new: true,
+      }
+    );
     res.json(updatedUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -278,4 +318,3 @@ export const getCursosDocente = async (req, res) => {
     return res.status(404).json({ message: "Usuario no Encontrado" });
   }
 };
-

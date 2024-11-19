@@ -16,6 +16,7 @@ import * as Yup from "yup";
 
 import { VscEdit, VscTrash } from "react-icons/vsc";
 import "../../../components/styles/visualicerDocente.css";
+import { get } from "mongoose";
 
 Modal.setAppElement("#root"); // Necesario para accesibilidad
 
@@ -34,13 +35,27 @@ function Teachers() {
 
   const handleDeleteStudent = async (id) => {
     try {
-      await deleteDocente(id);
+       
+      const response = await axios.delete(
+        `http://localhost:4000/api/docentes/${id}`
+      );
+
+
+      if (response.status === 200) {
+        alert(response.data.message);
+        location.reload(); // Actualiza la lista de docentes después de desactivarlo
+      }
       setShowEliminarAviso(false);
-      console.log("Docente eliminado exitosamente");
       // Realizar cualquier acción adicional después de eliminar el estudiante
     } catch (error) {
-      console.error("Error al eliminar al Docente", error);
-      // Manejar el error apropiadamente
+      if (error.response && error.response.status === 400) {
+        // Si la respuesta del backend es un error debido a los cursos activos o eventos no pasados
+        alert(error.response.data.message); // Muestra el mensaje de error al usuario
+      } else {
+        alert(
+          "Hubo un problema al intentar desactivar al docente. Intenta más tarde."
+        );
+      }
     }
   };
 
@@ -128,6 +143,22 @@ function Teachers() {
 
   const handleClick = () => {
     navigate("/administrador/docentes/register");
+  };
+
+  const handleViewDocente = () => {
+    if (selectedRows.selectedRows.length === 0) {
+      alert("Por favor, seleccione un Estudiante para editar");
+    } else {
+      const P1 = selectedRows.selectedRows[0]._id;
+      const estudiante = records.find((record) => record._id === P1);
+      console.log(estudiante);
+      setSelectedStudens(estudiante);
+      VistaDocenteDetalles(estudiante._id);
+    }
+  };
+
+  const VistaDocenteDetalles = (id) => {
+    navigate(`${id}`);
   };
 
   const [records, setRecords] = useState([]);
@@ -231,14 +262,13 @@ function Teachers() {
     <>
       <div className="flex flex-col items-center mt-2 gap-4 min-h-screen">
         {/*tabla de estudiantes*/}
-        <br />
         <div className="mb-6">
           <h1 className="text-[38px] text-center font-bold">
             {" "}
             Docentes Registrados
           </h1>
         </div>
-        <div className="search-bar-jugadores">
+        <div className="search-bar-jugadores" style={{ marginTop: "-20px" }}>
           <FontAwesomeIcon
             icon={faSearch}
             size="xl"
@@ -277,7 +307,7 @@ function Teachers() {
               {/* Botón para visualizar */}
               <div
                 className="flex items-center bg-yellow-600 hover:bg-yellow-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
-                onClick={() => {}}
+                onClick={() => handleViewDocente()}
               >
                 <FaEye size="30px" className="w-5 md:w-6" />
               </div>
@@ -303,7 +333,7 @@ function Teachers() {
 
           <div
             className="outer-wrapper p-5 h-auto table-docentes-visualizer"
-            style={{ marginTop: "-40px" }}
+            style={{ marginTop: "-50px" }}
           >
             <div className=" overflow-x-auto max-w-full">
               <DataTable
@@ -312,7 +342,7 @@ function Teachers() {
                 selectableRows
                 selectableRowsSingle
                 pagination
-                paginationPerPage={5}
+                paginationPerPage={4}
                 onSelectedRowsChange={(state) => {
                   setSelectedRows(state);
                   setMostrarOpciones(state.selectedRows[0]);
@@ -323,8 +353,10 @@ function Teachers() {
               />
             </div>
           </div>
-          <div className=" flex justify-center mt-6 ">
-            {" "}
+          <div
+            className=" flex justify-center mt-6"
+            style={{ marginTop: "-10px" }}
+          >
             <button
               className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500  poppins  items-center w-96"
               onClick={() => handleClick()}
@@ -360,7 +392,7 @@ function Teachers() {
                 onClick={() => {
                   handleDeleteStudent(selectedStudents._id);
                   setShowEliminarAviso(false);
-                  location.reload();
+                  getDocentes();
                 }}
               >
                 <FaCheck className="w-6 mr-2" />

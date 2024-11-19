@@ -218,7 +218,7 @@ function EditarDocente() {
                 style={{
                   backgroundColor: "rgba(140, 100, 40, 0.73)",
                   width: "1000px",
-                  marginLeft: "200px",
+                  marginLeft: "125px",
                 }}
               >
                 <div className="justify-center m-6">

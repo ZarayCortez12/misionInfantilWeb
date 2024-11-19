@@ -39,6 +39,10 @@ const cursoSchema = new mongoose.Schema({
         type: [documentoSchema], // Array de subdocumentos para los documentos
         required: true,
     },
+    estado: {
+        type: String,
+        required: true,
+    },
 }, {
     timestamps: true, // Agrega timestamps automáticos para createdAt y updatedAt
 });
