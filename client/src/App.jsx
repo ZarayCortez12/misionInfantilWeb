@@ -110,7 +110,7 @@ function App() {
                         }
                       />
                       <Route
-                        path="/administrador/docentes/:id"
+                        path="/administrador/docentes/details/:id"
                         element={
                           <AdminLayout>
                             {" "}

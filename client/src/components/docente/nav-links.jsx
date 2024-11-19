@@ -27,7 +27,7 @@ const links = [
   },
   {
     name: "EVENTOS",
-    to: "/administrador/eventos",
+    to: "/docentes/eventos",
     icon: CalendarIcon,
   },
 ];

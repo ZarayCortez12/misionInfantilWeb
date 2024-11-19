@@ -35,11 +35,9 @@ function Teachers() {
 
   const handleDeleteStudent = async (id) => {
     try {
-       
       const response = await axios.delete(
         `http://localhost:4000/api/docentes/${id}`
       );
-
 
       if (response.status === 200) {
         alert(response.data.message);
@@ -158,7 +156,7 @@ function Teachers() {
   };
 
   const VistaDocenteDetalles = (id) => {
-    navigate(`${id}`);
+    navigate(`/administrador/docentes/details/${id}`);
   };
 
   const [records, setRecords] = useState([]);

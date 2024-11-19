@@ -375,7 +375,7 @@ function DetallesCurso() {
           }
         >
           <FaFileAlt />
-          Crear Test
+          Crear Actividad
         </button>
 
         {/* Botón 3: Subir Material */}
