@@ -19,6 +19,10 @@ const sectorSchema = new mongoose.Schema({
         type: String, 
         require: true,
     },
+    estado: {
+        type: String,
+        required: true,
+    },
 }, {
     timestamps: true
 })

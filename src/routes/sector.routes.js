@@ -6,6 +6,7 @@ import {
   createSector,
   updateSector,
   deleteSector,
+  getEventosSector,
 } from "../controller/sector.controller.js";
 import { validateSchema } from "../middlewares/validator.middleware.js";
 import { createSectorSchema } from "../schemas/sector.schema.js";
@@ -17,5 +18,6 @@ router.get("/sectores/:id", authRequired, getSector);
 router.post("/sectores", createSector);
 router.delete("/sectores/:id", deleteSector);
 router.put("/sectores/:id", updateSector);
+router.get("/sectores/:id/eventos", getEventosSector);
 
 export default router;
