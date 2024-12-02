@@ -4,7 +4,6 @@ import Slider from "react-slick";
 import { FaEye, FaTrash } from "react-icons/fa";
 import "./EventCarousel.css";
 import { VscEdit } from "react-icons/vsc";
-import { FiRefreshCcw } from "react-icons/fi"; // Ícono de reload
 
 // Componente de tarjeta de evento
 const EventCard = ({
@@ -17,8 +16,6 @@ const EventCard = ({
   deleteEvent,
   updateEvent,
   viewEvent,
-  reloadEvent,
-  status,
 }) => {
   // Función para formatear la fecha
   const formatDate = (date) => {
@@ -30,7 +27,7 @@ const EventCard = ({
   const formatTime = (time) => {
     if (!time) return "Hora inválida";
     // Crear una fecha arbitraria para combinar con la hora
-    const timeParts = time.split(":");
+    const timeParts = time.split(':');
     if (timeParts.length === 2) {
       const [hours, minutes] = timeParts;
       const date = new Date();
@@ -48,11 +45,7 @@ const EventCard = ({
   return (
     <div
       className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between mx-2"
-      style={{
-        height: "170px",
-        backgroundColor: status === "INACTIVO" ? "rgba(0, 0, 0, 0.1)" : "white", // Fondo opaco para inactivos
-        opacity: status === "INACTIVO" ? 0.6 : 1, // Opacidad para inactivos
-      }}
+      style={{ height: "170px" }}
     >
       <h2 className="text-lg font-bold">{title}</h2>
       <p className="text-sm">Fecha: {formatDate(date)}</p>
@@ -62,32 +55,13 @@ const EventCard = ({
         <button className="text-green-500" onClick={() => viewEvent(id)}>
           <FaEye />
         </button>
-        <button className="text-yellow-500" onClick={() => updateEvent(id)}>
-          <VscEdit />
-        </button>
-        {status === "INACTIVO" ? (
-          <button className="text-blue-500" onClick={() => reloadEvent(id)}>
-            <FiRefreshCcw /> {/* Ícono de recarga */}
-          </button>
-        ) : (
-          <button className="text-red-500" onClick={() => deleteEvent(id)}>
-            <FaTrash />
-          </button>
-        )}
       </div>
     </div>
   );
 };
 
 // Componente de carrusel de eventos
-const EventoCarousel = ({
-  title,
-  events,
-  deleteEvent,
-  updateEvent,
-  viewEvent,
-  reloadEvent,
-}) => {
+const EventoCarouselPast = ({ title, events, deleteEvent, updateEvent, viewEvent }) => {
   const [sectores, setSectores] = useState([]);
 
   useEffect(() => {
@@ -104,7 +78,7 @@ const EventoCarousel = ({
   }, []);
 
   const getAddress = (sectorNumber) => {
-    const sector = sectores.find((sector) => sector.nombre === sectorNumber);
+    const sector = sectores.find(sector => sector.nombre === sectorNumber);
     return sector ? `${sector.direccion}, ${sector.barrio}` : "No disponible";
   };
 
@@ -135,8 +109,6 @@ const EventoCarousel = ({
             deleteEvent={deleteEvent}
             updateEvent={updateEvent}
             viewEvent={viewEvent}
-            reloadEvent={reloadEvent}
-            status={event.estado}
           />
         ))}
       </Slider>
@@ -144,4 +116,4 @@ const EventoCarousel = ({
   );
 };
 
-export default EventoCarousel;
+export default EventoCarouselPast;

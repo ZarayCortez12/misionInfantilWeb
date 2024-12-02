@@ -149,7 +149,8 @@ const Courses = () => {
     return (
       <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between transition-all duration-300 ease-in-out hover:border-red-500 hover:shadow-lg">
         <div className="flex justify-end space-x-2">
-          <button className="text-green-500 mr-4"
+          <button
+            className="text-green-500 mr-4"
             onClick={() => {
               navigate(`/administrador/cursos/${curso._id}`);
             }}

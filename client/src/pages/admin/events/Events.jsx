@@ -10,6 +10,8 @@ import { IoClose } from "react-icons/io5";
 import Slider from "react-slick";
 import EventoCarousel from "../../../components/admin/EventoCarousel";
 import { useEventos } from "../../../context/EventoContext.jsx";
+import EventoCarouselPast from "../../../components/admin/EventoCarouselPast.jsx";
+import { useNavigate } from "react-router-dom";
 
 Modal.setAppElement("#root");
 
@@ -25,7 +27,9 @@ const Events = () => {
   const [serverError, setServerError] = useState("");
   const [eventToEdit, setEventToEdit] = useState(null);
   const [showEliminarAviso, setShowEliminarAviso] = useState(false);
+  const [showReloadAviso, setShowReloadAviso] = useState(false);
   const [eventIdToDelete, setEventIdToDelete] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -83,9 +87,16 @@ const Events = () => {
     setShowEliminarAviso(true); // Mostrar el modal de confirmación
   };
 
+  const handleReloadEvent = (id) => {
+    setEventIdToDelete(id); // Guardar el ID del evento a eliminar
+    setShowReloadAviso(true); // Mostrar el modal de confirmación
+  };
+
   const deleteEvent = async () => {
     try {
-      await axios.delete(`http://localhost:4000/api/eventos/${eventIdToDelete}`);
+      await axios.delete(
+        `http://localhost:4000/api/eventos/${eventIdToDelete}`
+      );
       setEventosPasados((prevEvents) =>
         prevEvents.filter((event) => event._id !== eventIdToDelete)
       );
@@ -93,7 +104,9 @@ const Events = () => {
         prevEvents.filter((event) => event._id !== eventIdToDelete)
       );
       setShowEliminarAviso(false); // Ocultar el modal de confirmación
+      setShowReloadAviso(false); // Ocultar el modal de confirmación
       setEventIdToDelete(null); // Limpiar el ID del evento
+      location.reload();
     } catch (error) {
       console.error("Error deleting event:", error);
     }
@@ -111,9 +124,14 @@ const Events = () => {
     console.log("Evento actualizado:", id);
   };
 
+  const viewEvent = async (id) => {
+    console.log("ID del evento a visualizar:", id);
+    navigate(`/administrador/eventos/${id}`);
+  };
+
   const formatDateForInput = (dateString) => {
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0]; // Convertir a YYYY-MM-DD
+    return date.toISOString().split("T")[0]; // Convertir a YYYY-MM-DD
   };
 
   const updateEvent = async (id, event) => {
@@ -168,7 +186,8 @@ const Events = () => {
       setServerError(""); // Limpiar el error en caso de éxito
       setShowSuccessModal(
         response.data.message || "Evento creado exitosamente!"
-      ); // Mensaje del backend o predeterminado
+      );
+      location.reload();
     } catch (error) {
       console.error("Error creating event:", error);
 
@@ -262,11 +281,13 @@ const Events = () => {
       <h1 className="text-3xl font-bold text-center mb-8">
         Eventos Registrados
       </h1>
-      <EventoCarousel
+      <EventoCarouselPast
         title="Eventos Pasados"
         events={eventosPasados}
         deleteEvent={handleDeleteEvent}
         updateEvent={updatedEvent}
+        viewEvent={viewEvent}
+        reloadEvent={handleReloadEvent}
       />
 
       <EventoCarousel
@@ -274,6 +295,8 @@ const Events = () => {
         events={eventosProximos}
         deleteEvent={handleDeleteEvent}
         updateEvent={updatedEvent}
+        viewEvent={viewEvent}
+        reloadEvent={handleReloadEvent}
       />
       <div className="flex justify-center mt-6">
         <button
@@ -313,7 +336,6 @@ const Events = () => {
               console.log("Valores enviados al servidor:", values);
               await createEvent(values);
               resetForm();
-              location.reload();
               setSubmitting(false);
             }}
           >
@@ -555,7 +577,10 @@ const Events = () => {
         className="top-50 left-1/2"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
       >
-        <div className="bg-yellow-800 rounded-lg flex flex-col justify-center items-center p-6" style={{width: "496px"}}>
+        <div
+          className="bg-yellow-800 rounded-lg flex flex-col justify-center items-center p-6"
+          style={{ width: "496px" }}
+        >
           <h2 className="text-white text-center text-[25px] m-6">
             EDITAR EVENTO
           </h2>
@@ -584,7 +609,7 @@ const Events = () => {
               isSubmitting,
             }) => (
               <Form onSubmit={handleSubmit}>
-                <div style={{width: "396px"}}>
+                <div style={{ width: "396px" }}>
                   <div className="mb-4">
                     <input
                       type="text"
@@ -677,7 +702,6 @@ const Events = () => {
                 </div>
               </Form>
             )}
-            
           </Formik>
           {serverError && (
             <div className="text-red-500 mt-4">{serverError}</div>
@@ -687,42 +711,80 @@ const Events = () => {
 
       {/* Aviso de Eliminacion*/}
       <Modal
-          isOpen={showEliminarAviso}
-          onRequestClose={() => setShowEliminarAviso(false)}
-          contentLabel="Eliminar Sector"
-          className="absolute  top-1/4 left-1/2"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        isOpen={showEliminarAviso}
+        onRequestClose={() => setShowEliminarAviso(false)}
+        contentLabel="Eliminar Sector"
+        className="absolute  top-1/4 left-1/2"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div
+          className="absolute bg-blue-900 z-50 rounded-lg flex flex-col justify-center items-center p-6 w-96"
+          style={{ marginLeft: "-90px", marginTop: "70px" }}
         >
-          <div
-            className="absolute bg-blue-900 z-50 rounded-lg flex flex-col justify-center items-center p-6 w-96"
-            style={{ marginLeft: "-90px", marginTop: "70px" }}
-          >
-            {" "}
-            <div className="mb-8 text-white text-center poppins text-[25px] m-6">
-              <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
-                ¿Estás seguro que deseas eliminar el evento?
-              </h2>
-            </div>
-            <div className="flex justify-center space-x-4">
-              <button
-                className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
-                onClick={() => {
-                  deleteEvent(eventIdToDelete);
-                }}
-              >
-                <FaCheck className="w-6 mr-2" />
-                Si, Eliminar
-              </button>
-              <button
-                className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-900 text-white flex items-center"
-                onClick={() => setShowEliminarAviso(false)}
-              >
-                <IoClose className="w-6 mr-2" />
-                Cancelar
-              </button>
-            </div>
+          {" "}
+          <div className="mb-8 text-white text-center poppins text-[25px] m-6">
+            <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
+              ¿Estás seguro que deseas cancelar este evento?
+            </h2>
           </div>
-        </Modal>
+          <div className="flex justify-center space-x-4">
+            <button
+              className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
+              onClick={() => {
+                deleteEvent(eventIdToDelete);
+              }}
+            >
+              <FaCheck className="w-6 mr-2" />
+              Si, Cancelar
+            </button>
+            <button
+              className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-900 text-white flex items-center"
+              onClick={() => setShowEliminarAviso(false)}
+            >
+              <IoClose className="w-6 mr-2" />
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </Modal>
+      {/* Aviso de Eliminacion*/}
+      <Modal
+        isOpen={showReloadAviso}
+        onRequestClose={() => setShowReloadAviso(false)}
+        contentLabel="Eliminar Sector"
+        className="absolute  top-1/4 left-1/2"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div
+          className="absolute bg-blue-900 z-50 rounded-lg flex flex-col justify-center items-center p-6 w-96"
+          style={{ marginLeft: "-90px", marginTop: "70px" }}
+        >
+          {" "}
+          <div className="mb-8 text-white text-center poppins text-[25px] m-6">
+            <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
+              ¿Estás seguro que deseas habilitar de nuevo este evento?
+            </h2>
+          </div>
+          <div className="flex justify-center space-x-4">
+            <button
+              className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
+              onClick={() => {
+                deleteEvent(eventIdToDelete);
+              }}
+            >
+              <FaCheck className="w-6 mr-2" />
+              Si, Habilitar
+            </button>
+            <button
+              className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-900 text-white flex items-center"
+              onClick={() => setShowReloadAviso(false)}
+            >
+              <IoClose className="w-6 mr-2" />
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Mensaje de éxito del modal */}
       {showSuccessModal && (

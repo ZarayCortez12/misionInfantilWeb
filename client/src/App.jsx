@@ -34,6 +34,7 @@ import CursosDocente from "./pages/docente/courses/Courses";
 import DetallesCurso from "./pages/docente/courses/detallesCurso";
 import DetallesDocente from "./pages/admin/teachers/docenteDetalles";
 import DetallesCursoAdmi from "./pages/admin/courses/detallesCursoAdmi";
+import DetallesEventoAdmi from "./pages/admin/events/detallesEventos";
 
 function App() {
   return (
@@ -145,6 +146,15 @@ function App() {
                           <AdminLayout>
                             {" "}
                             <Events />{" "}
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/administrador/eventos/:id"
+                        element={
+                          <AdminLayout>
+                            {" "}
+                            <DetallesEventoAdmi />{" "}
                           </AdminLayout>
                         }
                       />

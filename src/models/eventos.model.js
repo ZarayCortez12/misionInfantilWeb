@@ -26,6 +26,10 @@ const eventoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Curso', // Asegúrate de que exista un modelo 'Curso'
     required: false, // Solo es necesario para eventos de curso
+  },
+  estado: {
+    type: String,
+    required: true,
   }
 }, {
   timestamps: true

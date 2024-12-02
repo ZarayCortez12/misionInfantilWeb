@@ -27,6 +27,9 @@ export const createEvento = async (req, res) => {
         .status(400)
         .json({ message: "Ya existe un evento con el mismo nombre" });
     }
+    if (lugarFiltro.estado === "INACTIVO") {
+      return res.status(400).json({ message: "El sector no esta disponible" });
+    }
     const eventosPorFecha = await Evento.find({ fecha: fecha });
 
     const eventosEnLugar = eventosPorFecha.filter(
@@ -54,6 +57,7 @@ export const createEvento = async (req, res) => {
         hora,
         lugar,
         tipoEvento,
+        estado: "ACTIVO",
       });
     } else if (tipoEvento === "curso") {
       existingEvent = await Evento.findOne({
@@ -98,15 +102,19 @@ export const createEvento = async (req, res) => {
 
       for (const evento of eventosCursos) {
         const cursoAsociado = await Curso.findById(evento.curso);
-  
+
         // Verificar si hay conflictos de docentes
-        const conflicto = cursoAsociado && cursoAsociado.docentes.some((docente) =>
-          docentesCurso.includes(docente)
-        ) && 
-        evento.fecha.getTime() === fechaUTC.getTime();
-  
+        const conflicto =
+          cursoAsociado &&
+          cursoAsociado.docentes.some((docente) =>
+            docentesCurso.includes(docente)
+          ) &&
+          evento.fecha.getTime() === fechaUTC.getTime();
+
         if (conflicto) {
-          return res.status(400).json({ message: "Conflicto de horario con otros eventos" });
+          return res
+            .status(400)
+            .json({ message: "Conflicto de horario con otros eventos" });
         }
       }
 
@@ -148,9 +156,26 @@ export const getEvento = async (req, res) => {
 
 export const deleteEvento = async (req, res) => {
   try {
-    const evento = await Evento.findByIdAndDelete(req.params.id);
+    const evento = await Evento.findById(req.params.id); // Eliminar el evento
+
     if (!evento)
       return res.status(404).json({ message: "Evento no encontrado" });
+
+    if (evento.estado !== "INACTIVO") {
+      const updateData = {
+        estado: "INACTIVO",
+      };
+      await Evento.findByIdAndUpdate(evento._id, updateData, {
+        new: true,
+      });
+    } else {
+      const updateDataRe = {
+        estado: "ACTIVO",
+      };
+      await Evento.findByIdAndUpdate(evento._id, updateDataRe, {
+        new: true,
+      });
+    }
     return res.sendStatus(204); // Enviar un estado 204 No Content si la eliminación fue exitosa
   } catch (error) {
     return res.status(500).json({ message: "Error al eliminar el evento" });
@@ -158,75 +183,81 @@ export const deleteEvento = async (req, res) => {
 };
 
 export const updateEvento = async (req, res) => {
-    try {
-      const { nombre, fecha, hora, lugar } = req.body;
-      const { id } = req.params;
-  
-      // Verificar si el evento a actualizar existe
-      const eventoExistente = await Evento.findById(id);
-      if (!eventoExistente) {
-        return res.status(404).json({ message: "Evento no encontrado" });
-      }
-  
-      // Validar la disponibilidad del lugar y hora
-      const fechaUTC = moment.utc(fecha).startOf("day").toDate();
-      const lugarFiltro = await Sector.findOne({ nombre: lugar });
-  
-      if (!lugarFiltro) {
-        return res.status(404).json({ message: "Lugar no encontrado" });
-      }
-  
-      // Verificar si hay eventos en el mismo lugar y hora
-      const eventosPorFecha = await Evento.find({ fecha: fecha });
-      console.log("Eventos por fecha:", eventosPorFecha);
-      const eventosEnLugar = eventosPorFecha.filter(
-        (evento) => evento.sector === lugarFiltro.nombre && evento._id.toString() !== id
-      );
-      console.log("Eventos en lugar:", eventosEnLugar);
-  
-      const eventosEnHora = eventosEnLugar.filter(
-        (evento) => evento.hora === hora
-      );
-  
-      if (eventosEnHora.length > 0) {
-        return res.status(400).json({ message: "No hay disponibilidad en ese horario y lugar" });
-      }
-  
-      // Verificar conflictos de docentes para eventos de tipo 'curso'
-      const eventoActualizado = await Evento.findById(id);
-      if (eventoActualizado.tipoEvento === "curso") {
-        const cursoAux = await Curso.findOne({ nombre: nombre });
-        const docentesCurso = cursoAux ? cursoAux.docentes : [];
-  
-        const eventosCursos = await Evento.find({ curso: { $exists: true } });
-        for (const evento of eventosCursos) {
-          const cursoAsociado = await Curso.findById(evento.curso);
-  
-          const conflicto = cursoAsociado && cursoAsociado.docentes.some((docente) =>
+  try {
+    const { nombre, fecha, hora, lugar } = req.body;
+    const { id } = req.params;
+
+    // Verificar si el evento a actualizar existe
+    const eventoExistente = await Evento.findById(id);
+    if (!eventoExistente) {
+      return res.status(404).json({ message: "Evento no encontrado" });
+    }
+
+    // Validar la disponibilidad del lugar y hora
+    const fechaUTC = moment.utc(fecha).startOf("day").toDate();
+    const lugarFiltro = await Sector.findOne({ nombre: lugar });
+
+    if (!lugarFiltro) {
+      return res.status(404).json({ message: "Lugar no encontrado" });
+    }
+
+    // Verificar si hay eventos en el mismo lugar y hora
+    const eventosPorFecha = await Evento.find({ fecha: fecha });
+    console.log("Eventos por fecha:", eventosPorFecha);
+    const eventosEnLugar = eventosPorFecha.filter(
+      (evento) =>
+        evento.sector === lugarFiltro.nombre && evento._id.toString() !== id
+    );
+    console.log("Eventos en lugar:", eventosEnLugar);
+
+    const eventosEnHora = eventosEnLugar.filter(
+      (evento) => evento.hora === hora
+    );
+
+    if (eventosEnHora.length > 0) {
+      return res
+        .status(400)
+        .json({ message: "No hay disponibilidad en ese horario y lugar" });
+    }
+
+    // Verificar conflictos de docentes para eventos de tipo 'curso'
+    const eventoActualizado = await Evento.findById(id);
+    if (eventoActualizado.tipoEvento === "curso") {
+      const cursoAux = await Curso.findOne({ nombre: nombre });
+      const docentesCurso = cursoAux ? cursoAux.docentes : [];
+
+      const eventosCursos = await Evento.find({ curso: { $exists: true } });
+      for (const evento of eventosCursos) {
+        const cursoAsociado = await Curso.findById(evento.curso);
+
+        const conflicto =
+          cursoAsociado &&
+          cursoAsociado.docentes.some((docente) =>
             docentesCurso.includes(docente)
           ) &&
           evento.fecha.getTime() === fechaUTC.getTime() &&
           evento.hora === hora;
-  
-          if (conflicto) {
-            return res.status(400).json({ message: "Conflicto de horario con otros eventos" });
-          }
+
+        if (conflicto) {
+          return res
+            .status(400)
+            .json({ message: "Conflicto de horario con otros eventos" });
         }
       }
-  
-      // Actualizar el evento con los nuevos datos
-      const eventoAActualizado = await Evento.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
-  
-      if (!eventoAActualizado) {
-        return res.status(404).json({ message: "Evento no encontrado" });
-      }
-  
-      res.json(eventoAActualizado);
-  
-    } catch (error) {
-      console.error("Error al actualizar el evento:", error);
-      res.status(500).json({ message: "Error al actualizar el evento" });
     }
-  };
+
+    // Actualizar el evento con los nuevos datos
+    const eventoAActualizado = await Evento.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+
+    if (!eventoAActualizado) {
+      return res.status(404).json({ message: "Evento no encontrado" });
+    }
+
+    res.json(eventoAActualizado);
+  } catch (error) {
+    console.error("Error al actualizar el evento:", error);
+    res.status(500).json({ message: "Error al actualizar el evento" });
+  }
+};
