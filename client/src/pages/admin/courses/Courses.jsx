@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FaEye, FaTrash, FaPlus } from "react-icons/fa";
 import { useCursos } from "../../../context/CursoContext.jsx";
-
 import { IoClose } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa";
 import Modal from "react-modal";
@@ -14,36 +13,47 @@ import { FaUser } from "react-icons/fa";
 import { FaSignature } from "react-icons/fa6";
 import icono from "../../../../public/2000860-removebg-preview.png";
 import { VscCalendar, VscEdit } from "react-icons/vsc";
+import { IoReloadCircle } from "react-icons/io5";
+import { set } from "mongoose";
+import { useNavigate } from "react-router-dom";
 
 Modal.setAppElement("#root"); // Necesario para accesibilidad
-
 const Courses = () => {
   const [showAviso, setShowAviso] = useState(false);
   const [showDiv, setShowDiv] = useState(false);
+  const [showDivReload, setShowDivReload] = useState(false);
   const [cursosE, setCursos] = useState([]);
   const { getCursos, deleteCurso, createCurso } = useCursos();
   const [showCrearAviso, setShowCrearAviso] = useState(false);
   const [showEditarAviso, setShowEditarAviso] = useState(false);
   const [cursoToDelete, setCursoToDelete] = useState(null);
+  const [cursoReload, setCursoReload] = useState(null);
   const [docenteValue, setDocenteValue] = useState("");
   const [cursoEditado, setCursoEditado] = useState(null);
   const [serverError, setServerError] = useState("");
-  // Función para eliminar un curso
+  const navigate = useNavigate();
   const handleDeleteCurso = async (cursoId) => {
     try {
-      // Lógica para eliminar el curso mediante una solicitud HTTP (usando Axios o Fetch)
       await axios.delete(`http://localhost:4000/api/cursos/${cursoId}`);
-      // Actualizar la lista de cursos después de eliminar
-      const updatedCursos = cursosE.filter((curso) => curso._id !== cursoId);
-      setCursos(updatedCursos);
+      location.reload();
     } catch (error) {
-      console.error("Error al eliminar el curso:", error);
+      if (error.response && error.response.status === 400) {
+        // Si la respuesta del backend es un error debido a los cursos activos o eventos no pasados
+        alert(error.response.data.message); // Muestra el mensaje de error al usuario
+        location.reload();
+      } else {
+        alert(
+          "Hubo un problema al intentar desactivar el curso. Intenta más tarde."
+        );
+      }
     }
   };
-
   const creatCurso = async (cursoData) => {
     try {
-      const response = await axios.post("http://localhost:4000/api/cursos", cursoData);
+      const response = await axios.post(
+        "http://localhost:4000/api/cursos",
+        cursoData
+      );
       return response.data;
     } catch (error) {
       if (error.response && error.response.data) {
@@ -52,7 +62,6 @@ const Courses = () => {
       throw new Error("Error al crear el curso. Por favor, intenta de nuevo.");
     }
   };
-
   const updateCurso = async (id, curso) => {
     try {
       console.log("Datos del curso a actualizar:", curso);
@@ -61,17 +70,9 @@ const Courses = () => {
         `http://localhost:4000/api/cursos/${id}`,
         curso
       );
-      setCursos((prevCursos) =>
-        prevCursos.map((e) => (e._id === id ? response.data : e))
-      );
-
-      setShowEditarAviso(false);
-      setShowSuccessModal("Curso actualizado exitosamente!");
       location.reload();
     } catch (error) {
       console.error("Error al actualizar el curso:", error);
-
-      // Mostrar el mensaje de error del backend si está disponible
       if (
         error.response &&
         error.response.data &&
@@ -85,13 +86,10 @@ const Courses = () => {
       }
     }
   };
-
   const handleClick = () => {
     navigate("/administrador/cursos");
   };
-
   const [docenteSeleccionado, setDocenteSeleccionado] = useState([]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -124,8 +122,6 @@ const Courses = () => {
     };
     fetchData();
   }, []);
-
-  // Actualizar el esquema de validación
   const validationSchema = Yup.object().shape({
     nombre: Yup.string()
       .max(50, "El nombre no puede tener más de 50 caracteres")
@@ -141,14 +137,10 @@ const Courses = () => {
       .required("Debe seleccionar un segundo docente")
       .notOneOf([""], "Debe seleccionar un segundo docente"),
   });
-
   const handleDocenteChange = (setFieldValue, selectedDocente, isFirst) => {
     setFieldValue(isFirst ? "docente1" : "docente2", selectedDocente);
   };
-
-  // Componente para la tarjeta de curso
   const CursoCard = ({ curso }) => {
-    // Encuentra los nombres de los docentes para el curso actual
     const docentes = docenteSeleccionado.filter((docente) =>
       curso.docentes.includes(docente._id)
     );
@@ -156,9 +148,12 @@ const Courses = () => {
 
     return (
       <div className="border border-blue-500 rounded-lg p-4 flex flex-col justify-between transition-all duration-300 ease-in-out hover:border-red-500 hover:shadow-lg">
-        {" "}
         <div className="flex justify-end space-x-2">
-          <button className="text-green-500 mr-4">
+          <button className="text-green-500 mr-4"
+            onClick={() => {
+              navigate(`/administrador/cursos/${curso._id}`);
+            }}
+          >
             <FaEye style={{ fontSize: "24px" }} />
           </button>
           <button
@@ -171,15 +166,27 @@ const Courses = () => {
           >
             <VscEdit style={{ fontSize: "24px" }} />
           </button>
-          <button
-            className="text-red-500"
-            onClick={() => {
-              setCursoToDelete(curso._id); // Almacenar ID del curso a eliminar
-              setShowDiv(true); // Mostrar modal de confirmación
-            }}
-          >
-            <FaTrash style={{ fontSize: "22px" }} />
-          </button>
+          {curso.estado === "INACTIVO" ? (
+            <button
+              className="text-blue-500"
+              onClick={() => {
+                setCursoToDelete(curso._id); // Almacenar ID del curso a reactivar
+                setShowDivReload(true); // Mostrar modal de confirmación
+              }}
+            >
+              <IoReloadCircle style={{ fontSize: "25px" }} />
+            </button>
+          ) : (
+            <button
+              className="text-red-500"
+              onClick={() => {
+                setCursoToDelete(curso._id); // Almacenar ID del curso a eliminar
+                setShowDiv(true); // Mostrar modal de confirmación
+              }}
+            >
+              <FaTrash style={{ fontSize: "22px" }} />
+            </button>
+          )}
         </div>
         <div className="flex items-center justify-between">
           <div className="flex-grow" style={{ marginTop: "-20px" }}>
@@ -207,7 +214,6 @@ const Courses = () => {
       </div>
     );
   };
-
   return (
     <div className="container mx-auto p-16 m-5">
       <h1 className="text-[38px] text-center font-bold">Cursos Registrados</h1>
@@ -221,7 +227,6 @@ const Courses = () => {
           </div>
         )}
       </div>
-
       <div className="flex justify-center mt-6">
         <button
           className="bg-yellow-900 py-4 px-6 rounded-lg hover:bg-yellow-500 poppins items-center w-96"
@@ -234,8 +239,6 @@ const Courses = () => {
           </div>
         </button>
       </div>
-
-      {/* Aviso de Eliminacion*/}
       <Modal
         isOpen={showDiv}
         onRequestClose={() => setShowDiv(false)}
@@ -249,7 +252,7 @@ const Courses = () => {
         >
           <div className="mb-8 text-white text-center poppins text-[25px] m-6">
             <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
-              ¿Seguro de eliminar el registro?
+              ¿Seguro de inhabilitar el curso?
             </h2>
           </div>
           <div className="flex justify-center space-x-4">
@@ -262,7 +265,7 @@ const Courses = () => {
               }}
             >
               <FaCheck className="w-6 mr-2" />
-              Si, Eliminar
+              Si, Inhabilitar
             </button>
             <button
               className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-900 text-white flex items-center"
@@ -274,8 +277,44 @@ const Courses = () => {
           </div>
         </div>
       </Modal>
-
-      {/* Aviso de crear*/}
+      <Modal
+        isOpen={showDivReload}
+        onRequestClose={() => setShowDivReload(false)}
+        contentLabel="Eliminar Estudiante"
+        className="absolute  top-1/4 left-1/2"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div
+          className="absolute bg-blue-900  z-50  rounded-lg flex flex-col justify-center items-center p-6 w-96"
+          style={{ marginLeft: "-90px", marginTop: "70px" }}
+        >
+          <div className="mb-8 text-white text-center poppins text-[25px] m-6">
+            <h2 className="mb-8 text-white text-center poppins text-[25px] m-6">
+              ¿Seguro de habilitar el curso?
+            </h2>
+          </div>
+          <div className="flex justify-center space-x-4">
+            <button
+              className="bg-green-600 py-2 px-4 rounded-lg hover:bg-green-900 text-white flex items-center"
+              onClick={() => {
+                // Lógica para eliminar el curso
+                handleDeleteCurso(cursoToDelete);
+                setShowDivReload(false);
+              }}
+            >
+              <FaCheck className="w-6 mr-2" />
+              Si, Habilitar
+            </button>
+            <button
+              className="bg-red-600 py-2 px-4 rounded-lg hover:bg-red-900 text-white flex items-center"
+              onClick={() => setShowDiv(false)}
+            >
+              <IoClose className="w-6 mr-2" />
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </Modal>
       <Modal
         isOpen={showCrearAviso}
         onRequestClose={() => setShowCrearAviso(false)}
@@ -324,7 +363,10 @@ const Courses = () => {
                 setShowCrearAviso(false); // Actualizar la página después de crear
               } catch (error) {
                 console.error("Error al crear el curso:", error);
-                setServerError(error.message || "Error al crear el curso. Por favor, verifica los datos ingresados.");
+                setServerError(
+                  error.message ||
+                    "Error al crear el curso. Por favor, verifica los datos ingresados."
+                );
               }
               setSubmitting(false);
             }}
@@ -482,7 +524,6 @@ const Courses = () => {
           )}
         </div>
       </Modal>
-      {/* Aviso de Creacion Alumno*/}
       <Modal
         isOpen={showAviso}
         onRequestClose={() => setShowAviso(false)}
@@ -513,8 +554,6 @@ const Courses = () => {
           </div>
         </div>
       </Modal>
-
-      {/*Aviso de Edicion*/}
       <Modal
         isOpen={showEditarAviso}
         onRequestClose={() => setShowEditarAviso(false)}
@@ -706,5 +745,4 @@ const Courses = () => {
     </div>
   );
 };
-
 export default Courses;

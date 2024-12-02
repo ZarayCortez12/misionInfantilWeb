@@ -27,10 +27,13 @@ import CrearDocente from "./pages/admin/teachers/CrearDocente";
 import EditarDocente from "./pages/admin/teachers/EditarDocente";
 import IndexDocente from "./pages/docente/IndexDocente";
 import DocenteLayout from "./pages/docente/Layout";
+import DocenteEventos from "./pages/docente/eventos";
+import DetallesEventos from "./pages/docente/verEventos"; //cambio
 import InformacionDocente from "./pages/docente/informacionDocente";
 import CursosDocente from "./pages/docente/courses/Courses";
 import DetallesCurso from "./pages/docente/courses/detallesCurso";
 import DetallesDocente from "./pages/admin/teachers/docenteDetalles";
+import DetallesCursoAdmi from "./pages/admin/courses/detallesCursoAdmi";
 
 function App() {
   return (
@@ -127,6 +130,15 @@ function App() {
                           </AdminLayout>
                         }
                       />
+                      <Route 
+                        path="/administrador/cursos/:id" 
+                        element={
+                          <AdminLayout>
+                            {" "}
+                            <DetallesCursoAdmi />{" "}
+                          </AdminLayout>
+                        } 
+                      />
                       <Route
                         path="/administrador/eventos"
                         element={
@@ -201,6 +213,22 @@ function App() {
                         element={
                           <DocenteLayout>
                             <DetallesCurso />
+                          </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente/eventos"
+                        element={
+                          <DocenteLayout>
+                            <DocenteEventos />
+                          </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente/vereventos/:id"
+                        element={
+                          <DocenteLayout>
+                            <DetallesEventos />
                           </DocenteLayout>
                         }
                       />

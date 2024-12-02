@@ -1,6 +1,11 @@
 import Curso from "../models/cursos.model.js";
-import { updateFile, deleteFile, uploadFile } from "../libs/cloudinary.curso.js";
-import fs from 'fs-extra';
+import {
+  updateFile,
+  deleteFile,
+  uploadFile,
+} from "../libs/cloudinary.curso.js";
+import fs from "fs-extra";
+import Evento from "../models/eventos.model.js";
 
 export const getCursos = async (req, res) => {
   try {
@@ -33,6 +38,7 @@ export const createCurso = async (req, res) => {
       nombre,
       descripcion,
       docentes,
+      estado: "ACTIVO",
     });
 
     await nuevoCurso.save();
@@ -57,10 +63,36 @@ export const getCurso = async (req, res) => {
 
 export const deleteCurso = async (req, res) => {
   try {
-    const curso = await Curso.findByIdAndDelete(req.params.id);
+    const cursoId = req.params.id;
+    console.log("ID del curso a eliminar:", cursoId);
+    const curso = await Curso.findById(cursoId);
+    console.log("Curso obtenido:", curso);
     if (!curso) {
       return res.status(404).json({ message: "Curso no encontrado" });
     }
+    if (curso.estado !== "ACTIVO") {
+      const updateData = {
+        estado: "ACTIVO",
+      };
+      await Curso.findByIdAndUpdate(cursoId, updateData, {
+        new: true,
+      });
+    } else {
+      const eventosCurso = await Evento.find({ curso: cursoId });
+      if (eventosCurso.length > 0) {
+        return res.status(400).json({
+          message:
+            "No se puede desactivar el curso porque hay eventos asociados",
+        });
+      }
+      const updateDataRe = {
+        estado: "INACTIVO",
+      };
+      await Curso.findByIdAndUpdate(cursoId, updateDataRe, {
+        new: true,
+      });
+    }
+
     return res.sendStatus(204); // Enviar un estado 204 No Content si la eliminación fue exitosa
   } catch (error) {
     console.error("Error al eliminar el curso:", error);
@@ -119,7 +151,9 @@ export const uploadDocumento = async (req, res) => {
         $push: { documentos: documento },
       });
 
-      return res.status(200).json({ message: "Documento subido correctamente", documento });
+      return res
+        .status(200)
+        .json({ message: "Documento subido correctamente", documento });
     }
     return res.status(400).json({ message: "No se ha subido ningún archivo" });
   } catch (error) {
@@ -154,8 +188,10 @@ export const deleteDocumento = async (req, res) => {
     }
 
     // Convertir documentoId a ObjectId o usar el método `equals` para comparar
-    curso.documentos = curso.documentos.filter((documento) => !documento._id.equals(documentoId));
-    
+    curso.documentos = curso.documentos.filter(
+      (documento) => !documento._id.equals(documentoId)
+    );
+
     await curso.save();
     res.json({ message: "Documento eliminado correctamente" });
   } catch (error) {

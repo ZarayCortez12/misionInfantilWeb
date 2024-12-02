@@ -38,10 +38,9 @@ function Teachers() {
       const response = await axios.delete(
         `http://localhost:4000/api/docentes/${id}`
       );
-
       if (response.status === 200) {
         alert(response.data.message);
-        location.reload(); // Actualiza la lista de docentes después de desactivarlo
+        location.reload();
       }
       setShowEliminarAviso(false);
       // Realizar cualquier acción adicional después de eliminar el estudiante
@@ -49,6 +48,7 @@ function Teachers() {
       if (error.response && error.response.status === 400) {
         // Si la respuesta del backend es un error debido a los cursos activos o eventos no pasados
         alert(error.response.data.message); // Muestra el mensaje de error al usuario
+        location.reload();
       } else {
         alert(
           "Hubo un problema al intentar desactivar al docente. Intenta más tarde."
@@ -390,7 +390,6 @@ function Teachers() {
                 onClick={() => {
                   handleDeleteStudent(selectedStudents._id);
                   setShowEliminarAviso(false);
-                  getDocentes();
                 }}
               >
                 <FaCheck className="w-6 mr-2" />
