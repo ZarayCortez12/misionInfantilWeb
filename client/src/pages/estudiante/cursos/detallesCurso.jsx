@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa"; // Importa los iconos de react-icons
 import logoOrganizacion from "../../../assets/logoOrganizacion.png";
 import { IoMdDocument } from "react-icons/io";
+import { useNavigate } from "react-router-dom"; // Importar useNavigate
 
 function DetallesCurso() {
   const { id } = useParams(); // Obtiene el ID de la URL
@@ -31,6 +32,7 @@ function DetallesCurso() {
   const [showModalActividad, setShowModalActividad] = useState(false);
   const [nombreActividad, setNombreActividad] = useState(""); // Nombre de la actividad
   const [descripcionActividad, setDescripcionActividad] = useState(""); // Descripción de la actividad
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCurso = async () => {
@@ -406,6 +408,7 @@ function DetallesCurso() {
               {actividades.map((actividad) => (
                 <div
                   key={actividad._id}
+                  onClick={() => navigate(`/estudiante/actividad/${actividad._id}`)}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -444,140 +447,6 @@ function DetallesCurso() {
           marginTop: "20px",
         }}
       >
-        {/* Botón 1: Visualizar Inscritos */}
-        <button
-          style={{
-            backgroundColor: "#2a4a7b", // Azul oscuro
-            color: "white",
-            padding: "15px 30px",
-            borderRadius: "10px",
-            fontSize: "16px",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            border: "none",
-            cursor: "pointer",
-            transition: "background-color 0.3s ease",
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor = "#1f3a61")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor = "#2a4a7b")
-          }
-          onClick={() => setShowModalInscritos(true)}
-        >
-          <FaUsers />
-          Visualizar Inscritos
-        </button>
-
-        {/* Botón 2: Crear Actividad */}
-        <button
-          style={{
-            backgroundColor: "#8b4513", // Marrón
-            color: "white",
-            padding: "15px 30px",
-            borderRadius: "10px",
-            fontSize: "16px",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            border: "none",
-            cursor: "pointer",
-            transition: "background-color 0.3s ease",
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor = "#6f3610")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor = "#8b4513")
-          }
-          onClick={() => setShowModalActividad(true)}
-        >
-          <FaFileAlt />
-          Crear Actividad
-        </button>
-        {/* Modal de Crear Actividad */}
-        {showModalActividad && (
-          <div
-            style={{
-              position: "fixed",
-              top: "0",
-              left: "0",
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0,0,0,0.5)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: "white",
-                padding: "20px",
-                borderRadius: "10px",
-                width: "400px",
-              }}
-            >
-              <h2
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  marginBottom: "20px",
-                  fontSize: "24px",
-                }}
-              >
-                Crear Nueva Actividad
-              </h2>
-              <div>
-                <label>Nombre de la Actividad:</label>
-                <input
-                  type="text"
-                  value={nombreActividad}
-                  onChange={(e) => setNombreActividad(e.target.value)}
-                  style={{ width: "100%", padding: "10px", margin: "10px 0" }}
-                />
-              </div>
-              <div>
-                <label>Descripción de la Actividad:</label>
-                <textarea
-                  value={descripcionActividad}
-                  onChange={(e) => setDescripcionActividad(e.target.value)}
-                  style={{ width: "100%", padding: "10px", margin: "10px 0" }}
-                />
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <button
-                  onClick={handleCloseModal}
-                  style={{
-                    backgroundColor: "#ccc",
-                    padding: "10px 20px",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={crearActividad}
-                  style={{
-                    backgroundColor: "#2a4a7b",
-                    color: "white",
-                    padding: "10px 20px",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Crear
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Botón 3: Subir Material */}
         <button
           style={{

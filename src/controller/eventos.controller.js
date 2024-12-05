@@ -317,6 +317,11 @@ export const ingresarAsistente = async (req, res) => {
       return res.status(404).json({ message: "Evento no encontrado" });
     }
 
+    const curso = await Curso.findById(evento.curso);
+    if (!curso) {
+      return res.status(404).json({ message: "Curso no encontrado" });
+    }
+
     // Buscar el estudiante
     const estudiante = await Usuario.findById(idEstudiante);
     if (!estudiante) {
@@ -328,6 +333,16 @@ export const ingresarAsistente = async (req, res) => {
       return res.status(400).json({ message: "El evento no está activo" });
     }
 
+    if (curso.estado !== "ACTIVO") {
+      return res.status(400).json({ message: "El curso no está activo" });
+    }
+
+    if (curso.inscritos.includes(idEstudiante)) {
+      return res
+        .status(400)
+        .json({ message: "El estudiante ya está inscrito en el curso" });
+    }
+
     // Verificar que el estudiante no esté ya en la lista de asistentes
     if (evento.asistentes.includes(idEstudiante)) {
       return res
@@ -336,10 +351,12 @@ export const ingresarAsistente = async (req, res) => {
     }
 
     // Agregar el estudiante a la lista de asistentes
+    curso.inscritos.push(idEstudiante);
     evento.asistentes.push(idEstudiante);
 
     // Guardar los cambios en la base de datos
     await evento.save();
+    await curso.save();
 
     res.status(200).json({
       message: "Estudiante registrado como asistente exitosamente",

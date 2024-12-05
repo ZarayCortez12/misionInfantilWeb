@@ -6,7 +6,8 @@ import {
   createStudent,
   updateStudent,
   deleteStudent,
-  reloadEstudiante
+  reloadEstudiante,
+  getCursosEstudiante,
 } from "../controller/student.controller.js";
 
 const router = Router();
@@ -18,5 +19,6 @@ router.post("/estudiantes", createStudent);
 router.delete("/estudiantes/:id", deleteStudent);
 router.put("/estudiantes/:id", updateStudent);
 router.put("/estudiantes/:id/reload", reloadEstudiante);
+router.get("/estudiantes/:id/cursos", getCursosEstudiante);
 
 export default router;

@@ -37,6 +37,10 @@ import DetallesCursoAdmi from "./pages/admin/courses/detallesCursoAdmi";
 import DetallesEventoAdmi from "./pages/admin/events/detallesEventos";
 import HorarioEventos from "./pages/admin/events/HorarioEventos";
 import HorarioEventosDocente from "./pages/docente/events/HorarioEventos";
+import IndexEstudiante from "./pages/estudiante/IndexEstudiante";
+import EstudianteLayout from "./pages/estudiante/Layout";
+import DetallesCursoEstudiante from "./pages/estudiante/cursos/detallesCurso";
+import DetallesActividadEstudiante from "./pages/estudiante/cursos/detallesActividad";
 
 function App() {
   return (
@@ -259,6 +263,30 @@ function App() {
                             {" "}
                             <CrearStudent />{" "}
                           </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/estudiante"
+                        element={
+                          <EstudianteLayout>
+                            <IndexEstudiante />
+                          </EstudianteLayout>
+                        }
+                      />
+                      <Route
+                        path="/estudiante/curso/:id"
+                        element={
+                          <EstudianteLayout>
+                            <DetallesCursoEstudiante />
+                          </EstudianteLayout>
+                        }
+                      />
+                      <Route
+                        path="/estudiante/actividad/:id"
+                        element={
+                          <EstudianteLayout>
+                            <DetallesActividadEstudiante />
+                          </EstudianteLayout>
                         }
                       />
                     </Route>
