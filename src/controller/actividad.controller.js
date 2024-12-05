@@ -76,6 +76,22 @@ export const getDocumentoEntregaEstudiante = async (req, res) => {
   }
 };
 
+export const getEntregas = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let entregas = [];
+    const actividad = await Actividad.findById(id);
+    if (!actividad)
+      return res.status(404).json({ message: "Actividad no encontrada" });
+
+    entregas = await Actividad.findById(id).populate("entregas");
+
+    res.json(entregas);
+  } catch (error) {
+    return res.status(404).json({ message: "Actividad no Encontrada" });
+  }
+};
+
 export const crearEntrega = async (req, res) => {
   console.log(req.params);
   try {
@@ -135,3 +151,36 @@ export const crearEntrega = async (req, res) => {
     return res.status(500).json({ message: "Error al procesar la entrega" });
   }
 };
+
+export const calificarEntrega = async (req, res) => {
+    try {
+      const { id, estudianteId } = req.params;
+      const { calificacion } = req.body;
+  
+      const actividad = await Actividad.findById(id);
+      if (!actividad) {
+        return res.status(404).json({ message: "Actividad no encontrada" });
+      }
+  
+      // Buscar la entrega dentro del array de entregas
+      const entrega = actividad.entregas.find(
+        (entrega) => entrega.estudianteId.toString() === estudianteId
+      );
+  
+      if (!entrega) {
+        return res.status(404).json({ message: "Entrega no encontrada" });
+      }
+  
+      // Actualizar la calificación
+      entrega.calificacion = calificacion;
+  
+      // Guardar los cambios en el documento padre
+      await actividad.save();
+  
+      res.status(200).json({ message: "Entrega calificada correctamente", actividad });
+    } catch (error) {
+      console.error("Error al calificar la entrega:", error);
+      return res.status(500).json({ message: "Error al procesar la entrega" });
+    }
+  };
+  

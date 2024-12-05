@@ -148,6 +148,8 @@ function Students() {
     setFilteredRecords(filtered);
   }, [searchTerm, records]);
 
+
+
   const columns = [
     {
       name: "Identificación",
@@ -205,6 +207,22 @@ function Students() {
       ),
     },
   ];
+
+  const handleViewStudents = () => {
+    if (selectedRows.selectedRows.length === 0) {
+      alert("Por favor, seleccione un Estudiante para editar");
+    } else {
+      const P1 = selectedRows.selectedRows[0]._id;
+      const estudiante = records.find((record) => record._id === P1);
+      console.log(estudiante);
+      setSelectedStudens(estudiante);
+      VistaEstudianteDetalles(estudiante._id);
+    }
+  };
+
+  const VistaEstudianteDetalles = (id) => {
+    navigate(`/administrador/estudiantes/details/${id}`);
+  };
 
   const customStyles = {
     headCells: {
@@ -277,7 +295,7 @@ function Students() {
               {/* Botón para visualizar */}
               <div
                 className="flex items-center bg-yellow-600 hover:bg-yellow-700 text-white text-sm py-2 px-3 rounded mr-5 cursor-pointer"
-                onClick={() => {}}
+                onClick={() => handleViewStudents()}
               >
                 <FaEye size="30px" className="w-5 md:w-6" />
               </div>

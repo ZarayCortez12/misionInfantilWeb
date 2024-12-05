@@ -33,6 +33,7 @@ import InformacionDocente from "./pages/docente/informacionDocente";
 import CursosDocente from "./pages/docente/courses/Courses";
 import DetallesCurso from "./pages/docente/courses/detallesCurso";
 import DetallesDocente from "./pages/admin/teachers/docenteDetalles";
+import DetallesEstudiante from "./pages/admin/students/estudianteDetalles";
 import DetallesCursoAdmi from "./pages/admin/courses/detallesCursoAdmi";
 import DetallesEventoAdmi from "./pages/admin/events/detallesEventos";
 import HorarioEventos from "./pages/admin/events/HorarioEventos";
@@ -41,6 +42,7 @@ import IndexEstudiante from "./pages/estudiante/IndexEstudiante";
 import EstudianteLayout from "./pages/estudiante/Layout";
 import DetallesCursoEstudiante from "./pages/estudiante/cursos/detallesCurso";
 import DetallesActividadEstudiante from "./pages/estudiante/cursos/detallesActividad";
+import DetallesActividadDocente from "./pages/docente/courses/detallesActividad";
 
 function App() {
   return (
@@ -125,6 +127,15 @@ function App() {
                           <AdminLayout>
                             {" "}
                             <DetallesDocente />{" "}
+                          </AdminLayout>
+                        }
+                      />
+                      <Route
+                        path="/administrador/estudiantes/details/:id"
+                        element={
+                          <AdminLayout>
+                            {" "}
+                            <DetallesEstudiante />{" "}
                           </AdminLayout>
                         }
                       />
@@ -229,6 +240,14 @@ function App() {
                         element={
                           <DocenteLayout>
                             <DetallesCurso />
+                          </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente/actividad/:id"
+                        element={
+                          <DocenteLayout>
+                            <DetallesActividadDocente />
                           </DocenteLayout>
                         }
                       />

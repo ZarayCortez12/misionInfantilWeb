@@ -14,9 +14,6 @@ const entregaSchema = new mongoose.Schema(
     fechaEntrega: { type: Date, required: true },
     horaEntrega: { type: String, required: true }, // Formato HH:mm
   },
-  {
-    _id: false, // Para que no cree un ID independiente para cada entrega
-  }
 );
 
 const actividadSchema = new mongoose.Schema(

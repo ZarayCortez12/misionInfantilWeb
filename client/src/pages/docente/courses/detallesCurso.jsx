@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa"; // Importa los iconos de react-icons
 import logoOrganizacion from "../../../assets/logoOrganizacion.png";
 import { IoMdDocument } from "react-icons/io";
+import { useNavigate } from "react-router-dom"; // Importar useNavigate
 
 function DetallesCurso() {
   const { id } = useParams(); // Obtiene el ID de la URL
@@ -31,6 +32,7 @@ function DetallesCurso() {
   const [showModalActividad, setShowModalActividad] = useState(false);
   const [nombreActividad, setNombreActividad] = useState(""); // Nombre de la actividad
   const [descripcionActividad, setDescripcionActividad] = useState(""); // Descripción de la actividad
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCurso = async () => {
@@ -406,6 +408,7 @@ function DetallesCurso() {
               {actividades.map((actividad) => (
                 <div
                   key={actividad._id}
+                  onClick={() => navigate(`/docente/actividad/${actividad._id}`)}
                   style={{
                     display: "flex",
                     alignItems: "center",

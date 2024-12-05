@@ -22,8 +22,18 @@ function DetallesActividad() {
   const [actividad, setActividad] = useState(null);
   const [estudiante, setEstudiante] = useState(null);
   const [documento, setDocumento] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null); 
+  const [showModal, setShowModal] = useState(false); // Estado para manejar la visibilidad del modal
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null); // Estado para manejar el archivo seleccionado
+  const [filePreview, setFilePreview] = useState(null); // Estado para la vista previa
+  const [documentos, setDocumentos] = useState([]);
+  const [estudiantes, setEstudiantes] = useState([]);
+  const [actividades, setActividades] = useState([]); // Estado para las actividades
+  const [showModalInscritos, setShowModalInscritos] = useState(false);
+  const [showModalActividad, setShowModalActividad] = useState(false);
+  const [nombreActividad, setNombreActividad] = useState(""); // Nombre de la actividad
+  const [descripcionActividad, setDescripcionActividad] = useState(""); // Descripción de la actividad
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedAdministrador = localStorage.getItem("user");
