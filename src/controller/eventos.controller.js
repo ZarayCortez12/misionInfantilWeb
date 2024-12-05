@@ -2,6 +2,7 @@ import Evento from "../models/eventos.model.js";
 import Sector from "../models/sector.model.js";
 import moment from "moment";
 import Curso from "../models/cursos.model.js";
+import Usuario from "../models/user.models.js";
 
 export const getEventos = async (req, res) => {
   try {
@@ -25,39 +26,30 @@ export const getEventosDocente = async (req, res) => {
   try {
     const { id } = req.params;
 
-    
     if (!id) {
       return res
         .status(400)
         .json({ message: "El ID del docente es requerido." });
     }
 
-    
     const eventos = await Evento.find({ estado: "ACTIVO" });
 
-    
     const eventosDocente = [];
 
-    
     for (const evento of eventos) {
-      
       const curso = await Curso.findById(evento.curso);
 
-      
       if (curso && curso.docentes.includes(id)) {
-        
         eventosDocente.push(evento);
       }
     }
 
-    
     if (eventosDocente.length === 0) {
       return res
         .status(404)
         .json({ message: "No se encontraron eventos para este docente." });
     }
 
-    
     return res.status(200).json(eventosDocente);
   } catch (error) {
     console.error("Error al obtener eventos:", error);
@@ -312,5 +304,49 @@ export const updateEvento = async (req, res) => {
   } catch (error) {
     console.error("Error al actualizar el evento:", error);
     res.status(500).json({ message: "Error al actualizar el evento" });
+  }
+};
+
+export const ingresarAsistente = async (req, res) => {
+  try {
+    const { idEstudiante, id } = req.params; // Obteniendo ambos IDs desde los parámetros
+
+    // Buscar el evento
+    const evento = await Evento.findById(id);
+    if (!evento) {
+      return res.status(404).json({ message: "Evento no encontrado" });
+    }
+
+    // Buscar el estudiante
+    const estudiante = await Usuario.findById(idEstudiante);
+    if (!estudiante) {
+      return res.status(404).json({ message: "Estudiante no encontrado" });
+    }
+
+    // Verificar que el evento esté activo
+    if (evento.estado !== "ACTIVO") {
+      return res.status(400).json({ message: "El evento no está activo" });
+    }
+
+    // Verificar que el estudiante no esté ya en la lista de asistentes
+    if (evento.asistentes.includes(idEstudiante)) {
+      return res
+        .status(400)
+        .json({ message: "El estudiante ya está registrado como asistente" });
+    }
+
+    // Agregar el estudiante a la lista de asistentes
+    evento.asistentes.push(idEstudiante);
+
+    // Guardar los cambios en la base de datos
+    await evento.save();
+
+    res.status(200).json({
+      message: "Estudiante registrado como asistente exitosamente",
+      evento,
+    });
+  } catch (error) {
+    console.error("Error al registrar asistencia:", error);
+    res.status(500).json({ message: "Error al registrar asistencia" });
   }
 };

@@ -7,7 +7,8 @@ import {
     updateEvento, 
     deleteEvento,
     getEventosActivos,
-    getEventosDocente
+    getEventosDocente,
+    ingresarAsistente,
 } from '../controller/eventos.controller.js'
 
 
@@ -23,5 +24,6 @@ router.post(
 router.post('/eventos/docente/:id', getEventosDocente)
 router.delete('/eventos/:id', deleteEvento)
 router.put('/eventos/:id',  updateEvento)
+router.post('/eventos/:id/registrarAsistente/:idEstudiante', ingresarAsistente)
 
 export default router;

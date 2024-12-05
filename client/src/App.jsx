@@ -21,7 +21,7 @@ import Notifications from "./pages/admin/notifications/Notifications";
 import Students from "./pages/admin/students/Students";
 import Events from "./pages/admin/events/Events";
 import Courses from "./pages/admin/courses/Courses";
-import CrearStudent from "./pages/admin/students/CrearStudent";
+import CrearStudent from "./pages/docente/estudiantes/CrearStudent";
 import EditarStudent from "./pages/admin/students/EditarStudent";
 import CrearDocente from "./pages/admin/teachers/CrearDocente";
 import EditarDocente from "./pages/admin/teachers/EditarDocente";
@@ -133,14 +133,14 @@ function App() {
                           </AdminLayout>
                         }
                       />
-                      <Route 
-                        path="/administrador/cursos/:id" 
+                      <Route
+                        path="/administrador/cursos/:id"
                         element={
                           <AdminLayout>
                             {" "}
                             <DetallesCursoAdmi />{" "}
                           </AdminLayout>
-                        } 
+                        }
                       />
                       <Route
                         path="/administrador/eventos"
@@ -151,7 +151,7 @@ function App() {
                           </AdminLayout>
                         }
                       />
-                      <Route 
+                      <Route
                         path="/administrador/eventos/horario"
                         element={
                           <AdminLayout>
@@ -175,15 +175,6 @@ function App() {
                           <AdminLayout>
                             {" "}
                             <Students />{" "}
-                          </AdminLayout>
-                        }
-                      />
-                      <Route
-                        path="/administrador/estudiantes/registrar"
-                        element={
-                          <AdminLayout>
-                            {" "}
-                            <CrearStudent />{" "}
                           </AdminLayout>
                         }
                       />
@@ -258,6 +249,15 @@ function App() {
                         element={
                           <DocenteLayout>
                             <DetallesEventos />
+                          </DocenteLayout>
+                        }
+                      />
+                      <Route
+                        path="/docente/estudiantes/registrar"
+                        element={
+                          <DocenteLayout>
+                            {" "}
+                            <CrearStudent />{" "}
                           </DocenteLayout>
                         }
                       />

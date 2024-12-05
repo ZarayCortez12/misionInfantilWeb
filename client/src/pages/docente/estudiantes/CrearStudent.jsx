@@ -22,7 +22,7 @@ function CrearStudent() {
   const [showAviso, setShowAviso] = useState(false);
 
   const handleClick = () => {
-    navigate("/administrador/estudiantes");
+    navigate("/docente/eventos");
   };
 
   const { registerStudent } = useStudent();
