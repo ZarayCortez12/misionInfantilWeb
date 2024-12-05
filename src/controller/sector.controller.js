@@ -14,6 +14,13 @@ export const createSector = async (req, res) => {
   try {
     const { numero, nombre, direccion, barrio } = req.body;
 
+    const existingSectorNombre = await Sector.findOne({ nombre: nombre });
+    if (existingSectorNombre) {
+      return res
+        .status(400)
+        .json({ message: "Ya existe un sector con este nombre" });
+    }
+
     // Verifica si ya existe un sector con la misma dirección y barrio
     const existingSector = await Sector.findOne({ direccion, barrio });
 

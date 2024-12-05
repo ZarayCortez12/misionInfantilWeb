@@ -12,6 +12,15 @@ export const getEventos = async (req, res) => {
   }
 };
 
+export const getEventosActivos = async (req, res) => {
+  try {
+    const eventos = await Evento.find({ estado: "ACTIVO" });
+    res.json(eventos);
+  } catch (error) {
+    return res.status(404).json({ message: "Eventos no Encontrado" });
+  }
+};
+
 export const createEvento = async (req, res) => {
   try {
     const { tipoEvento, nombre, fecha, hora, lugar, descripcion, idCurso } =

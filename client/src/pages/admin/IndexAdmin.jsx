@@ -217,10 +217,10 @@ function IndexAdmin() {
 
           <Link
             className="flex gap-3 justify-start rounded-lg bg-custom-brown1 px-5 py-3 text-base font-light text-white transition-colors hover:bg-custom-brown2"
-            to="/administrador/sectores" //ruta a la que lleva
+            to="/administrador/eventos/horario" //ruta a la que lleva
           >
             <PlusCircleIcon className="w-6" />
-            <span>VISUALIZAR SECTORES</span>
+            <span>VISUALIZAR HORARIO SEMANAL</span>
           </Link>
         </div>
       </div>

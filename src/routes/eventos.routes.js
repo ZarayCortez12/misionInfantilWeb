@@ -5,13 +5,15 @@ import {
     getEvento, 
     createEvento, 
     updateEvento, 
-    deleteEvento
+    deleteEvento,
+    getEventosActivos
 } from '../controller/eventos.controller.js'
 
 
 const router = Router()
 
 router.get('/eventos', getEventos)
+router.get('/eventos/activos', getEventosActivos)
 router.get('/eventos/:id', getEvento)
 router.post(
     '/eventos', 

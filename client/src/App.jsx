@@ -35,6 +35,7 @@ import DetallesCurso from "./pages/docente/courses/detallesCurso";
 import DetallesDocente from "./pages/admin/teachers/docenteDetalles";
 import DetallesCursoAdmi from "./pages/admin/courses/detallesCursoAdmi";
 import DetallesEventoAdmi from "./pages/admin/events/detallesEventos";
+import HorarioEventos from "./pages/admin/events/HorarioEventos";
 
 function App() {
   return (
@@ -149,6 +150,15 @@ function App() {
                           </AdminLayout>
                         }
                       />
+                      <Route 
+                        path="/administrador/eventos/horario"
+                        element={
+                          <AdminLayout>
+                            {" "}
+                            <HorarioEventos />{" "}
+                          </AdminLayout>
+                        }
+                      />
                       <Route
                         path="/administrador/eventos/:id"
                         element={
@@ -234,6 +244,7 @@ function App() {
                           </DocenteLayout>
                         }
                       />
+
                       <Route
                         path="/docente/vereventos/:id"
                         element={
