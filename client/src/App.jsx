@@ -27,8 +27,8 @@ import CrearDocente from "./pages/admin/teachers/CrearDocente";
 import EditarDocente from "./pages/admin/teachers/EditarDocente";
 import IndexDocente from "./pages/docente/IndexDocente";
 import DocenteLayout from "./pages/docente/Layout";
-import DocenteEventos from "./pages/docente/eventos";
-import DetallesEventos from "./pages/docente/verEventos"; //cambio
+import DocenteEventos from "./pages/docente/events/eventos";
+import DetallesEventos from "./pages/docente/events/verEventos"; //cambio
 import InformacionDocente from "./pages/docente/informacionDocente";
 import CursosDocente from "./pages/docente/courses/Courses";
 import DetallesCurso from "./pages/docente/courses/detallesCurso";
@@ -36,6 +36,7 @@ import DetallesDocente from "./pages/admin/teachers/docenteDetalles";
 import DetallesCursoAdmi from "./pages/admin/courses/detallesCursoAdmi";
 import DetallesEventoAdmi from "./pages/admin/events/detallesEventos";
 import HorarioEventos from "./pages/admin/events/HorarioEventos";
+import HorarioEventosDocente from "./pages/docente/events/HorarioEventos";
 
 function App() {
   return (
@@ -244,7 +245,14 @@ function App() {
                           </DocenteLayout>
                         }
                       />
-
+                      <Route
+                        path="/docente/eventos/horario/:id"
+                        element={
+                          <DocenteLayout>
+                            <HorarioEventosDocente />
+                          </DocenteLayout>
+                        }
+                      />
                       <Route
                         path="/docente/vereventos/:id"
                         element={

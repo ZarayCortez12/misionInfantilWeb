@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Modal from "react-modal";
+import { FaCalendarAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-import EventoCarousel from "../../components/docente/EventoCarousel.jsx";
+import EventoCarousel from "../../../components/docente/EventoCarousel.jsx";
 
 Modal.setAppElement("#root");
 
 function EventosDocente() {
   const [eventosPasados, setEventosPasados] = useState([]);
   const [serverError, setServerError] = useState("");
+  const [identificador, setIdentificador] = useState("");
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
+        const storedUser = localStorage.getItem("user");
+        const user = storedUser ? JSON.parse(storedUser) : null;
+        setIdentificador(user.id);
         const response = await axios.get("http://localhost:4000/api/eventos");
         const fetchedEvents = response.data;
 
@@ -72,6 +78,34 @@ function EventosDocente() {
         Eventos Registrados
       </h1>
       <EventoCarousel title="Eventos Pasados" events={eventosPasados} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "30px",
+          marginTop: "20px",
+        }}
+      >
+        <Link
+          style={{
+            backgroundColor: "#2a4a7b",
+            color: "white",
+            padding: "15px 30px",
+            borderRadius: "10px",
+            fontSize: "17px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            border: "none",
+            cursor: "pointer",
+            transition: "background-color 0.3s ease",
+          }}
+          to={`/docente/eventos/horario/${identificador}`}
+        >
+          <FaCalendarAlt className="w-6" />
+          <span>Visualizar Horario</span>
+        </Link>
+      </div>
     </div>
   );
 }

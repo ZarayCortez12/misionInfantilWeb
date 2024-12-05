@@ -21,6 +21,50 @@ export const getEventosActivos = async (req, res) => {
   }
 };
 
+export const getEventosDocente = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    
+    if (!id) {
+      return res
+        .status(400)
+        .json({ message: "El ID del docente es requerido." });
+    }
+
+    
+    const eventos = await Evento.find({ estado: "ACTIVO" });
+
+    
+    const eventosDocente = [];
+
+    
+    for (const evento of eventos) {
+      
+      const curso = await Curso.findById(evento.curso);
+
+      
+      if (curso && curso.docentes.includes(id)) {
+        
+        eventosDocente.push(evento);
+      }
+    }
+
+    
+    if (eventosDocente.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No se encontraron eventos para este docente." });
+    }
+
+    
+    return res.status(200).json(eventosDocente);
+  } catch (error) {
+    console.error("Error al obtener eventos:", error);
+    return res.status(500).json({ message: "Error del servidor." });
+  }
+};
+
 export const createEvento = async (req, res) => {
   try {
     const { tipoEvento, nombre, fecha, hora, lugar, descripcion, idCurso } =

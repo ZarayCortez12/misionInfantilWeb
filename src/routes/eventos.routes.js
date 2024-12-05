@@ -6,7 +6,8 @@ import {
     createEvento, 
     updateEvento, 
     deleteEvento,
-    getEventosActivos
+    getEventosActivos,
+    getEventosDocente
 } from '../controller/eventos.controller.js'
 
 
@@ -19,6 +20,7 @@ router.post(
     '/eventos', 
     createEvento
 );
+router.post('/eventos/docente/:id', getEventosDocente)
 router.delete('/eventos/:id', deleteEvento)
 router.put('/eventos/:id',  updateEvento)
 
